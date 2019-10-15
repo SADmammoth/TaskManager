@@ -1,26 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+ const contentful = require('contentful');
+ const client = contentful.createClient({
+  space: 'p0flk5r1ro43',
+  accessToken: 'n30_7BCShxauK7NzRhfIrHyGfNCRkVpwxvptLIrh4VI'
+ });
+
+ client
+  .getEntry('1k8EWItCOXusywJLAlZSpn') //entry ID
+  .then(entry => console.log(entry))
+  .catch(err => console.log(err));
+ return <h1>React and Contentfull sample</h1>;
 }
 
 export default App;
