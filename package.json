@@ -25,9 +25,9 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development --watch --no-inline",
-    "build": "webpack -p",
+    "build": "node run sass && webpack -p",
     "lint": "eslint src/",
-    "scss": "node-sass -w ./src/scss -o ./src/css",
+    "scss": "node-sass -w src/scss -o src/css",
     "start": "node server.js"
   },
   "eslintConfig": {
