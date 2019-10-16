@@ -6,6 +6,7 @@
     "contentful": "^7.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1"
   },
   "devDependencies": {
@@ -24,10 +25,10 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "dev": "webpack-dev-server --mode development --watch --no-inline",
-    "build": "node run sass && webpack -p",
+    "dev": "react-scripts start",
+    "build": "npm run scss && webpack -p",
     "lint": "eslint src/",
-    "scss": "node-sass -w src/scss -o src/css",
+    "scss": "node-sass styles/scss -o styles/css",
     "start": "node server.js"
   },
   "eslintConfig": {
