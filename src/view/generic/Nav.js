@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 const shortid = require('shortid');
 
 export default function Nav(props) {
-  console.group(props);
   return (
     <>
       {Object.keys(props.items).map(item => (

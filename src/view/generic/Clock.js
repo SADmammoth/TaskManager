@@ -1,6 +1,5 @@
 import React from 'react';
 import ClockUpdater from '../../controller/ClockUpdater';
-import { throwStatement } from '@babel/types';
 
 export default class Clock extends React.Component {
   constructor(props) {
@@ -28,15 +27,21 @@ export default class Clock extends React.Component {
     this.minutesUpdater.start(this.update);
   }
 
+  componentWillUnmount() {
+    this.minutesUpdater.stop();
+  }
+
   render() {
     return (
       <>
-        <span>{this.months[this.state.month]}</span>
-        <span>, {this.state.day}</span>
-        <br />
-        <span>{this.state.hours}</span>
-        <span className="blinking">:</span>
-        <span>{this.state.minutes}</span>
+        <div className="clock">
+          <span key={'mth' + this.state.month}>{this.months[this.state.month]}</span>
+          <span key={'d' + this.state.day}>, {this.state.day}</span>
+          <br />
+          <span key={'h' + this.state.hours}>{this.state.hours}</span>
+          <span className="blinking">:</span>
+          <span key={'m' + this.state.minutes}>{this.state.minutes}</span>
+        </div>
       </>
     );
   }

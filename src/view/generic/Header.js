@@ -15,7 +15,7 @@ export default function Header(props) {
             <Nav items={{ Main: '/', AddTask: '/add' }}></Nav>
           </ul>
         </nav>
-        <Clock></Clock>
+        {props.location && props.location.pathname !== '/404-error-page' ? <Clock /> : ''}
       </header>
     </>
   );
