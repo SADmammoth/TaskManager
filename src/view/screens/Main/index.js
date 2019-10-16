@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '../../generic/Header';
 
-class Main extends React.Component {
+export default class Main extends React.Component {
   embedValidator() {}
 
   embedController() {}
@@ -20,4 +20,3 @@ class Main extends React.Component {
     );
   }
 }
-export default Main;

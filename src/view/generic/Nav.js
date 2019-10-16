@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, BrowserRouter as Router } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 const shortid = require('shortid');
 
 export default function Nav(props) {
@@ -14,3 +15,7 @@ export default function Nav(props) {
     </>
   );
 }
+
+Nav.propTypes = {
+  items: PropTypes.objectOf(PropTypes.string)
+};

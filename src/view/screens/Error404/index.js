@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
-class Error404 extends React.Component {
+export default class Error404 extends React.Component {
   embedValidator() {}
 
   embedController() {}
@@ -18,4 +18,3 @@ class Error404 extends React.Component {
     );
   }
 }
-export default Error404;

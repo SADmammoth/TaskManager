@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '../../generic/Header';
 
-class AddTask extends React.Component {
+export default class AddTask extends React.Component {
   embedValidator() {}
 
   embedController() {}
@@ -20,4 +20,3 @@ class AddTask extends React.Component {
     );
   }
 }
-export default AddTask;
