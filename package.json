@@ -31,7 +31,7 @@
     "dev": "react-scripts start",
     "build": "npm run scss && webpack -p",
     "lint": "eslint src/",
-    "scss": "node-sass styles/scss -o styles/css",
+    "scss": "node-sass src/view/styles/scss -o src/view/styles/css",
     "start": "node server.js"
   },
   "eslintConfig": {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Nav from './Nav';
+import Clock from './Clock';
 
 export default function Header(props) {
   return (
@@ -14,6 +15,7 @@ export default function Header(props) {
             <Nav items={{ Main: '/', AddTask: '/add' }}></Nav>
           </ul>
         </nav>
+        <Clock></Clock>
       </header>
     </>
   );

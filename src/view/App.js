@@ -1,6 +1,7 @@
 import React from 'react';
 import AddTask from './screens/AddTask';
 import Main from './screens/Main';
+import './styles/css/App.css';
 import Error404 from './screens/Error404';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 
