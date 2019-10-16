@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import Header from '../../generic/Header';
 
-class AddTask extends React.Component {
+class Main extends React.Component {
   embedValidator() {}
 
   embedController() {}
@@ -12,12 +12,12 @@ class AddTask extends React.Component {
       <>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>AddTask</title>
+          <title>Home</title>
         </Helmet>
         <Header />
-        <h1>Hello</h1>
+        <h1>Home</h1>
       </>
     );
   }
 }
-export default AddTask;
+export default Main;
