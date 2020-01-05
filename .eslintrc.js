@@ -13,10 +13,15 @@ module.exports = {
   },
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
+    "ecmaFeatures": {
+      "jsx": true
+  }
   },
   rules: {
     'no-console': 'off',
-    'react/prop-types': 0
+    'react/prop-types': 0,
+    'no-undef': 1,
+    'no-unused-vars': 1
   }
 };

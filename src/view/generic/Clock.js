@@ -1,29 +1,32 @@
 import React from 'react';
-import ClockUpdater from '../../controller/ClockUpdater';
+import ClockUpdater from '../../helpers/ClockUpdater';
+import Enum from '../../helpers/Enum';
+require('mdn-polyfills/String.prototype.padStart');
+
+const months = new Enum({
+  1: 'Jan',
+  2: 'Feb',
+  3: 'Mar',
+  4: 'Apr',
+  5: 'May',
+  6: 'Jun',
+  7: 'Jul',
+  8: 'Aug',
+  9: 'Sep',
+  10: 'Oct',
+  11: 'Nov',
+  12: 'Dec'
+  });
 
 export default class Clock extends React.Component {
   constructor(props) {
     super(props);
     this.update = this.update.bind(this);
-    this.state = { minutes: 0 };
+    this.state = {};
     this.minutesUpdater = new ClockUpdater();
-    this.months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.minutesUpdater.start(this.update);
   }
 
@@ -35,12 +38,12 @@ export default class Clock extends React.Component {
     return (
       <>
         <div className="clock">
-          <span key={'mth' + this.state.month}>{this.months[this.state.month]}</span>
+          <span key={'mth' + this.state.month}>{months[this.state.month+1]}</span>
           <span key={'d' + this.state.day}>, {this.state.day}</span>
           <br />
-          <span key={'h' + this.state.hours}>{this.state.hours}</span>
+          <span key={'h' + this.state.hours}>{this.state.hours.toString().padStart(2,"0")}</span>
           <span className="blinking">:</span>
-          <span key={'m' + this.state.minutes}>{this.state.minutes}</span>
+          <span key={'m' + this.state.minutes}>{this.state.minutes.toString().padStart(2,"0")}</span>
         </div>
       </>
     );
