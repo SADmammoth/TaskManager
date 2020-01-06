@@ -1,4 +1,4 @@
-class Task{
+export default class Task{
     private name: string = "";
     private content: string = "";
 
@@ -23,5 +23,3 @@ class Task{
         return `Name: ${this.name}; Content: ${this.content}`;
     }
 }
-
-module.exports = Task;

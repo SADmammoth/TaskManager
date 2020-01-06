@@ -7,7 +7,7 @@ import { withRouter, Route, Switch, Redirect, BrowserRouter as Router } from 're
 import Header from './generic/Header';
 
 class App extends React.Component {
-  render() {
+    render() {
     let RoutedHeader = withRouter(Header);
     return (
       <>
