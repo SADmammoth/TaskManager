@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.4",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "contentful": "^7.8.2",
     "mdn-polyfills": "^5.19.0",
     "prop-types": "^15.7.2",
@@ -11,12 +15,18 @@
     "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "typescript": "^3.7.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.4",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/node": "^7.7.7",
+    "@babel/plugin-transform-typescript": "^7.7.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.6.3",
+    "@babel/preset-typescript": "^7.7.7",
+    "babel-watch": "^7.0.0",
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -29,10 +39,10 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "react-scripts": "react-scripts start",
-    "nodemon": "nodemon server.js",
+    "react-scripts": "react-scripts start --isolatedModules=false",
+    "nodemon": "nodemon --exec babel-watch index.js",
     "webpack": "webpack -p",
-    "dev": "run-p react-scripts nodemon webpack",
+    "dev": "run-p react-scripts nodemon",
     "build": "npm run scss && webpack -p",
     "lint": "eslint src/",
     "scss": "node-sass src/view/styles/scss -o src/view/styles/css",

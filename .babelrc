@@ -6,8 +6,9 @@
         "targets": {
           "chrome": "73"
         }
-      },
-      "@babel/preset-react"
-    ]
+      }
+    ],
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ]
 }

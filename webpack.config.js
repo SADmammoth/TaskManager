@@ -16,14 +16,14 @@ module.exports = {
         test: /\.bundle\.js$/,
         use: 'bundle-loader'
       },
-      { enforce: 'pre', test: /\.js$/, loader: 'eslint-loader' },
+      { enforce: 'pre', test: /\.(js|ts)$/, loader: 'eslint-loader' },
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ['@babel/react']
+            presets: ['@babel/react'],
           }
         }
       },
