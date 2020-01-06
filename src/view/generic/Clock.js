@@ -26,7 +26,7 @@ export default class Clock extends React.Component {
     this.minutesUpdater = new ClockUpdater();
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.minutesUpdater.start(this.update);
   }
 

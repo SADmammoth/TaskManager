@@ -29,7 +29,10 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "dev": "react-scripts start",
+    "react-scripts": "react-scripts start",
+    "nodemon": "nodemon server.js",
+    "webpack": "webpack -p",
+    "dev": "run-p react-scripts nodemon webpack",
     "build": "npm run scss && webpack -p",
     "lint": "eslint src/",
     "scss": "node-sass src/view/styles/scss -o src/view/styles/css",
