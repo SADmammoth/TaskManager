@@ -4,64 +4,47 @@
 html {
   font-family: "SF Pro Display";
   font-size: 16px;
-  font-weight: 400;
-}
+  font-weight: 400; }
 
 .sitename {
   font-family: "SF Pro Display";
   font-weight: 400;
-  font-size: 1.5rem;
-}
+  font-size: 1.5rem; }
 
 .h1 {
   font-family: "SF Pro Display";
   font-weight: 700;
-  font-size: 2rem;
-}
+  font-size: 2rem; }
 
 a {
-  color: inherit;
-}
+  color: inherit; }
 
 .blinking {
-  animation: blink 1s infinite ease-in-out;
-}
+  animation: blink 1s infinite ease-in-out; }
 
 @keyframes blink {
   from {
-    opacity: 0;
-  }
+    opacity: 0; }
   to {
-    opacity: 1;
-  }
-}
+    opacity: 1; } }
 
 .blinking {
-  animation: blink 2s infinite ease-in-out 1s;
-}
+  animation: blink 2s infinite ease-in-out 1s; }
 
 @keyframes blink {
   from {
-    opacity: 0;
-  }
+    opacity: 0; }
   50% {
-    opacity: 1;
-  }
+    opacity: 1; }
   to {
-    opacity: 0;
-  }
-}
+    opacity: 0; } }
 
 header {
-  height: 20px;
-}
-header * {
-  float: left;
-}
-header .header-nav .nav-item {
-  padding: 10px 5px;
-}
+  height: 20px; }
+  header * {
+    float: left; }
+  header .header-nav .nav-item {
+    padding: 10px 5px; }
 
 .nav-item {
-  list-style-type: none;
-}
+  list-style-type: none; }

@@ -41,7 +41,7 @@
   },
   "scripts": {
     "dev": "run-p scss webpack nodemon",
-    "build": "npm run scss && webpack -p",
+    "build": "babel-watch index.js",
     "nodemon": "nodemon --exec babel-watch index.js",
     "webpack": "webpack --watch",
     "lint": "eslint src/",

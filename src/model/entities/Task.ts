@@ -1,8 +1,10 @@
 export default class Task {
-  private name: string = "";
-  private content: string = "";
+  private name: string;
+  private content: string;
 
   constructor(name: string, content: string) {
+    this.name = "";
+    this.content = "";
     this.edit(name, content);
   }
   edit(name: string, content: string): Boolean {
