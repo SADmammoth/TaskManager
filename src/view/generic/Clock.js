@@ -16,7 +16,7 @@ const months = new Enum({
   10: 'Oct',
   11: 'Nov',
   12: 'Dec'
-  });
+});
 
 export default class Clock extends React.Component {
   constructor(props) {
@@ -38,12 +38,18 @@ export default class Clock extends React.Component {
     return (
       <>
         <div className="clock">
-          <span key={'mth' + this.state.month}>{months[this.state.month+1]}</span>
+          <span key={'mth' + this.state.month}>
+            {months[this.state.month + 1]}
+          </span>
           <span key={'d' + this.state.day}>, {this.state.day}</span>
           <br />
-          <span key={'h' + this.state.hours}>{this.state.hours.toString().padStart(2,"0")}</span>
+          <span key={'h' + this.state.hours}>
+            {this.state.hours.toString().padStart(2, '0')}
+          </span>
           <span className="blinking">:</span>
-          <span key={'m' + this.state.minutes}>{this.state.minutes.toString().padStart(2,"0")}</span>
+          <span key={'m' + this.state.minutes}>
+            {this.state.minutes.toString().padStart(2, '0')}
+          </span>
         </div>
       </>
     );

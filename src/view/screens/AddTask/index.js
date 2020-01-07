@@ -13,7 +13,7 @@ export default class AddTask extends React.Component {
           <meta charSet="utf-8" />
           <title>AddTask</title>
         </Helmet>
-        <h1 className='h1'>Hello</h1>
+        <h1 className="h1">Hello</h1>
       </>
     );
   }

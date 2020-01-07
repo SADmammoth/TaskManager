@@ -3,11 +3,17 @@ import AddTask from './screens/AddTask';
 import Main from './screens/Main';
 import './styles/css/App.css';
 import Error404 from './screens/Error404';
-import { withRouter, Route, Switch, Redirect, BrowserRouter as Router } from 'react-router-dom';
+import {
+  withRouter,
+  Route,
+  Switch,
+  Redirect,
+  BrowserRouter as Router
+} from 'react-router-dom';
 import Header from './generic/Header';
 
 class App extends React.Component {
-    render() {
+  render() {
     let RoutedHeader = withRouter(Header);
     return (
       <>

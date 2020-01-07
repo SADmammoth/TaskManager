@@ -13,7 +13,7 @@ export default class Main extends React.Component {
           <meta charSet="utf-8" />
           <title>Home</title>
         </Helmet>
-        <h1 className='h1'>Home</h1>
+        <h1 className="h1">Home</h1>
       </>
     );
   }

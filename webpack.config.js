@@ -23,7 +23,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           query: {
-            presets: ['@babel/react'],
+            presets: ['@babel/react']
           }
         }
       },
