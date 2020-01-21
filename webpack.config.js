@@ -1,43 +1,43 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: './src/index.js',
   output: {
-    filename: "app.bundle.js",
-    path: path.join(__dirname, "dist"),
-    chunkFilename: "[name].bundle.js",
-    publicPath: "./"
+    filename: 'app.bundle.js',
+    path: path.join(__dirname, 'dist'),
+    chunkFilename: '[name].bundle.js',
+    publicPath: './'
   },
-  devtool: "source-map",
+  devtool: 'source-map',
   module: {
     rules: [
       {
         test: /\.bundle\.js$/,
-        use: "bundle-loader"
+        use: 'bundle-loader'
       },
       // { enforce: 'pre', test: /\.(js|ts)$/, loader: 'eslint-loader' },
       {
         test: /\.(js|ts)$/,
         exclude: /(node_modules)/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           query: {
-            presets: ["@babel/react"]
+            presets: ['@babel/react']
           }
         }
       },
-      { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       {
-        test: /\.(otf|png|gif|ttf)$/,
-        use: ["file-loader"]
+        test: /\.(otf|png|gif|ttf|svg)$/,
+        use: ['file-loader']
       }
     ]
   },
-  plugins: HtmlWebpackPluginTemplates(["index"]),
+  plugins: HtmlWebpackPluginTemplates(['index']),
   optimization: {
     splitChunks: {
-      chunks: "all"
+      chunks: 'all'
     }
   }
 };
@@ -46,7 +46,7 @@ function HtmlWebpackPluginTemplates(htmlPages) {
   return htmlPages.map(
     name =>
       new HtmlWebpackPlugin({
-        filename: name + ".html",
+        filename: name + '.html',
         template: `public/${name}.html`
       })
   );

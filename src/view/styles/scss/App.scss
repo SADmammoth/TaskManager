@@ -74,3 +74,35 @@ header {
 .nav-item {
   list-style-type: none;
 }
+
+table {
+  border-spacing: 2px 0;
+  tr:first-child {
+    td:first-child {
+      border: none;
+    }
+    td {
+      border: 1px solid black;
+    }
+  }
+  tr:nth-child(2) {
+    td {
+      border-top: 1px solid black;
+    }
+  }
+  tr:nth-child(n + 2) {
+    height: 20px;
+    position: relative;
+    td:first-child {
+      border: none;
+      position: relative;
+      top: 10px;
+      border-collapse: none;
+    }
+    td {
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      border-bottom: 1px dashed black;
+    }
+  }
+}

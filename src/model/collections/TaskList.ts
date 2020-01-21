@@ -95,26 +95,26 @@ export default class TaskList {
   }
 
   private async sendData() {
-    alert(0);
-    if (this.newTasksCount < 0) {
-      await fetch("/api/db/createlist", {
-        method: "PUT",
-        body: `
-        {
-          name:${this.name},
-          dateCreated:${this._dateCreated},
-          tags:[${this.tags.join()}]
-        }
-        `
-      });
-    }
-    this.newTasksCount = 0;
+    // alert(0);
+    // if (this.newTasksCount < 0) {
+    //   await fetch("/api/db/createlist", {
+    //     method: "PUT",
+    //     body: `
+    //     {
+    //       name:${this.name},
+    //       dateCreated:${this._dateCreated},
+    //       tags:[${this.tags.join()}]
+    //     }
+    //     `
+    //   });
+    // }
+    // this.newTasksCount = 0;
   }
 
   private async removeData(tasks: Task[]) {
-    await fetch("/api/db/removetasks", {
-      method: "DELETE",
-      body: `{tasks:[${tasks.map(tasks => tasks.json()).join(",")}]`
-    });
+    // await fetch("/api/db/removetasks", {
+    //   method: "DELETE",
+    //   body: `{tasks:[${tasks.map(tasks => tasks.json()).join(",")}]`
+    // });
   }
 }
