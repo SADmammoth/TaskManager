@@ -1,35 +1,79 @@
 import Task from "../entities/Task";
+import Tag from "../entities/Tag";
+const fetch = require("node-fetch");
 
 export default class TaskList {
   private tasks: Task[];
-  constructor(array?: Task[]) {
-    if (array != undefined) {
-      this.tasks = array;
-    } else {
-      this.tasks = [];
-    }
+
+  private _name: string = "";
+  get name(): string {
+    return this._name;
   }
 
-  Add(list: TaskList): void;
-  Add(array: Task[]): void;
-  Add(task: Task): void;
+  private _dateCreated: number;
+  get dateCreated(): number {
+    return this._dateCreated;
+  }
 
-  Add(parameter: TaskList | Task[] | Task): void {
+  private _tags: number[] = [];
+  get tags(): number[] {
+    return this._tags;
+  }
+
+  private newTasksCount: number = -1;
+
+  constructor(name: string, tags: number[], array?: Task[]) {
+    this.tasks = [];
+    this.edit(name, tags, array);
+    this._dateCreated = Date.now();
+  }
+
+  edit(name?: string, tags?: number[], array?: Task[]) {
+    if (name && name != "" && name != this._name) {
+      this._name = name;
+    }
+    if (array) {
+      this.tasks = array;
+      this.newTasksCount += array.length;
+    }
+    if (tags && tags.length > 0) {
+      this._tags != tags;
+    }
+    this.sendData();
+  }
+
+  getSorted(predicate: (item1: Task, item2: Task) => number): Task[] {
+    return Object.assign({}, this.tasks.sort(predicate));
+  }
+
+  getTasks(): Task[] {
+    return Object.assign({}, this.tasks);
+  }
+
+  addTask(list: TaskList): void;
+  addTask(array: Task[]): void;
+  addTask(task: Task): void;
+
+  addTask(parameter: TaskList | Task[] | Task): void {
     if (parameter instanceof TaskList) {
       this.tasks.push(...parameter.tasks);
+      this.newTasksCount += parameter.tasks.length;
     } else if (parameter instanceof Array) {
       this.tasks.push(...parameter);
+      this.newTasksCount += parameter.length;
     } else {
       this.tasks.push(parameter);
+      this.newTasksCount += 1;
     }
+    this.sendData();
   }
 
-  Remove(task: Task): Boolean;
-  Remove(
+  removeTask(task: Task): Boolean;
+  removeTask(
     predicate: (element: Task, index: number, array: Task[]) => Boolean
   ): Boolean;
 
-  Remove(
+  removeTask(
     parameter: Task | ((element: Task, index: number, array: Task[]) => Boolean)
   ): Boolean {
     let filtered;
@@ -48,5 +92,29 @@ export default class TaskList {
 
   toString() {
     return this.tasks.map(el => el.toString()).join("\n");
+  }
+
+  private async sendData() {
+    alert(0);
+    if (this.newTasksCount < 0) {
+      await fetch("/api/db/createlist", {
+        method: "PUT",
+        body: `
+        {
+          name:${this.name},
+          dateCreated:${this._dateCreated},
+          tags:[${this.tags.join()}]
+        }
+        `
+      });
+    }
+    this.newTasksCount = 0;
+  }
+
+  private async removeData(tasks: Task[]) {
+    await fetch("/api/db/removetasks", {
+      method: "DELETE",
+      body: `{tasks:[${tasks.map(tasks => tasks.json()).join(",")}]`
+    });
   }
 }

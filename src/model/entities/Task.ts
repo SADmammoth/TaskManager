@@ -24,4 +24,8 @@ export default class Task {
   toString() {
     return `Name: ${this.name}; Content: ${this.content}`;
   }
+
+  json() {
+    return `{name: ${this.name}; content: "${this.content}"}`;
+  }
 }

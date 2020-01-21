@@ -7,7 +7,7 @@ const pagesRouter = require("./src/routers/pagesRouter.js");
 
 app.use(express.static(__dirname + "/dist"));
 
-app.use(apiRouter);
+app.use("/api", apiRouter);
 app.use(pagesRouter);
 
 app.listen(port);

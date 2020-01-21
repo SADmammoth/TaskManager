@@ -1,5 +1,7 @@
 export default class ClockUpdater {
-  async start(update_cb) {
+  repeater: NodeJS.Timeout | null = null;
+
+  async start(update_cb: (date: Date) => any) {
     let now = new Date();
     update_cb(now);
     let interval = 60000;
@@ -12,6 +14,8 @@ export default class ClockUpdater {
   }
 
   stop() {
-    clearInterval(this.repeater);
+    if (this.repeater != null) {
+      clearInterval(this.repeater);
+    }
   }
 }
