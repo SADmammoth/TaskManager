@@ -4,7 +4,7 @@ import TaskList from './TaskList';
 
 class DraggableTaskList extends TaskList {
   constructor(props) {
-    super(props);
+    super(Object.assign(props, {draggable: true}));
   }
   render() {
     return <DraggableList>{super.render()}</DraggableList>;

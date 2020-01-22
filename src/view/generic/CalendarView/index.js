@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DraggableArea from '../Draggable/DraggableArea';
+import {DraggableArea, DragMap} from '../Draggable';
 
 class CalendarView extends React.Component {
   render() {
     return (
       <>
-        <DraggableArea>
-          <table>
+        <DragMap>
+          <table
+            className={'calendar ' + (this.props.className || '')}
+            style={this.props.style}
+          >
             {(() => {
               let array = [];
               array.push(
@@ -43,7 +46,14 @@ class CalendarView extends React.Component {
                         </td>
                       );
                       for (let col = 0; col < this.props.columns; col++) {
-                        array.push(<td></td>);
+                        array.push(
+                          <td
+                            id={'cell_' + row + '_' + col}
+                            style={{position: 'relative'}}
+                          >
+                            <DraggableArea index={{x: row, y: col}} />
+                          </td>
+                        );
                       }
                       return array;
                     })()}
@@ -53,7 +63,7 @@ class CalendarView extends React.Component {
               return array;
             })()}
           </table>
-        </DraggableArea>
+        </DragMap>
       </>
     );
   }

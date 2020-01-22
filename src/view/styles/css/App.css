@@ -1,18 +1,23 @@
 @import url(../css/normalize.css);
 @import url(../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css);
 @import url(../../assets/SF-Pro-Display/index.css);
+:root {
+  --dark-bg: #232323;
+  --common-bg: #6d6d6d;
+  --light-bg: #ffffff; }
+
 html {
-  font-family: "SF Pro Display";
+  font-family: 'SF Pro Display';
   font-size: 16px;
   font-weight: 400; }
 
 .sitename {
-  font-family: "SF Pro Display";
+  font-family: 'SF Pro Display';
   font-weight: 400;
   font-size: 1.5rem; }
 
 .h1 {
-  font-family: "SF Pro Display";
+  font-family: 'SF Pro Display';
   font-weight: 700;
   font-size: 2rem; }
 
@@ -69,3 +74,36 @@ table {
       border-left: 1px solid black;
       border-right: 1px solid black;
       border-bottom: 1px dashed black; }
+
+.icon-btn {
+  width: 50px;
+  height: 50px;
+  background: none;
+  border: none;
+  outline: none; }
+
+.horizontal-stack > * {
+  float: left; }
+
+.horizontal-stack + * {
+  clear: both; }
+
+.vertical-stack > * {
+  display: block;
+  float: none; }
+
+.sidebar {
+  float: right;
+  background: var(--common-bg); }
+
+.task-card {
+  height: 80px;
+  width: 200px;
+  background-color: var(--light-bg);
+  padding: 10px;
+  margin: 5px; }
+
+.calendar {
+  empty-cells: show; }
+  .calendar td {
+    padding: 20px; }

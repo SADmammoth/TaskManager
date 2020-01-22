@@ -1,21 +1,16 @@
 import React from 'react';
 
 class DraggableElement extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      someKey: 'someValue'
-    };
-  }
-
   render() {
-    return <p>{this.state.someKey}</p>;
-  }
-
-  componentDidMount() {
-    this.setState({
-      someKey: 'otherValue'
-    });
+    return (
+      <div
+        className='draggable'
+        draggable='true'
+        onDragStart={e => e.dataTransfer.setData('text/plain', 'text')}
+      >
+        {this.props.children}
+      </div>
+    );
   }
 }
 

@@ -5,39 +5,22 @@ import MenuButton from './MenuButton';
 class Menu extends React.Component {
   render() {
     return (
-      <ul>
+      <nav
+        className={`menu ${
+          this.props.vertical ? 'horizontal-stack' : 'vertical-stack'
+        } ${this.props.className || ''}`}
+        style={this.props.style}
+      >
         {this.props.buttons.map((el, i, arr) => (
-          <MenuButton
-            title={el.title}
-            action={el.action}
-            icon={el.icon}
-            height={
-              !this.props.vertical
-                ? this.props.height
-                : this.props.height / arr.length
-            }
-            width={
-              this.props.vertical
-                ? this.props.width
-                : this.props.width / arr.length
-            }
-          />
+          <MenuButton className={'menu-item ' + this.props.className} {...el} />
         ))}
-      </ul>
+      </nav>
     );
   }
 }
 
 Menu.propTypes = {
-  buttons: propTypes.arrayOf(
-    propTypes.shape({
-      title: propTypes.string.isRequired,
-      icon: propTypes.string.isRequired,
-      action: propTypes.func.isRequired
-    })
-  ).isRequired,
-  height: propTypes.number.isRequired,
-  width: propTypes.number.isRequired,
+  buttons: propTypes.arrayOf(propTypes.shape(MenuButton.propTypes)).isRequired,
   vertical: propTypes.bool
 };
 

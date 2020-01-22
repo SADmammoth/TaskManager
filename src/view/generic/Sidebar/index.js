@@ -3,7 +3,12 @@ class Sidebar extends React.Component {
   render() {
     return (
       <>
-        <aside>{this.props.children}</aside>
+        <aside
+          className={'sidebar ' + (this.props.className || '')}
+          style={this.props.style}
+        >
+          {this.props.children}
+        </aside>
       </>
     );
   }
