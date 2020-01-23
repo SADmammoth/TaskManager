@@ -8,6 +8,7 @@
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
     "contentful": "^7.8.2",
+    "dotenv": "^8.2.0",
     "mdn-polyfills": "^5.19.0",
     "mongodb": "^3.4.1",
     "node-fetch": "^2.6.0",
@@ -45,10 +46,10 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "dev": "run-p scss webpack nodemon",
+    "dev": "npm run nodemon",
     "build": "babel-watch index.js",
     "nodemon": "nodemon --exec babel-watch index.js",
-    "webpack": "webpack --mode=production --watch",
+    "webpack": "webpack --mode=production",
     "lint": "eslint src/",
     "scss": "node-sass src/view/styles/scss -o src/view/styles/css",
     "start": "node server.js",

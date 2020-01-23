@@ -9,7 +9,7 @@ module.exports = {
     chunkFilename: "[name].bundle.js",
     publicPath: "./"
   },
-  devtool: "none",
+  devtool: "inline-source-map",
   module: {
     rules: [
       {

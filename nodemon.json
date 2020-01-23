@@ -3,6 +3,6 @@
   "watch": ["src"],
   "ext": "*",
   "events": {
-    "restart": "npm run scss"
+    "restart": "npm run scss && npm run webpack"
   }
 }

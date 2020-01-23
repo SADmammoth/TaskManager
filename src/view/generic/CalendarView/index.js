@@ -1,75 +1,98 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {DraggableArea, DragMap} from '../Draggable';
+import React from "react";
+import PropTypes from "prop-types";
+import { DraggableArea, DragMap } from "../Draggable";
+import { runInThisContext } from "vm";
 
 class CalendarView extends React.Component {
+  state = {
+    startDate: new Date()
+  };
+
+  componentDidMount() {
+    this.setState({
+      startDate: this.props.startDate
+    });
+  }
+
   render() {
+    let RenderHeader = () => {
+      let array = [];
+      let startDate = new Date(this.state.startDate);
+      array.push(<div></div>);
+      for (let i = 0; i < this.props.columns - 1; i++) {
+        startDate.setDate(startDate.getDate() + 1);
+        array.push(<div>{startDate.toLocaleDateString("ru-RU")}</div>);
+      }
+      return array;
+    };
+
+    let RenderBody = () => {
+      let firstCell;
+      let array = [];
+      let row;
+      for (let r = 1; r < this.props.rows; r++) {
+        row = [];
+        firstCell = (() => {
+          return (
+            <div>
+              {this.props.startDate.getHours() + this.props.timeStep * r}
+            </div>
+          );
+        })();
+        row.push(firstCell);
+        for (let c = 1; c < this.props.columns; c++) {
+          row.push(
+            <DraggableArea
+              style={{ position: "relative", border: "2px solid black" }}
+              index={{ x: r, y: c }}
+            />
+          );
+        }
+        array.push(row);
+      }
+
+      return array;
+    };
+
+    alert(1);
     return (
-      <>
-        <DragMap>
-          <table
-            className={'calendar ' + (this.props.className || '')}
-            style={this.props.style}
-          >
-            {(() => {
-              let array = [];
-              array.push(
-                <tr>
-                  {(() => {
-                    let array = [];
-                    array.push(<td></td>);
-                    for (let col = 0; col < this.props.columns; col++) {
-                      array.push(
-                        <td>
-                          {
-                            (this.props.startDate.setDate(
-                              this.props.startDate.getDate() + 1
-                            ),
-                            this.props.startDate.toLocaleDateString('ru-RU'))
-                          }
-                        </td>
-                      );
-                    }
-                    return array;
-                  })()}
-                </tr>
-              );
-              for (let row = 0; row < this.props.rows; row++) {
-                array.push(
-                  <tr>
-                    {(() => {
-                      let array = [];
-                      array.push(
-                        <td>
-                          {this.props.startDate.getHours() +
-                            this.props.dateStep * row}
-                        </td>
-                      );
-                      for (let col = 0; col < this.props.columns; col++) {
-                        array.push(
-                          <td
-                            id={'cell_' + row + '_' + col}
-                            style={{position: 'relative'}}
-                          >
-                            <DraggableArea index={{x: row, y: col}} />
-                          </td>
-                        );
-                      }
-                      return array;
-                    })()}
-                  </tr>
-                );
-              }
-              return array;
-            })()}
-          </table>
+      <div
+        className={"calendar " + (this.props.className || "")}
+        style={Object.assign(this.props.style, {
+          display: "grid",
+          gridAutoFlow: "row",
+          gridTemplateColumns: `repeat(${this.props.columns},1fr)`,
+          gridTemplateRows: `repeat(${this.props.rows},1fr)`
+        })}
+      >
+        {RenderHeader()}
+        <DragMap
+          rows={this.props.rows}
+          columns={this.props.columns}
+          rowspan_cb={this.rowspan_cb}
+        >
+          {RenderBody()}
         </DragMap>
-      </>
+      </div>
     );
   }
-}
 
-export default CalendarView;
+  rowspan_cb(element, count) {
+    console.log(
+      React.cloneElement(element, {
+        style: Object.assign(element.props.style || {}, {
+          gridRow: element.props.index.x + "/span " + count
+        })
+      })
+    );
+    return React.cloneElement(element, {
+      style: Object.assign(element.props.style || {}, {
+        gridColumn: element.props.index.y + 1,
+        gridRow: element.props.index.x + 1 + "/span " + count
+      })
+    });
+  }
+}
 
 CalendarView.propTypes = {
   rows: PropTypes.number.isRequired,
@@ -77,3 +100,5 @@ CalendarView.propTypes = {
   startDate: PropTypes.instanceOf(Date).isRequired,
   timeStep: PropTypes.number.isRequired
 };
+
+export default CalendarView;
