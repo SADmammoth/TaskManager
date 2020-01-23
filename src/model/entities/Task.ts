@@ -20,12 +20,15 @@ export default class Task {
     }
     return flag;
   }
-
-  toString() {
-    return `Name: ${this.name}; Content: ${this.content}`;
+  json() {
+    return `{"name": "${this.name}","content": "${this.content}"}`;
   }
 
-  json() {
-    return `{name: ${this.name}; content: "${this.content}"}`;
+  toString() {
+    return this.json();
+  }
+
+  object() {
+    return JSON.parse(this.json());
   }
 }

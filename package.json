@@ -46,7 +46,8 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "dev": "npm run nodemon",
+    "dev": "npm run scss && npm run webpack && node index.js",
+    "dev-watch": "run-p scss webpack nodemon",
     "build": "babel-watch index.js",
     "nodemon": "nodemon --exec babel-watch index.js",
     "webpack": "webpack --mode=production",

@@ -41,14 +41,22 @@ export default class TaskList {
     this.sendData();
   }
 
-  getSorted(predicate: (item1: Task, item2: Task) => number): Task[] {
-    return Object.assign({}, this.tasks.sort(predicate));
+  getSortedTasks(predicate: (item1: Task, item2: Task) => number): Task[] {
+    return this.tasks.sort(predicate).map(el => el.object());
   }
 
   getTasks(): Task[] {
-    return Object.assign({}, this.tasks);
+    return this.tasks.map(el => el.object());
   }
-
+  getJSONSortedTasks(predicate: (item1: Task, item2: Task) => number): string {
+    return `{"tasks":[${this.tasks
+      .sort(predicate)
+      .map(el => el.json())
+      .join(",")}]}`;
+  }
+  getJSONTasks() {
+    return `{"tasks":[${this.tasks.map(el => el.json()).join(",")}]}`;
+  }
   addTask(list: TaskList): void;
   addTask(array: Task[]): void;
   addTask(task: Task): void;

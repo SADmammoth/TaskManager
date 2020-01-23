@@ -57,10 +57,7 @@ export default class TaskAssignmentPage extends React.Component {
             ]}
             style={{ float: "left" }}
           />
-          <DraggableTaskList
-            tasks={[{ title: "ok" }, { title: "asd" }]}
-            style={{ float: "left" }}
-          />
+          <DraggableTaskList listId={0} style={{ float: "left" }} />
         </Sidebar>
       </>
     );
