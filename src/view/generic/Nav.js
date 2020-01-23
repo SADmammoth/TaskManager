@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-const shortid = require('shortid');
+import React from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import shortid from "shortid";
 
 export default function Nav(props) {
   return (

@@ -1,6 +1,5 @@
 import Task from "../entities/Task";
 import Tag from "../entities/Tag";
-const fetch = require("node-fetch");
 
 export default class TaskList {
   private tasks: Task[];

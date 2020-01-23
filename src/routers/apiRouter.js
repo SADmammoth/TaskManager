@@ -1,9 +1,9 @@
-var express = require("express");
-var router = express.Router();
+import express from "express";
+import AddTaskController from "../controllers/AddTaskController";
+import DatabaseManager from "../controllers/DatabaseManager";
 
-var AddTaskController = require("../controllers/AddTaskController.js");
-var DatabaseManager = require("../controllers/DatabaseManager.js");
+var router = express.Router();
 
 router.get("/db/listdb", DatabaseManager.listdb);
 router.put("/db/createlist", DatabaseManager.createList);
-module.exports = router;
+export default router;
