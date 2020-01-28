@@ -3,19 +3,21 @@ import path from "path";
 export default class Client {
   static userToken = 2233;
   static readonly apiPath = "./api/";
+  static subscribed = false;
+  static subscribers: Function[] = [];
   static async addTask(
     task: { title: string },
     callback: (object: object) => any
   ) {
-    let response = await fetch(path.join(this.apiPath, "/tasks"), {
+    let response = await fetch(path.join(Client.apiPath, "/tasks"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(task)
-    }).then(this.checkStatus);
+    }).then(Client.checkStatus);
 
-    let responseObject = this.parseJSON(response);
+    let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
 
     return new Promise((resolve, reject) => {
@@ -23,12 +25,29 @@ export default class Client {
     });
   }
 
+  static async SubscribeOnDataUpdate(callback: Function) {
+    Client.subscribers.push(callback);
+
+    console.log(Client.subscribers);
+    while (!Client.subscribed) {
+      Client.subscribed = true;
+      let response = await fetch(path.join(Client.apiPath, "/subscribe")).then(
+        Client.checkStatus
+      );
+
+      Client.subscribers.forEach(cb => {
+        cb();
+      });
+      Client.subscribed = false;
+    }
+  }
+
   static async getTasks(taskListID: number, callback: (object: object) => any) {
     let response = await fetch(
-      path.join(this.apiPath, "/tasks/", taskListID.toString())
-    ).then(this.checkStatus);
+      path.join(Client.apiPath, "/tasks/", taskListID.toString())
+    ).then(Client.checkStatus);
 
-    let responseObject = this.parseJSON(response);
+    let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
 
     return new Promise((resolve, reject) => {

@@ -1,11 +1,11 @@
 import express from "express";
-import TaskController from "../controllers/TaskController";
-import DatabaseManager from "../controllers/DatabaseManager";
+import DataController from "../controllers/DataController";
+import SubscriptionController from "../controllers/SubscriptionController";
 
 var router = express.Router();
 
-router.get("/db/listdb", DatabaseManager.listdb);
-router.put("/db/createlist", DatabaseManager.createList);
-router.post("/tasks", TaskController.create);
-router.get("/tasks/:taskListID", TaskController.getList);
+router.post("/tasks", DataController.create);
+router.get("/tasks/:taskListID", DataController.getList);
+router.get("/subscribe", SubscriptionController.subscribe);
+router.get("/dataUpdated", SubscriptionController.update);
 export default router;

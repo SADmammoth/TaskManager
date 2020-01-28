@@ -21,7 +21,7 @@ export default class TaskList {
 
   private newTasksCount: number = -1;
 
-  constructor(name: string, tags: number[], array?: Task[]) {
+  constructor(name: string, tags?: number[], array?: Task[]) {
     this.tasks = [];
     this.edit(name, tags, array);
     this._dateCreated = Date.now();

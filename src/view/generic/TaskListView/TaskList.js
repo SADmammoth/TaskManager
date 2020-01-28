@@ -12,11 +12,12 @@ class TaskList extends React.Component {
   };
   componentDidMount() {
     this.requestTaskList();
-    this.setState({ interval: setInterval(this.requestTaskList, 5000) });
+    Client.SubscribeOnDataUpdate(this.requestTaskList);
+    // this.setState({ interval: setInterval(this.requestTaskList, 5000) });
   }
-  componentWillUnmount() {
-    clearInterval(this.state.interval);
-  }
+  // componentWillUnmount() {
+  //   clearInterval(this.state.interval);
+  // }
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);
     console.log(tasks);
