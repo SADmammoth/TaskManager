@@ -53,8 +53,6 @@ class CalendarView extends React.Component {
 
       return array;
     };
-
-    alert(1);
     return (
       <div
         className={"calendar " + (this.props.className || "")}
@@ -78,13 +76,6 @@ class CalendarView extends React.Component {
   }
 
   rowspan_cb(element, count) {
-    console.log(
-      React.cloneElement(element, {
-        style: Object.assign(element.props.style || {}, {
-          gridRow: element.props.index.x + "/span " + count
-        })
-      })
-    );
     return React.cloneElement(element, {
       style: Object.assign(element.props.style || {}, {
         gridColumn: element.props.index.y + 1,

@@ -25,11 +25,10 @@ export default class Clock extends React.Component {
     day: 0,
     month: 0
   };
-  constructor(props) {
-    super(props);
+
+  componentDidMount() {
     this.minutesUpdater.start(this.updateTime);
   }
-
   componentWillUnmount() {
     this.minutesUpdater.stop();
   }

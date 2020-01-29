@@ -1,19 +1,19 @@
 import { create } from "domain";
 
 export default class SubscriptionController {
-  static shouldUpdate = false;
+  // static shouldUpdate = false;
 
   static promise = SubscriptionController.createPromise();
+  static resolve;
 
+  //TODO Can't promise be replaced?
   static createPromise() {
     return new Promise(async (resolve, reject) => {
-      setInterval(() => {
-        if (SubscriptionController.shouldUpdate) resolve(true);
-      }, 10);
+      SubscriptionController.resolve = () => resolve(true);
     });
   }
   static update(req, res) {
-    SubscriptionController.shouldUpdate = true;
+    SubscriptionController.resolve();
     console.log("Data updated");
     if (res) {
       res.status(200);
@@ -22,11 +22,10 @@ export default class SubscriptionController {
   }
 
   static async subscribe(req, res) {
-    SubscriptionController.shouldUpdate = await SubscriptionController.promise;
-    if (SubscriptionController.shouldUpdate) {
+    let shouldUpdate = await SubscriptionController.promise;
+    if (shouldUpdate) {
       console.log("Subscriber notified");
       SubscriptionController.promise = SubscriptionController.createPromise();
-      SubscriptionController.shouldUpdate = false;
       res.status(200);
       res.send();
     } else {

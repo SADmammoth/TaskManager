@@ -1,10 +1,11 @@
 import path from "path";
 
 export default class Client {
-  static userToken = 2233;
-  static readonly apiPath = "./api/";
-  static subscribed = false;
-  static subscribers: Function[] = [];
+  private static userToken = 2233;
+  private static readonly apiPath = "./api/";
+  private static subscribed = false;
+  private static subscribers: Function[] = [];
+  private static subLoop = 0;
   static async addTask(
     task: { title: string },
     callback: (object: object) => any
@@ -25,21 +26,36 @@ export default class Client {
     });
   }
 
+  static ForceUpdate() {
+    Client.Notify();
+  }
+
+  private static Notify() {
+    console.log("View updated");
+    Client.subscribers.forEach(cb => {
+      cb();
+    });
+  }
+
   static async SubscribeOnDataUpdate(callback: Function) {
     Client.subscribers.push(callback);
-
-    console.log(Client.subscribers);
+    Client.subLoop = 0;
     while (!Client.subscribed) {
-      Client.subscribed = true;
-      let response = await fetch(path.join(Client.apiPath, "/subscribe")).then(
-        Client.checkStatus
-      );
-
-      Client.subscribers.forEach(cb => {
-        cb();
-      });
+      let response = await Client.RequestSubscription();
+      console.log("Subscription response");
+      Client.Notify();
       Client.subscribed = false;
+      if (Client.subLoop > 5) {
+        throw new Error("Subscription loop is overloaded");
+      }
     }
+  }
+
+  private static async RequestSubscription() {
+    Client.subscribed = true;
+    return fetch(path.join(Client.apiPath, "/subscribe"))
+      .then(res => ((Client.subLoop = 0), Client.checkStatus(res)))
+      .catch(e => (Client.subLoop++, console.log(e)));
   }
 
   static async getTasks(taskListID: number, callback: (object: object) => any) {

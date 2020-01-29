@@ -26,3 +26,11 @@ exports.getList = function(req, res) {
     res.send("List not found");
   }
 };
+
+//TODO Notifications to models
+/*  
+  Move notification responsibility to each model:
+    Add list of actions on update
+    OR
+    Simply function call
+*/
