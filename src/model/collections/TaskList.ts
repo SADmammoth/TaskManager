@@ -1,8 +1,11 @@
 import Task from "../entities/Task";
 import Tag from "../entities/Tag";
+import DatabaseManager from "../../helpers/DatabaseManager";
 
 export default class TaskList {
   private tasks: Task[];
+  private static listIds: number = 0;
+  private listId: number;
 
   private _name: string = "";
   get name(): string {
@@ -21,24 +24,26 @@ export default class TaskList {
 
   private newTasksCount: number = -1;
 
-  constructor(name: string, tags?: number[], array?: Task[]) {
+  constructor(name: string, tags?: number[], array?: Task[], sendToDB = true) {
     this.tasks = [];
-    this.edit(name, tags, array);
+    this.listId = TaskList.listIds++;
+    this.edit(name, tags, array, sendToDB);
     this._dateCreated = Date.now();
   }
 
-  edit(name?: string, tags?: number[], array?: Task[]) {
+  edit(name?: string, tags?: number[], array?: Task[], sendToDB = true) {
     if (name && name != "" && name != this._name) {
       this._name = name;
-    }
-    if (array) {
-      this.tasks = array;
-      this.newTasksCount += array.length;
     }
     if (tags && tags.length > 0) {
       this._tags != tags;
     }
-    this.sendData();
+    if (sendToDB) this.sendData();
+    if (array) {
+      this.tasks = array;
+      this.newTasksCount += array.length;
+      if (sendToDB) this.sendData();
+    }
   }
 
   getSortedTasks(predicate: (item1: Task, item2: Task) => number): Task[] {
@@ -101,21 +106,27 @@ export default class TaskList {
     return this.tasks.map(el => el.toString()).join("\n");
   }
 
+  private async CreateData() {
+    DatabaseManager.addList(
+      this.listId,
+      this.name,
+      this.tags,
+      this.dateCreated
+    );
+  }
   private async sendData() {
-    // alert(0);
-    // if (this.newTasksCount < 0) {
-    //   await fetch("/api/db/createlist", {
-    //     method: "PUT",
-    //     body: `
-    //     {
-    //       name:${this.name},
-    //       dateCreated:${this._dateCreated},
-    //       tags:[${this.tags.join()}]
-    //     }
-    //     `
-    //   });
-    // }
-    // this.newTasksCount = 0;
+    if (this.newTasksCount < 0) {
+      this.CreateData();
+      this.newTasksCount = 0;
+      return;
+    }
+    let task;
+    for (let i = 0; i < this.newTasksCount; i++) {
+      console.log("task");
+      task = this.tasks[this.tasks.length - i - 1];
+      DatabaseManager.addTask(task.name, task.content, this.listId);
+    }
+    this.newTasksCount = 0;
   }
 
   private async removeData(tasks: Task[]) {

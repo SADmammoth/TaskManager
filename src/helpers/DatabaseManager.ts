@@ -4,9 +4,9 @@ export default class DatabaseManager {
 
   static async connect() {
     const uri = process.env.MONGODB_URL;
-    const client = new MongoClient(uri);
-    await client.connect();
-    this.client = client;
+    let client = new MongoClient(uri, { useUnifiedTopology: true });
+    DatabaseManager.client = client;
+    return client.connect();
   }
 
   static async listDatabases(client: MongoClient) {
@@ -19,24 +19,39 @@ export default class DatabaseManager {
   }
 
   static async addList(
+    listId: number,
     name: string,
-    tags: any[] | undefined,
-    dateCreated: Date
+    tags: number[] | undefined,
+    dateCreated: number
   ) {
-    this.connectIfNot();
-    let response = await this.client
+    DatabaseManager.connectIfNot();
+    let response = await DatabaseManager.client
       .db("TaskManager")
-      .createCollection(name)
+      .collection(listId.toString())
       .insertOne({
         id: -1,
         name: "info",
+        listName: name,
         dateCreated: dateCreated,
         tags: tags
       });
     return response;
   }
 
+  static async addTask(name: string, content: string, listId: number) {
+    DatabaseManager.connectIfNot();
+    let response = await DatabaseManager.client
+      .db("TaskManager")
+      .collection(listId.toString())
+      .insertOne({
+        name: name,
+        content: content
+      });
+    return response;
+  }
+
   static async getData() {
+    await DatabaseManager.connectIfNot();
     let data: [
       {
         listId: number;
@@ -46,28 +61,32 @@ export default class DatabaseManager {
       }
     ];
 
-    let collections = await this.client.db("TaskManager").getCollectionInfos();
+    let db = DatabaseManager.client.db("TaskManager");
+
+    let collections = await db.listCollections().toArray();
     data = collections.map(async (list, id) => {
-      let collection = await this.client
-        .db("TaskManager")
-        .getCollection(list.name);
-      let tasks = collection.find({ id: { $gt: -1 } }).map(task => {
+      let collection = db.collection(list.name);
+      let tasks = await collection.find({ id: { $ne: -1 } }).toArray();
+      tasks = tasks.map(task => {
         return { name: task.name, content: task.content };
       });
-      let info = collection.find({ id: -1 });
+      let info = await collection.find({ id: -1 }).toArray();
+      info = info[0];
+
+      console.log(info);
       return {
-        name: list,
+        name: info.listName,
         tags: info.tags,
         dateCreated: info.dateCreated,
         tasks: tasks
       };
     });
-    return data;
+    return Promise.all(data);
   }
 
   static async connectIfNot() {
-    if (this.client == null) {
-      this.connect();
+    if (DatabaseManager.client == null) {
+      return DatabaseManager.connect();
     }
   }
 }

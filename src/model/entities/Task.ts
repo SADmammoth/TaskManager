@@ -1,21 +1,25 @@
 export default class Task {
-  private name: string;
-  private content: string;
+  private _name: string = "";
+  get name(): string {
+    return this._name;
+  }
+  private _content: string = "";
+  get content(): string {
+    return this._content;
+  }
 
   constructor(name: string, content: string) {
-    this.name = "";
-    this.content = "";
     this.edit(name, content);
   }
   edit(name: string, content: string): Boolean {
     let flag = false;
     if (name !== this.name) {
-      this.name = name;
+      this._name = name;
       flag = true;
     }
 
     if (content !== this.content) {
-      this.content = content;
+      this._content = content;
       flag = true;
     }
     return flag;

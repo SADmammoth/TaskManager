@@ -15,7 +15,8 @@ class TaskList extends React.Component {
     Client.SubscribeOnDataUpdate(this.requestTaskList);
     // this.setState({ interval: setInterval(this.requestTaskList, 5000) });
   }
-  // componentWillUnmount() {
+  //TODO Unsubscribe on unmount
+  //componentWillUnmount() {
   //   clearInterval(this.state.interval);
   // }
   requestTaskList = async () => {

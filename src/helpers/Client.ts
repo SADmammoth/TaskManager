@@ -50,7 +50,7 @@ export default class Client {
       }
     }
   }
-
+  //TODO Unsubscribe id/path/name
   private static async RequestSubscription() {
     Client.subscribed = true;
     return fetch(path.join(Client.apiPath, "/subscribe"))

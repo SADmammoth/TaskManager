@@ -3,8 +3,7 @@ import ModelManager from "../model/ModelManager.ts";
 import SubscriptionController from "./SubscriptionController";
 
 exports.updateData = function() {
-  // ModelManager.loadDataFromDB();
-  ModelManager.createList("Inbox");
+  ModelManager.loadDataFromDB();
   console.log("Data loaded");
 };
 
