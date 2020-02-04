@@ -3,32 +3,33 @@ const Schema = mongoose.Schema;
 
 import Task, { ITask } from "../entities/Task";
 import Tag, { ITag } from "../entities/Tag";
-// import DatabaseManager from "../../helpers/DatabaseManager";
-import SubscriptionController from "../../controllers/SubscriptionController";
+import TaskList, { ITaskList } from "./TaskList";
 import IList from "./IList";
 
-export interface ITaskList extends IList {
-  tasks: ITask["_id"];
+// import DatabaseManager from "../../helpers/DatabaseManager";
+import SubscriptionController from "../../controllers/SubscriptionController";
+
+export interface IFolder extends IList {
+  children: [ITaskList["_id"]];
 }
 
-let TaskListSchema = new Schema({
+let FolderSchema = new Schema({
   title: String,
   tags: [Schema.Types.ObjectId],
   owner: [Schema.Types.ObjectId],
-  tasks: [Schema.Types.ObjectId]
+  children: [Schema.Types.ObjectId]
 });
 
-TaskListSchema.methods.addTask = async function(...tasks: any[]) {
-  await this.model("TaskList").updateOne(
+FolderSchema.methods.addChildren = async function(...children: any[]) {
+  await this.model("Folder").updateOne(
     { _id: this._id },
-    { tasks: [...this.tasks, ...tasks] }
+    { children: [...this.children, ...children] }
   );
 };
-TaskListSchema.pre("save", () => SubscriptionController.update());
 
-let TaskList = mongoose.model<ITaskList>("TaskList", TaskListSchema, "lists");
+let Folder = mongoose.model<IFolder>("Folder", FolderSchema, "lists");
 
-export default TaskList;
+export default Folder;
 
 // export default class TaskList {
 //   private tasks: Task[];

@@ -1,5 +1,5 @@
 import React from "react";
-import Task from "../TaskListView/Task";
+import TaskCard from "../TaskListView/TaskCard";
 import DraggableArea from "./DraggableArea";
 
 class DragMap extends React.Component {

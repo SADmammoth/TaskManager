@@ -6,6 +6,8 @@ import Sidebar from "../../generic/Sidebar";
 import Menu from "../../generic/Menu";
 
 import { DraggableTaskList, TaskList } from "../../generic/TaskListView";
+import Client from "../../../helpers/Client.ts";
+import MenuButton from "../../generic/Menu/MenuButton";
 
 export default class TaskAssignmentPage extends React.Component {
   render() {
@@ -23,6 +25,11 @@ export default class TaskAssignmentPage extends React.Component {
           timeStep={1}
           style={{ width: "70%", float: "left" }}
         ></CalendarView>
+
+        <MenuButton
+          content="Register user"
+          onClick={Client.registerUser("root", "user")}
+        ></MenuButton>
         <Sidebar>
           <Menu
             buttons={[

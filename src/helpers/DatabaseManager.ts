@@ -1,4 +1,18 @@
 import { MongoClient } from "mongodb";
+import { Task } from "../view/generic/TaskListView";
+import TaskList from "../model/collections/TaskList";
+
+//TODO Change database structure
+/*
+  !From 
+  !    TaskLists->info
+  !             ->tasks
+  !To
+  !    Users
+  !    TaskLists
+  !    Tasks
+  */
+//TODO Use mongoose
 export default class DatabaseManager {
   private static client: MongoClient | null = null;
 
@@ -54,33 +68,31 @@ export default class DatabaseManager {
     await DatabaseManager.connectIfNot();
     let data: [
       {
-        listId: number;
         name: string;
+        tags: number[];
         dateCreated: Date;
-        tasks: [{ name: string; content: string }];
+        tasks: Task[];
       }
     ];
 
     let db = DatabaseManager.client.db("TaskManager");
-
     let collections = await db.listCollections().toArray();
+
     data = collections.map(async (list, id) => {
       let collection = db.collection(list.name);
+
       let tasks = await collection.find({ id: { $ne: -1 } }).toArray();
+
       tasks = tasks.map(task => {
-        return { name: task.name, content: task.content };
+        return new Task(task);
       });
+
       let info = await collection.find({ id: -1 }).toArray();
       info = info[0];
 
-      console.log(info);
-      return {
-        name: info.listName,
-        tags: info.tags,
-        dateCreated: info.dateCreated,
-        tasks: tasks
-      };
+      return new TaskList(Object.assign(info, { tasks: tasks }));
     });
+
     return Promise.all(data);
   }
 

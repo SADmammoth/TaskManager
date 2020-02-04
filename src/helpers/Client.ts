@@ -6,24 +6,25 @@ export default class Client {
   private static subscribed = false;
   private static subscribers: Function[] = [];
   private static subLoop = 0;
+
   static async addTask(
     task: { title: string },
+    listId: number,
     callback: (object: object) => any
   ) {
-    let response = await fetch(path.join(Client.apiPath, "/tasks"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(task)
-    }).then(Client.checkStatus);
+    let response = await fetch(
+      path.join(Client.apiPath, "/lists/", listId.toString()),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(task)
+      }
+    ).then(Client.checkStatus);
 
     let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
-
-    return new Promise((resolve, reject) => {
-      resolve(responseObject);
-    });
   }
 
   static ForceUpdate() {
@@ -60,7 +61,7 @@ export default class Client {
 
   static async getTasks(taskListID: number, callback: (object: object) => any) {
     let response = await fetch(
-      path.join(Client.apiPath, "/tasks/", taskListID.toString())
+      path.join(Client.apiPath, "/lists/", taskListID.toString())
     ).then(Client.checkStatus);
 
     let responseObject = Client.parseJSON(response);
@@ -68,6 +69,14 @@ export default class Client {
 
     return new Promise((resolve, reject) => {
       resolve(responseObject);
+    });
+  }
+
+  static async registerUser(login: string, password: string) {
+    await fetch(path.join(Client.apiPath, "/users"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ login: login, password: password })
     });
   }
 

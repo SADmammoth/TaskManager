@@ -1,6 +1,6 @@
-import DraggableTaskList from './DraggableTaskList';
-import Task from './Task';
-import DraggableTask from './DraggableTask';
-import TaskList from './TaskList';
+import DraggableTaskList from "./DraggableTaskList";
+import TaskCard from "./TaskCard";
+import DraggableTask from "./DraggableTask";
+import TaskListView from "./TaskListView";
 
-export {DraggableTaskList, Task, DraggableTask, TaskList};
+export { DraggableTaskList, TaskCard, DraggableTask, TaskListView };

@@ -1,8 +1,8 @@
 import React from "react";
 import { DraggableElement } from "../Draggable";
-import Task from "./Task";
+import TaskCard from "./TaskCard";
 
-class DraggableTask extends Task {
+class DraggableTask extends TaskCard {
   render() {
     return (
       <div
