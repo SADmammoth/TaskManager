@@ -1,16 +1,18 @@
 import path from "path";
-
+interface Subscribers {
+  [key: string]: ((response?: object) => any) | undefined;
+}
 export default class Client {
   private static userToken = 2233;
   private static readonly apiPath = "./api/";
   private static subscribed = false;
-  private static subscribers: Function[] = [];
+  private static subscribers: Subscribers = {};
   private static subLoop = 0;
 
   static async addTask(
     task: { title: string },
     listId: number,
-    callback: (object: object) => any
+    callback: (response: object) => any
   ) {
     let response = await fetch(
       path.join(Client.apiPath, "/lists/", listId.toString()),
@@ -27,32 +29,45 @@ export default class Client {
     if (callback) callback(responseObject);
   }
 
-  static ForceUpdate() {
-    Client.Notify();
+  static ForceUpdate(object?: object) {
+    Client.Notify(object);
   }
 
-  private static Notify() {
+  private static Notify(object?: object) {
     console.log("View updated");
-    Client.subscribers.forEach(cb => {
-      cb();
-    });
+
+    Object.values(Client.subscribers).forEach(cb => !cb || cb(object));
   }
 
-  static async SubscribeOnDataUpdate(callback: Function) {
-    Client.subscribers.push(callback);
+  static async SubscribeOnDataUpdate(
+    path: string,
+    callback: (response?: object) => any
+  ) {
+    Client.subscribers[path] = callback;
     Client.subLoop = 0;
-    while (!Client.subscribed) {
+    while (Client.subscribed) {
       let response = await Client.RequestSubscription();
       console.log("Subscription response");
-      Client.Notify();
-      Client.subscribed = false;
+      Client.Notify(Client.parseJSON(response));
       if (Client.subLoop > 5) {
         throw new Error("Subscription loop is overloaded");
       }
     }
   }
+
+  static async Unsubscribe(path: string) {
+    Client.subscribers[path] = undefined;
+    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+      Client.subscribed = false;
+    }
+  }
+
   //TODO Unsubscribe id/path/name
   private static async RequestSubscription() {
+    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+      Client.subscribed = false;
+      return;
+    }
     Client.subscribed = true;
     return fetch(path.join(Client.apiPath, "/subscribe"))
       .then(res => ((Client.subLoop = 0), Client.checkStatus(res)))
@@ -89,7 +104,11 @@ export default class Client {
     );
   }
 
-  static async parseJSON(response: Response) {
-    return JSON.parse(await response.json());
+  static async parseJSON(response?: Response | void) {
+    if (!response) {
+      return;
+    }
+    let res = await response.json();
+    return res;
   }
 }

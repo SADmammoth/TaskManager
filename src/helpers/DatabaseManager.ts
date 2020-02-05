@@ -2,17 +2,6 @@ import { MongoClient } from "mongodb";
 import { Task } from "../view/generic/TaskListView";
 import TaskList from "../model/collections/TaskList";
 
-//TODO Change database structure
-/*
-  !From 
-  !    TaskLists->info
-  !             ->tasks
-  !To
-  !    Users
-  !    TaskLists
-  !    Tasks
-  */
-//TODO Use mongoose
 export default class DatabaseManager {
   private static client: MongoClient | null = null;
 

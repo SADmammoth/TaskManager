@@ -27,10 +27,10 @@ export default class SubscriptionController {
       console.log("Subscriber notified");
       SubscriptionController.promise = SubscriptionController.createPromise();
       res.status(200);
-      res.send();
+      res.json({ dataUpdated: true });
     } else {
       res.status(500);
-      res.send();
+      res.json({ dataUpdated: true });
     }
   }
 }

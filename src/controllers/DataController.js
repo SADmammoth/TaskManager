@@ -54,25 +54,17 @@ exports.addTask = async function(req, res) {
 exports.getList = async function(req, res) {
   try {
     let id = parseInt(req.params.taskListID);
-    res.json(
-      JSON.stringify({
-        tasks: await Promise.all(
+    res.json({
+      tasks: (
+        await Promise.all(
           (
             await TaskList.findOne({ _id: root.children[id] }).exec()
           ).tasks.map(async el => Task.findOne({ _id: el }).exec())
         )
-      })
-    );
+      ).filter(el => !!el)
+    });
   } catch (err) {
     res.status(404);
     res.send(err.message);
   }
 };
-
-//TODO Notifications to models
-/*  
-  Move notification responsibility to each model:
-    Add list of actions on update
-    OR
-    Simply function call
-*/

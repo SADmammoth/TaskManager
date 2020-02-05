@@ -10,21 +10,27 @@ class TaskListView extends React.Component {
     tasks: [],
     interval: null
   };
+
   componentDidMount() {
     this.requestTaskList();
-    Client.SubscribeOnDataUpdate(this.requestTaskList);
+    Client.SubscribeOnDataUpdate(
+      document.location.pathname,
+      this.requestTaskList
+    );
     // this.setState({ interval: setInterval(this.requestTaskList, 5000) });
   }
   //TODO Unsubscribe on unmount
-  //componentWillUnmount() {
-  //   clearInterval(this.state.interval);
-  // }
+  componentWillUnmount() {
+    Client.Unsubscribe(document.location.pathname);
+  }
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);
-    \;
     if (tasks.tasks) this.setState({ tasks: tasks.tasks });
   };
   createTask = task => {
+    if (!task) {
+      return task;
+    }
     return this.props.draggable ? (
       <DraggableTask title={task.title} content={task.content} />
     ) : (
