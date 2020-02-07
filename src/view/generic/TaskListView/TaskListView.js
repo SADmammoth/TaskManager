@@ -17,9 +17,8 @@ class TaskListView extends React.Component {
       document.location.pathname,
       this.requestTaskList
     );
-    // this.setState({ interval: setInterval(this.requestTaskList, 5000) });
   }
-  //TODO Unsubscribe on unmount
+
   componentWillUnmount() {
     Client.Unsubscribe(document.location.pathname);
   }

@@ -1,5 +1,7 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
+import React from "react";
+import { Helmet } from "react-helmet";
+import Form from "../../generic/Form";
+import Client from "../../../helpers/Client.ts";
 
 export default class CreateTaskPage extends React.Component {
   embedValidator() {}
@@ -11,9 +13,30 @@ export default class CreateTaskPage extends React.Component {
       <>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>AddTask</title>
+          <title>Create CreateTaskPage</title>
         </Helmet>
-        <h1 className="h1">Hello</h1>
+        <h1 className="h1">Create task</h1>
+        <Form
+          onSubmit={data =>
+            Client.addTask({ title: data.title }, 0, () =>
+              this.props.history.push(__dirname)
+            )
+          }
+          inputs={[
+            {
+              type: "text",
+              name: "title",
+              description: "Username",
+              required: true
+            },
+            {
+              type: "textarea",
+              name: "content",
+              description: "HTML content",
+              required: false
+            }
+          ]}
+        />
       </>
     );
   }

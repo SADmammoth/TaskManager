@@ -6,7 +6,6 @@ export default class SubscriptionController {
   static promise = SubscriptionController.createPromise();
   static resolve;
 
-  //TODO Can't promise be replaced?
   static createPromise() {
     return new Promise(async (resolve, reject) => {
       SubscriptionController.resolve = () => resolve(true);

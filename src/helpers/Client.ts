@@ -62,7 +62,6 @@ export default class Client {
     }
   }
 
-  //TODO Unsubscribe id/path/name
   private static async RequestSubscription() {
     if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
       Client.subscribed = false;
