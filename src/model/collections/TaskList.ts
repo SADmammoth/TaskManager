@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import CreateCustomSchema, { mongooseBase } from "../mongooseBase";
 const Schema = mongoose.Schema;
 
 import Task, { ITask } from "../entities/Task";
@@ -11,7 +12,7 @@ export interface ITaskList extends IList {
   tasks: ITask["_id"];
 }
 
-let TaskListSchema = new Schema({
+let TaskListSchema = CreateCustomSchema({
   title: String,
   tags: [Schema.Types.ObjectId],
   owner: [Schema.Types.ObjectId],
@@ -24,7 +25,6 @@ TaskListSchema.methods.addTask = async function(...tasks: any[]) {
     { tasks: [...this.tasks, ...tasks] }
   );
 };
-TaskListSchema.pre("save", () => SubscriptionController.update());
 
 let TaskList = mongoose.model<ITaskList>("TaskList", TaskListSchema, "lists");
 

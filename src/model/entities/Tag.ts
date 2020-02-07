@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongooseBase from "../mongooseBase";
+import { mongooseBase } from "../mongooseBase";
 const Schema = mongoose.Schema;
 
 export interface ITag extends mongooseBase {

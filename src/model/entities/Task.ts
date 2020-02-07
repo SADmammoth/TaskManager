@@ -10,7 +10,6 @@ export interface ITask extends ITag {
 }
 
 let TaskSchema = new Schema({ title: String, content: String });
-TaskSchema.pre("save", () => SubscriptionController.update());
 
 let Task = mongoose.model<ITask>("Task", TaskSchema);
 export default Task;

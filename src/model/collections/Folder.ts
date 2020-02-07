@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import CreateCustomSchema, { mongooseBase } from "../mongooseBase";
 const Schema = mongoose.Schema;
 
 import Task, { ITask } from "../entities/Task";
@@ -13,7 +14,7 @@ export interface IFolder extends IList {
   children: [ITaskList["_id"]];
 }
 
-let FolderSchema = new Schema({
+let FolderSchema = CreateCustomSchema({
   title: String,
   tags: [Schema.Types.ObjectId],
   owner: [Schema.Types.ObjectId],

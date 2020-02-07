@@ -40,10 +40,10 @@ exports.addTask = async function(req, res) {
     let id = parseInt(req.params.taskListID);
     let task = await Task.create({
       title: req.body.title,
-      content: "<ul><li>Subtask1</li><li>Subtask2</li><li>Subtask3</li></ul>"
+      content: req.body.content
     });
-    console.log(task);
-    (await TaskList.findOne({ _id: root.children[id] }).exec()).addTask(task);
+
+    (await TaskList.findOne({ _id: root.children[id] }).exec()).addTask(task); //TODO Refactor
     res.json(task);
   } catch (err) {
     res.status(404);
@@ -61,7 +61,8 @@ exports.getList = async function(req, res) {
             await TaskList.findOne({ _id: root.children[id] }).exec()
           ).tasks.map(async el => Task.findOne({ _id: el }).exec())
         )
-      ).filter(el => !!el)
+      ) //TODO Refactor
+        .filter(el => !!el)
     });
   } catch (err) {
     res.status(404);

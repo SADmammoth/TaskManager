@@ -10,7 +10,7 @@ export default class Client {
   private static subLoop = 0;
 
   static async addTask(
-    task: { title: string },
+    task: { title: string; content: string },
     listId: number,
     callback: (response: object) => any
   ) {
