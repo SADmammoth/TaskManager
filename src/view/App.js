@@ -11,7 +11,7 @@ import TaskAssignmentPage from "./screens/TaskAssignmentPage";
 import CreateTaskPage from "./screens/CreateTaskPage";
 import Error404 from "./screens/Error404";
 
-import "./styles/css/App.css";
+import "./styles/scss/App.scss";
 
 class App extends React.Component {
   render() {

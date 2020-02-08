@@ -28,7 +28,7 @@ export default class TaskAssignmentPage extends React.Component {
 
         <MenuButton
           content="Register user"
-          onClick={Client.registerUser("root", "user")}
+          onClick={() => Client.registerUser("root", "user")}
         ></MenuButton>
         <Sidebar>
           <Menu

@@ -1,8 +1,5 @@
 {
   "ignore": ["node_modules", "*.css"],
   "watch": ["src"],
-  "ext": "*",
-  "events": {
-    "restart": "npm run scss && npm run webpack"
-  }
+  "ext": "*"
 }

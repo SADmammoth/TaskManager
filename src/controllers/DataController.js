@@ -11,9 +11,12 @@ exports.userCheck = function() {
   // }
 };
 exports.init = async function(req, res) {
-  UserController._register();
+  if (!UserController._isLoggedIn()) {
+    UserController._register("root", "user");
+    console.log("32");
+  }
   root = await Folder.findOne({ title: "$root" }).exec();
-  if (root === {}) {
+  if (!root || Object.keys(root).length === 0) {
     root = await Folder.create({ title: "$root" });
     root.addChildren(
       await TaskList.create({

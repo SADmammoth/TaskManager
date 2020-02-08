@@ -15,8 +15,10 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
+    "react-html-parser": "^2.0.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
+    "sass-loader": "^8.0.2",
     "shortid": "^2.2.15",
     "typescript": "^3.7.4"
   },
@@ -45,11 +47,12 @@
     "webpack-dev-server": "^3.4.1"
   },
   "scripts": {
-    "dev": "npm run scss && npm run webpack && node index.js",
-    "dev-watch": "run-p scss webpack nodemon",
+    "dev": "npm run webpack && node index.js",
+    "dev-watch": "run-p webpack-watch nodemon",
     "build": "babel-watch index.js",
     "nodemon": "nodemon --exec babel-watch index.js",
     "webpack": "webpack --mode=production",
+    "webpack-watch": "webpack --mode=production --watch",
     "lint": "eslint src/",
     "scss": "node-sass src/view/styles/scss -o src/view/styles/css",
     "start": "node server.js",

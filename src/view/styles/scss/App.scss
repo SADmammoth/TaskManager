@@ -1,6 +1,6 @@
-@import '../css/normalize.css';
-@import '../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css';
-@import '../../assets/SF-Pro-Display/index.css';
+@import "../css/normalize.css";
+@import "../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css";
+@import "../../assets/SF-Pro-Display/index.css";
 
 //TODO Add table of contents
 
@@ -14,19 +14,19 @@
 //!Typography
 
 html {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-size: 16px;
   font-weight: 400;
 }
 
 .sitename {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 400;
   font-size: 1.5rem;
 }
 
 .h1 {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 700;
   font-size: 2rem;
 }
@@ -149,6 +149,13 @@ table {
   background-color: var(--light-bg);
   padding: 10px;
   margin: 5px;
+  .content {
+    padding: 5px;
+    & > * {
+      padding: 0;
+      margin: 0;
+    }
+  }
 }
 
 .calendar {

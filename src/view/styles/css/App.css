@@ -7,17 +7,17 @@
   --light-bg: #ffffff; }
 
 html {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-size: 16px;
   font-weight: 400; }
 
 .sitename {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 400;
   font-size: 1.5rem; }
 
 .h1 {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 700;
   font-size: 2rem; }
 
@@ -102,6 +102,11 @@ table {
   background-color: var(--light-bg);
   padding: 10px;
   margin: 5px; }
+  .task-card .content {
+    padding: 5px; }
+    .task-card .content > * {
+      padding: 0;
+      margin: 0; }
 
 .calendar {
   empty-cells: show; }
