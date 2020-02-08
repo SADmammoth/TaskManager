@@ -19,12 +19,9 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
+    "react-html-parser": "^2.0.2",
     "react-router-dom": "^5.1.2",
-<<<<<<< HEAD
-    "react-scripts": "^3.3.0",
-=======
     "react-scripts": "^3.4.0",
->>>>>>> b372f13... fix: npm scripts, babel config and bugs in controllers
     "shortid": "^2.2.15",
     "typescript": "^3.7.5"
   },
@@ -54,8 +51,9 @@
     "dev": "npm run webpack && npm run start",
     "dev-watch": "run-p webpack-watch nodemon",
     "build": "webpack",
-    "nodemon": "nodemon --exec babel-watch index.js",
+    "nodemon": "nodemon --exec babel-watch index.js --extensions \".js,.ts\"",
     "webpack": "webpack --mode=production",
+    "webpack-watch": "webpack --mode=production --watch",
     "lint": "eslint src/",
     "scss": "node-sass src/view/styles/scss -o src/view/styles/css",
     "start": "babel-node index.js --extensions \".js,.ts\"",

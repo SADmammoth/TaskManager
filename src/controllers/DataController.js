@@ -16,7 +16,7 @@ exports.init = async function(req, res) {
     console.log("User logged in");
   }
   root = await Folder.findOne({ title: "$root" }).exec();
-  if (root === {}) {
+  if (!root || Object.keys(root).length === 0) {
     root = await Folder.create({ title: "$root" });
     root.addChildren(
       await TaskList.create({

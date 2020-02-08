@@ -26,7 +26,6 @@ class CalendarView extends React.Component {
 
   render() {
     let RenderHeader = () => {
-      alert(0);
       let array = [];
       let startDate = new Date(this.state.startDate);
       array.push(<div></div>);
