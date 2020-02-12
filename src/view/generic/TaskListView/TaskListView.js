@@ -42,9 +42,11 @@ class TaskListView extends React.Component {
         className={"no-type-list " + this.props.className || ""}
         style={this.props.style}
       >
-        {this.state.tasks.map((el, i) => (
-          <li>{this.createTask(el, i, this.props.listId)}</li>
-        ))}
+        {this.state.tasks.map((el, i) => {
+          if (!el.assignedTo) {
+            return <li>{this.createTask(el, i, this.props.listId)}</li>;
+          }
+        })}
       </ul>
     );
   }
