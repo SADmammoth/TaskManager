@@ -37,16 +37,15 @@ exports.createList = async function(req, res) {
 
 function retrieveFields(object, keys) {
   let result = {};
-  keys.forEach(el => (result[el] = object[el]));
+  keys.forEach(el => (object[el] ? (result[el] = object[el]) : false));
   return result;
 }
 
 exports.addTask = async function(req, res) {
   try {
     let id = parseInt(req.params.taskListID);
-    console.log(req.body);
     let task = await Task.create(
-      retrieveFields(req.body, ["title", "content", "arrangeTo"])
+      retrieveFields(req.body, ["title", "content", "assignedTo"])
     );
     console.log(task);
     (await TaskList.findOne({ _id: root.children[id] }).exec()).addTask(task); //TODO Refactor
@@ -61,11 +60,14 @@ exports.editTask = async function(req, res) {
   try {
     let listID = parseInt(req.params.taskListID);
     let taskID = parseInt(req.params.taskID);
+
+    console.log(retrieveFields(req.body, ["title", "content", "assignedTo"]));
     let list = await TaskList.findOne({ _id: root.children[listID] }).exec();
     let task = await Task.updateOne(
       { _id: list.tasks[taskID] },
-      res.body
+      retrieveFields(req.body, ["title", "content", "assignedTo"])
     ).exec();
+    res.send();
   } catch (err) {
     res.status(404);
     res.send(err.message);

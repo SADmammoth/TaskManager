@@ -18,9 +18,9 @@ export default class Client {
     callback: (response: object) => any
   ) {
     let response = await fetch(
-      path.join(Client.apiPath, "lists", taskId.toString(), listId.toString()),
+      path.join(Client.apiPath, "lists", listId.toString(), taskId.toString()),
       {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(task)
       }

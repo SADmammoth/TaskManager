@@ -81,7 +81,7 @@ class CalendarView extends React.Component {
     arrangeDate.setHours(
       arrangeDate.getHours() + index.y * this.props.timeStep
     );
-    Client.changeTask({ arrangeTo: arrangeDate }, listId, taskId);
+    Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
 
   rowspan_cb(element, count) {
