@@ -5,10 +5,9 @@ import TaskCard from "./TaskCard";
 class DraggableTask extends TaskCard {
   render() {
     return (
-      <div
-        {...this.props}
-        className={"task-card " + (this.props.className || "")}
-        style={this.props.style}
+      <DraggableElement
+        data={{ height: 2, title: this.props.title }}
+        datatype="application/json"
       >
         <DraggableElement
           data={JSON.stringify({ height: 2, title: this.props.title })}

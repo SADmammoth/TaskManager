@@ -7,7 +7,7 @@ import Menu from "../../generic/Menu";
 
 import { DraggableTaskList, TaskList } from "../../generic/TaskListView";
 import Client from "../../../helpers/Client.ts";
-import MenuButton from "../../generic/Menu/MenuButton";
+import Button from "../../generic/Button";
 
 export default class TaskAssignmentPage extends React.Component {
   render() {
@@ -23,14 +23,14 @@ export default class TaskAssignmentPage extends React.Component {
           columns={10}
           startDate={new Date()}
           timeStep={1}
-          style={{ width: "70%", float: "left" }}
+          style={{ width: "70%", float: "left", height: "70vh" }}
         ></CalendarView>
 
-        <MenuButton
+        <Button
           content="Register user"
-          onClick={Client.registerUser("root", "user")}
-        ></MenuButton>
-        <Sidebar>
+          onClick={() => Client.registerUser("root", "user")}
+        ></Button>
+        <Sidebar style={{ height: "70vh" }}>
           <Menu
             buttons={[
               {

@@ -42,10 +42,7 @@ class CalendarView extends React.Component {
         row.push(firstCell);
         for (let c = 1; c < this.props.columns; c++) {
           row.push(
-            <DraggableArea
-              style={{ position: "relative", border: "2px solid black" }}
-              index={{ x: r, y: c }}
-            />
+            <DraggableArea className="calendar-cell" index={{ x: r, y: c }} />
           );
         }
         array.push(row);

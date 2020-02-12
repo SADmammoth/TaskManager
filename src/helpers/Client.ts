@@ -45,7 +45,9 @@ export default class Client {
   ) {
     Client.subscribers[path] = callback;
     Client.subLoop = 0;
+    Client.subscribed = true;
     while (Client.subscribed) {
+      console.log("Subscribed");
       let response = await Client.RequestSubscription();
       console.log("Subscription response");
       Client.Notify(Client.parseJSON(response));
@@ -56,14 +58,15 @@ export default class Client {
   }
 
   static async Unsubscribe(path: string) {
+    console.log("Unsubscribed");
     Client.subscribers[path] = undefined;
-    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
     }
   }
 
   private static async RequestSubscription() {
-    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
       return;
     }

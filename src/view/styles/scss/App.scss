@@ -1,32 +1,42 @@
-@import '../css/normalize.css';
-@import '../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css';
-@import '../../assets/SF-Pro-Display/index.css';
+@import "../css/normalize.css";
+@import "../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css";
+@import "../../assets/SF-Pro-Display/index.css";
 
 //TODO Add table of contents
 
 :root {
   //*Color theme
-  --dark-bg: #232323;
-  --common-bg: #6d6d6d;
+  --common-text: #003c58;
+
+  --dark-bg: #82d1ff;
+  --common-bg: #d5f2ff;
   --light-bg: #ffffff;
+  --btn-bg: var(--dark-bg);
+  --btn-text: var(--common-text);
+}
+
+#root,
+body {
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 //!Typography
 
 html {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-size: 16px;
   font-weight: 400;
 }
 
 .sitename {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 400;
   font-size: 1.5rem;
 }
 
 .h1 {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 700;
   font-size: 2rem;
 }
@@ -144,11 +154,29 @@ table {
 }
 
 .task-card {
-  height: 80px;
-  width: 200px;
+  height: 90px;
+  width: 210px;
   background-color: var(--light-bg);
   padding: 10px;
+  padding-left: 15px;
   margin: 5px;
+  .title {
+    font-weight: 700;
+    margin: 0;
+    background: var(--common-bg);
+    padding: 5px;
+  }
+  .content {
+    padding: 5px;
+    & > * {
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+.no-type-list {
+  list-style-type: none;
 }
 
 .calendar {
@@ -156,4 +184,46 @@ table {
   td {
     padding: 20px;
   }
+}
+
+.btn {
+  color: var(--btn-text);
+  background-color: var(--btn-bg);
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  padding: 5px;
+}
+
+.fullwidth {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fullheight {
+  &-auto {
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  &-hidden {
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: hidden;
+  }
+}
+
+.calendar {
+  & > .calendar-cell {
+    height: 50px;
+  }
+}
+
+.drag-highlight {
+  border: red dashed 2px;
+}
+
+.calendar-cell {
+  position: relative;
+  border: 2px solid black;
 }

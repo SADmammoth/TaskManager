@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { TaskCard } from "../../view/generic/TaskListView";
 import { ITag } from "./Tag";
 import SubscriptionController from "../../controllers/SubscriptionController";
+import CreateCustomSchema from "../mongooseBase";
 
 const Schema = mongoose.Schema;
 
@@ -9,7 +10,7 @@ export interface ITask extends ITag {
   content: string;
 }
 
-let TaskSchema = new Schema({ title: String, content: String });
+let TaskSchema = CreateCustomSchema({ title: String, content: String });
 
 let Task = mongoose.model<ITask>("Task", TaskSchema);
 export default Task;

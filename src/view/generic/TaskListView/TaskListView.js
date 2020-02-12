@@ -19,7 +19,7 @@ class TaskListView extends React.Component {
     );
   }
 
-  componentWillUnmount() {
+  componentDidUnmount() {
     Client.Unsubscribe(document.location.pathname);
   }
   requestTaskList = async () => {
@@ -38,14 +38,10 @@ class TaskListView extends React.Component {
   };
   render() {
     return (
-      <ul className={this.props.className || ""} style={this.props.style}>
-        <li>
-          <CreateTaskWidget
-            title="Hello"
-            updateTasks={this.requestTaskList}
-            listId={0}
-          />
-        </li>
+      <ul
+        className={"no-type-list " + this.props.className || ""}
+        style={this.props.style}
+      >
         {this.state.tasks.map(el => (
           <li>{this.createTask(el)}</li>
         ))}
