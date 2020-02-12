@@ -1,11 +1,19 @@
 import { Schema, Document, SchemaDefinition } from "mongoose";
 import SubscriptionController from "../controllers/SubscriptionController";
-export interface mongooseBase extends Document {
-  _id: Schema.Types.ObjectId;
-}
 
-export default function CreateCustomSchema(object: SchemaDefinition) {
+export interface mongooseBase extends Document {}
+
+interface CustomSchema extends Schema {}
+
+const CustomSchema = (function(
+  this: CustomSchema,
+  object: SchemaDefinition
+): Schema<any> {
   let schema = new Schema(object);
   schema.pre("save", () => SubscriptionController.update());
+  // schema.statics.checkType = function(object: object) {
+  //   console.log(this.model.base);
+  // };
   return schema;
-}
+} as any) as { new (object: SchemaDefinition): CustomSchema };
+export default CustomSchema;

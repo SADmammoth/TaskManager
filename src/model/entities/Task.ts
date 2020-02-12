@@ -8,9 +8,14 @@ const Schema = mongoose.Schema;
 
 export interface ITask extends ITag {
   content: string;
+  assignedTo: Date;
 }
 
-let TaskSchema = CreateCustomSchema({ title: String, content: String });
+let TaskSchema = CreateCustomSchema({
+  title: String,
+  content: String,
+  assignedTo: Date
+});
 
 let Task = mongoose.model<ITask>("Task", TaskSchema);
 export default Task;
