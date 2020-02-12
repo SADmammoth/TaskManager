@@ -36,6 +36,8 @@ class DragMap extends React.Component {
       array[(index.x + i - 1) * this.props.columns + index.y] = null;
     }
     this.setState({ body: array });
+
+    this.props.onDataUpdate(data);
   };
 }
 

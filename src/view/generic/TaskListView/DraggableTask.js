@@ -6,7 +6,12 @@ class DraggableTask extends TaskCard {
   render() {
     return (
       <DraggableElement
-        data={{ height: 2, title: this.props.title }}
+        data={{
+          taskId: this.props.taskId,
+          listId: this.props.listId,
+          height: 2,
+          title: this.props.title
+        }}
         datatype="application/json"
       >
         <DraggableElement

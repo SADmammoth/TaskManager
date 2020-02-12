@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DraggableArea, DragMap } from "../Draggable";
 import { runInThisContext } from "vm";
+import Client from "../../../helpers/Client.ts";
 
 class CalendarView extends React.Component {
   state = {
@@ -65,12 +66,23 @@ class CalendarView extends React.Component {
           rows={this.props.rows}
           columns={this.props.columns}
           rowspan_cb={this.rowspan_cb}
+          onDataUpdate={this.arrangeTask}
         >
           {RenderBody()}
         </DragMap>
       </div>
     );
   }
+  arrangeTask = data => {
+    let { index, height, listId, taskId } = data;
+    let startDate = this.props.startDate;
+    startDate.setDate(startDate.getDate() + index.x);
+    let arrangeDate = startDate;
+    arrangeDate.setHours(
+      arrangeDate.getHours() + index.y * this.props.timeStep
+    );
+    Client.changeTask({ arrangeTo: arrangeDate }, listId, taskId);
+  };
 
   rowspan_cb(element, count) {
     return React.cloneElement(element, {

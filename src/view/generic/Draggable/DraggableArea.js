@@ -24,12 +24,8 @@ class DraggableArea extends React.Component {
           let taskData = JSON.parse(e.dataTransfer.getData("application/json"));
           this.props.setData({
             index: this.props.index,
-            height: taskData.height,
-            title: taskData.title
+            ...taskData
           });
-          e.dataTransfer.clearData();
-          console.log(document.getElementById("dragging"));
-          document.getElementById("dragging").setAttribute("dropped", "true");
         }}
         className={this.props.className}
         style={this.props.style}

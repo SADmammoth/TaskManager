@@ -26,14 +26,14 @@ class TaskListView extends React.Component {
     let tasks = await Client.getTasks(this.props.listId);
     if (tasks.tasks) this.setState({ tasks: tasks.tasks });
   };
-  createTask = task => {
+  createTask = (task, taskId, listId) => {
     if (!task) {
       return task;
     }
     return this.props.draggable ? (
-      <DraggableTask title={task.title} content={task.content} />
+      <DraggableTask taskId={taskId} listId={listId} {...task} />
     ) : (
-      <Task title={task.title} content={task.content} />
+      <Task taskId={taskId} listId={listId} {...task} />
     );
   };
   render() {
@@ -42,8 +42,8 @@ class TaskListView extends React.Component {
         className={"no-type-list " + this.props.className || ""}
         style={this.props.style}
       >
-        {this.state.tasks.map(el => (
-          <li>{this.createTask(el)}</li>
+        {this.state.tasks.map((el, i) => (
+          <li>{this.createTask(el, i, this.props.listId)}</li>
         ))}
       </ul>
     );

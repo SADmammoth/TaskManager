@@ -11,7 +11,7 @@ const CustomSchema = (function(
 ): Schema<any> {
   let schema = new Schema(object);
   schema.pre("save", () => SubscriptionController.update());
-  // schema.statics.checkType = function(object: object) {
+  //schema.statics.checkType = function(object: object) {
   //   console.log(this.model.base);
   // };
   return schema;

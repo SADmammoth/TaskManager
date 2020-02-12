@@ -1,4 +1,6 @@
 import path from "path";
+import { ITask } from "../model/entities/Task";
+
 interface Subscribers {
   [key: string]: ((response?: object) => any) | undefined;
 }
@@ -9,13 +11,32 @@ export default class Client {
   private static subscribers: Subscribers = {};
   private static subLoop = 0;
 
-  static async addTask(
-    task: { title: string; content: string },
+  static async changeTask(
+    task: object,
     listId: number,
+    taskId: number,
     callback: (response: object) => any
   ) {
     let response = await fetch(
-      path.join(Client.apiPath, "/lists/", listId.toString()),
+      path.join(Client.apiPath, "lists", taskId.toString(), listId.toString()),
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task)
+      }
+    )
+      .then(Client.checkStatus)
+      .then(callback);
+  }
+
+  static async addTask(
+    task: object,
+    listId: number,
+    callback: (response: object) => any
+  ) {
+    console.log(task, JSON.stringify(task));
+    let response = await fetch(
+      path.join(Client.apiPath, "lists", listId.toString()),
       {
         method: "POST",
         headers: {
@@ -23,10 +44,9 @@ export default class Client {
         },
         body: JSON.stringify(task)
       }
-    ).then(Client.checkStatus);
-
-    let responseObject = Client.parseJSON(response);
-    if (callback) callback(responseObject);
+    )
+      .then(Client.checkStatus)
+      .then(callback);
   }
 
   static ForceUpdate(object?: object) {

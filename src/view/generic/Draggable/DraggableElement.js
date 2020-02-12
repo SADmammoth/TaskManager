@@ -39,7 +39,6 @@ class DraggableElement extends React.Component {
   };
 
   dragEnd = e => {
-    console.log(this.dragging.getAttribute("dropped"));
     if (
       this.dragging &&
       document.getElementById("dragging").getAttribute("dropped")

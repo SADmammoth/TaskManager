@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Folder from "../model/collections/Folder";
 import TaskList from "../model/collections/TaskList";
 import UserController from "./UserController";
-import Task from "../model/entities/Task";
+import Task, { ITask } from "../model/entities/Task";
 
 let root = null;
 exports.userCheck = function() {
@@ -35,16 +35,37 @@ exports.createList = async function(req, res) {
   root.addChildren(list);
 };
 
+function retrieveFields(object, keys) {
+  let result = {};
+  keys.forEach(el => (result[el] = object[el]));
+  return result;
+}
+
 exports.addTask = async function(req, res) {
   try {
     let id = parseInt(req.params.taskListID);
-    let task = await Task.create({
-      title: req.body.title,
-      content: req.body.content
-    });
-
+    console.log(req.body);
+    let task = await Task.create(
+      retrieveFields(req.body, ["title", "content", "arrangeTo"])
+    );
+    console.log(task);
     (await TaskList.findOne({ _id: root.children[id] }).exec()).addTask(task); //TODO Refactor
     res.json(task);
+  } catch (err) {
+    res.status(404);
+    res.send(err.message);
+  }
+};
+
+exports.editTask = async function(req, res) {
+  try {
+    let listID = parseInt(req.params.taskListID);
+    let taskID = parseInt(req.params.taskID);
+    let list = await TaskList.findOne({ _id: root.children[listID] }).exec();
+    let task = await Task.updateOne(
+      { _id: list.tasks[taskID] },
+      res.body
+    ).exec();
   } catch (err) {
     res.status(404);
     res.send(err.message);

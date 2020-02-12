@@ -11,4 +11,5 @@ router.get("/lists/:taskListID", DataController.getList);
 router.get("/subscribe", SubscriptionController.subscribe);
 router.get("/dataUpdated", SubscriptionController.update);
 router.post("/users", UserController.registerNew);
+router.put("/lists/:taskListID/:taskID", DataController.editTask);
 export default router;
