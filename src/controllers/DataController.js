@@ -92,3 +92,9 @@ exports.getList = async function(req, res) {
     res.send(err.message);
   }
 };
+
+exports.getAllTasks = async function(req, res) {
+  res.json({
+    tasks: (await Task.find({}).exec()).filter(el => !!el)
+  });
+};

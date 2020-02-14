@@ -109,6 +109,19 @@ export default class Client {
     });
   }
 
+  static async getAllTasks(callback: (object: object) => any) {
+    let response = await fetch(path.join(Client.apiPath, "/lists/all")).then(
+      Client.checkStatus
+    );
+
+    let responseObject = Client.parseJSON(response);
+    if (callback) callback(responseObject);
+
+    return new Promise((resolve, reject) => {
+      resolve(responseObject);
+    });
+  }
+
   static async registerUser(login: string, password: string) {
     await fetch(path.join(Client.apiPath, "/users"), {
       method: "POST",
