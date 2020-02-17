@@ -7,6 +7,8 @@
 :root {
   //*Color theme
   --common-text: #003c58;
+  --saturated-text: #4a575e;
+  --highlighted-text: #005c86;
 
   --dark-bg: #82d1ff;
   --common-bg: #d5f2ff;
@@ -192,7 +194,7 @@ table {
   border-radius: 20px;
   border: none;
   outline: none;
-  padding: 5px;
+  padding: 10px 20px;
 }
 
 .fullwidth {
@@ -226,4 +228,48 @@ table {
 .calendar-cell {
   position: relative;
   border: 2px solid black;
+}
+
+.form {
+  .form-input-group {
+    display: block;
+    & > * {
+      display: block;
+    }
+    margin: 10px 0;
+  }
+  .form-label {
+    font-size: 1.2rem;
+    color: var(--common-text);
+  }
+  .form-input,
+  .form-textarea {
+    border: 2px solid var(--saturated-text);
+    color: var(--common-text);
+    background-color: var(--light-bg);
+    outline: none;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    &:focus {
+      border: 2px solid var(--highlighted-text);
+    }
+    &::placeholder {
+      color: var(--saturated-text);
+    }
+
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-textarea {
+    resize: none;
+
+    padding: 5px;
+    height: calc(7.2rem + 10px);
+  }
+
+  .form-input {
+    height: calc(1.2rem + 10px);
+    padding: 5px;
+  }
 }
