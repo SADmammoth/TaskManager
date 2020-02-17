@@ -19,9 +19,9 @@ export default class TaskAssignmentPage extends React.Component {
         </Helmet>
         <h1 className="h1">Home</h1>
         <CalendarView
-          rows={10}
-          columns={10}
-          startDate={new Date()}
+          rows={9}
+          columns={9}
+          startDate={new Date(2020, 1, 12, 12, 0, 0, 0)}
           timeStep={1}
           style={{ width: "70%", float: "left", height: "70vh" }}
         ></CalendarView>
