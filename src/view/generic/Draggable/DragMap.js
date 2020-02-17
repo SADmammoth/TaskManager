@@ -8,13 +8,19 @@ class DragMap extends React.Component {
   };
   componentDidMount() {
     this.setState({
-      body: React.Children.map(this.props.children, child =>
-        React.cloneElement(child, { setData: this.setData })
-      )
+      body: this.props.children
     });
   }
   render() {
-    return <>{this.state.body}</>;
+    return (
+      <>
+        {React.Children.map(this.state.body, child =>
+          child.type === DraggableArea
+            ? React.cloneElement(child, { setData: this.setData })
+            : child
+        )}
+      </>
+    );
   }
 
   setData = data => {

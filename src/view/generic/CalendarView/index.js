@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import shortid from "shortid";
 import { DraggableArea, DragMap } from "../Draggable";
 import { runInThisContext } from "vm";
 import Client from "../../../helpers/Client.ts";
@@ -7,7 +8,8 @@ import Client from "../../../helpers/Client.ts";
 class CalendarView extends React.Component {
   state = {
     startDate: new Date(),
-    tasks: {}
+    tasks: {},
+    loadEnded: false
   };
 
   async componentDidMount() {
@@ -20,7 +22,8 @@ class CalendarView extends React.Component {
     });
     this.setState({
       startDate: new Date(this.props.startDate),
-      tasks: tasks
+      tasks: tasks,
+      loadEnded: true
     });
   }
 
@@ -30,7 +33,11 @@ class CalendarView extends React.Component {
       let startDate = new Date(this.state.startDate);
       array.push(<div></div>);
       for (let i = 1; i < this.props.columns + 1; i++) {
-        array.push(<div>{startDate.toLocaleDateString("ru-RU")}</div>);
+        array.push(
+          <div key={shortid.generate()}>
+            {startDate.toLocaleDateString("ru-RU")}
+          </div>
+        );
 
         console.log(startDate);
         startDate.setDate(startDate.getDate() + 1);
@@ -46,7 +53,7 @@ class CalendarView extends React.Component {
         row = [];
         firstCell = (() => {
           return (
-            <div>
+            <div key={shortid.generate()}>
               {this.props.startDate.getHours() + this.props.timeStep * r - 1}
             </div>
           );
@@ -67,13 +74,23 @@ class CalendarView extends React.Component {
           console.log(arrangeDate.valueOf());
           let task = this.state.tasks[arrangeDate.valueOf()];
 
-          console.log(!!task);
-          if (!!task) {
-            row.push(<div class="calendar-cell">{task.title}</div>);
+          console.log(task);
+          if (task) {
+            alert(0);
+            row.push(
+              <div key={shortid.generate()} index={{ x: r, y: c }}>
+                {task.title}
+              </div>
+            );
+            console.log(row);
             continue;
           }
           row.push(
-            <DraggableArea className="calendar-cell" index={{ x: r, y: c }} />
+            <DraggableArea
+              className="calendar-cell"
+              key={shortid.generate()}
+              index={{ x: r, y: c }}
+            />
           );
         }
         array.push(row);
@@ -91,15 +108,19 @@ class CalendarView extends React.Component {
           gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`
         })}
       >
-        {RenderHeader()}
-        <DragMap
-          rows={this.props.rows}
-          columns={this.props.columns}
-          rowspan_cb={this.rowspan_cb}
-          onDataUpdate={this.arrangeTask}
-        >
-          {RenderBody()}
-        </DragMap>
+        {!this.state.loadEnded || (
+          <>
+            {RenderHeader()}
+            <DragMap
+              rows={this.props.rows}
+              columns={this.props.columns}
+              rowspan_cb={this.rowspan_cb}
+              onDataUpdate={this.arrangeTask}
+            >
+              {RenderBody()}
+            </DragMap>
+          </>
+        )}
       </div>
     );
   }
