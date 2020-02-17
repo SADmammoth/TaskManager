@@ -8,19 +8,21 @@ import CreateTaskWidget from "./CreateTaskWidget";
 class TaskListView extends React.Component {
   state = {
     tasks: [],
-    interval: null
+    interval: null,
+    location: ""
   };
 
   componentDidMount() {
     this.requestTaskList();
+    this.setState({ location: document.location.pathname });
     Client.SubscribeOnDataUpdate(
       document.location.pathname,
       this.requestTaskList
     );
   }
 
-  componentDidUnmount() {
-    Client.Unsubscribe(document.location.pathname);
+  componentWillUnmount() {
+    Client.Unsubscribe(this.state.location);
   }
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);

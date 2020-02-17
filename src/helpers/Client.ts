@@ -10,6 +10,8 @@ export default class Client {
   private static subscribed = false;
   private static subscribers: Subscribers = {};
   private static subLoop = 0;
+  private static abortController = new AbortController();
+  private static signal = Client.abortController.signal;
 
   static async changeTask(
     task: object,
@@ -67,10 +69,9 @@ export default class Client {
     Client.subLoop = 0;
     Client.subscribed = true;
     while (Client.subscribed) {
-      console.log("Subscribed");
-      let response = await Client.RequestSubscription();
-      console.log("Subscription response");
-      Client.Notify(Client.parseJSON(response));
+      let response = await Client.RequestSubscription(res =>
+        Client.Notify(Client.parseJSON(res))
+      );
       if (Client.subLoop > 5) {
         throw new Error("Subscription loop is overloaded");
       }
@@ -82,17 +83,26 @@ export default class Client {
     Client.subscribers[path] = undefined;
     if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
+      Client.abortController.abort();
+      Client.abortController = new AbortController();
+      Client.signal = Client.abortController.signal;
     }
+    console.log(Client.subscribers);
   }
 
-  private static async RequestSubscription() {
+  private static async RequestSubscription(onSuccess: (res: Response) => any) {
     if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
       return;
     }
     Client.subscribed = true;
-    return fetch(path.join(Client.apiPath, "/subscribe"))
+
+    console.log("Subscribed");
+    return fetch(path.join(Client.apiPath, "/subscribe"), {
+      signal: Client.signal
+    })
       .then(res => ((Client.subLoop = 0), Client.checkStatus(res)))
+      .then(onSuccess)
       .catch(e => (Client.subLoop++, console.log(e)));
   }
 
