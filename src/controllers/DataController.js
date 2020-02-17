@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import Folder from "../model/collections/Folder";
-import TaskList from "../model/collections/TaskList";
+import Folder from "../model/collections/Folder.ts";
+import TaskList from "../model/collections/TaskList.ts";
 import UserController from "./UserController";
-import Task, { ITask } from "../model/entities/Task";
+import Task, { ITask } from "../model/entities/Task.ts";
 
 let root = null;
 exports.userCheck = function() {
@@ -11,7 +11,10 @@ exports.userCheck = function() {
   // }
 };
 exports.init = async function(req, res) {
-  UserController._register();
+  if (!UserController._isLoggedIn()) {
+    UserController._register("root", "user");
+    console.log("User logged in");
+  }
   root = await Folder.findOne({ title: "$root" }).exec();
   if (root === {}) {
     root = await Folder.create({ title: "$root" });

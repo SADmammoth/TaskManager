@@ -22,7 +22,7 @@ exports.isLoggedIn = (req, res) => {
   res.json({ result: _isLoggedIn() });
 };
 
-exports._getToken = () => user["_id"];
+exports._getToken = () => user || user["_id"];
 exports.getToken = (req, res) => {
   res.json({ result: user["_id"] });
 };
