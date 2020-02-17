@@ -63,6 +63,7 @@ class DraggableElement extends React.Component {
   };
 
   render() {
+    let Avatar = this.props.avatar;
     return (
       <div
         className="draggable"
@@ -70,11 +71,12 @@ class DraggableElement extends React.Component {
         onDragStart={e => {
           this.oldId = e.currentTarget.id;
           e.currentTarget.id = "dragging" + this.oldId;
-          console.log(e.currentTarget);
-          e.dataTransfer.setDragImage(document.createElement("div"), 0, 0);
+          e.dataTransfer.setDragImage(<Avatar {...this.props.data} />, 0, 0);
           e.dataTransfer.setData(
             this.props.datatype,
-            JSON.stringify(this.props.data)
+            JSON.stringify(
+              Object.assign(this.props.data, { avatar: <Avatar /> })
+            )
           );
         }}
         onMouseDown={e => {

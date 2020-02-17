@@ -3,7 +3,6 @@ import propTypes from "prop-types";
 import { Redirect } from "react-router-dom";
 import DraggableTask from "./DraggableTask";
 import Client from "../../../helpers/Client.ts";
-import CreateTaskWidget from "./CreateTaskWidget";
 
 class TaskListView extends React.Component {
   state = {
@@ -24,10 +23,12 @@ class TaskListView extends React.Component {
   componentWillUnmount() {
     Client.Unsubscribe(this.state.location);
   }
+
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);
     if (tasks.tasks) this.setState({ tasks: tasks.tasks });
   };
+
   createTask = (task, taskId, listId) => {
     if (!task) {
       return task;
@@ -38,6 +39,7 @@ class TaskListView extends React.Component {
       <Task taskId={taskId} listId={listId} {...task} />
     );
   };
+
   render() {
     return (
       <ul
@@ -56,8 +58,6 @@ class TaskListView extends React.Component {
 
 TaskListView.propTypes = {
   listId: propTypes.number
-  // tasks: propTypes.arrayOf(propTypes.shape({ name: propTypes.string, content: propTypes.string }))
-  //   .isRequired
 };
 
 export default TaskListView;

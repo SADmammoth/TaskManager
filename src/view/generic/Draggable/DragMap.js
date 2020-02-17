@@ -1,6 +1,7 @@
 import React from "react";
 import TaskCard from "../TaskListView/TaskCard";
 import DraggableArea from "./DraggableArea";
+import TaskAvatar from "../TaskListView/TaskAvatar";
 
 class DragMap extends React.Component {
   state = {
@@ -20,7 +21,7 @@ class DragMap extends React.Component {
   }
 
   setData = data => {
-    let { height, index, title } = data;
+    let { height, index, title, Avatar = avatar } = data;
     let array = [...this.state.body];
     let curr;
     for (let i = 0; i < height; i++) {
@@ -33,7 +34,15 @@ class DragMap extends React.Component {
       if (i === 1) {
         array[
           (index.x - 1) * this.props.columns + index.y
-        ] = this.props.rowspan_cb(<div index={index}>{title}</div>, height);
+        ] = this.props.rowspan_cb(
+          React.cloneElement(Avatar, {
+            key: shortid.generate(),
+            index: index,
+            duration: height,
+            title: title
+          }),
+          height
+        );
       }
       array[(index.x + i - 1) * this.props.columns + index.y] = null;
     }

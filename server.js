@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
-import apiRouter from "./src/routers/apiRouter";
-import pagesRouter from "./src/routers/pagesRouter";
+import apiRouter from "./src/router/apiRouter";
+import pagesRouter from "./src/router/pagesRouter";
 import DataController from "./src/controllers/DataController";
 
 const port = process.env.PORT || 8080;

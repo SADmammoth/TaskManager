@@ -2,6 +2,7 @@ import React from "react";
 import { DraggableElement } from "../Draggable";
 import TaskCard from "./TaskCard";
 import Task from "./TaskCard";
+import TaskAvatar from "./TaskAvatar";
 
 class DraggableTask extends React.Component {
   render() {
@@ -15,6 +16,7 @@ class DraggableTask extends React.Component {
           title: this.props.title
         }}
         datatype="application/json"
+        avatar={TaskAvatar}
       >
         <TaskCard {...this.props}></TaskCard>
       </DraggableElement>

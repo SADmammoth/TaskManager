@@ -177,6 +177,20 @@ table {
   }
 }
 
+.task-avatar {
+  height: calc(50px * var(--height));
+  background-color: var(--light-bg);
+  padding: 10px;
+  padding-left: 15px;
+  .title {
+    font-weight: 700;
+    margin: 0;
+    background: var(--common-bg);
+    padding: 5px;
+  }
+  box-sizing: border-box;
+}
+
 .no-type-list {
   list-style-type: none;
 }

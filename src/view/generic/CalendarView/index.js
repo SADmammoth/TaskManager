@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import shortid from "shortid";
 import { DraggableArea, DragMap } from "../Draggable";
-import { runInThisContext } from "vm";
 import Client from "../../../helpers/Client.ts";
+import TaskAvatar from "../TaskListView/TaskAvatar";
 
 class CalendarView extends React.Component {
   state = {
@@ -37,7 +37,6 @@ class CalendarView extends React.Component {
           </div>
         );
 
-        console.log(startDate);
         startDate.setDate(startDate.getDate() + 1);
       }
       return array;
@@ -78,9 +77,11 @@ class CalendarView extends React.Component {
             }
             row.push(
               this.rowspan_cb(
-                <div key={shortid.generate()} index={{ x: r, y: c }}>
-                  {task.title}
-                </div>,
+                <TaskAvatar
+                  key={shortid.generate()}
+                  index={{ x: r, y: c }}
+                  {...task}
+                />,
                 task.duration
               )
             );
