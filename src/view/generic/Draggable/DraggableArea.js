@@ -21,11 +21,14 @@ class DraggableArea extends React.Component {
           e.preventDefault();
         }}
         onDrop={e => {
-          let taskData = JSON.parse(e.dataTransfer.getData("application/json"));
+          let data = JSON.parse(e.dataTransfer.getData("application/json"));
           this.props.setData({
             index: this.props.index,
-            ...taskData
+            ...data
           });
+
+          e.target.id = e.target.id + " dragging";
+          e.target.setAttribute("dropped", true);
         }}
         className={this.props.className}
         style={this.props.style}

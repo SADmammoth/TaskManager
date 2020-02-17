@@ -16,7 +16,11 @@ class Form extends React.Component {
     let obj = {};
     this.props.inputs.forEach(
       el =>
-        (obj[el.name + shortid.generate()] = { type: el.type, name: el.name })
+        (obj[el.name + shortid.generate()] = {
+          type: el.type,
+          name: el.name,
+          value: el.attributes ? el.attributes.value : undefined
+        })
     );
     this.setState({ values: obj });
   }
@@ -34,26 +38,52 @@ class Form extends React.Component {
     description,
     callback,
     required = false,
-    label = false
+    label = false,
+    attributes = [],
+    value = undefined
   ) => {
     let result = [];
 
     if (type === "textarea") {
       result.push(
-        <textarea id={id} name={name} onChange={callback}>
-          description
-        </textarea>
+        <div class="form-input-group">
+          {!label || (
+            <label className="form-label" for={id}>
+              {label}
+            </label>
+          )}
+          <textarea
+            id={id}
+            name={name}
+            className="form-textarea"
+            onChange={callback}
+            placeholder={description}
+            required={required ? "required" : null}
+            {...attributes}
+            value={value}
+          ></textarea>
+        </div>
       );
     } else {
       result.push(
-        <input
-          id={id}
-          type={type}
-          name={name}
-          placeholder={description}
-          required={required ? "required" : null}
-          onChange={callback}
-        />
+        <div class="form-input-group">
+          {!label || (
+            <label className="form-label" for={id}>
+              {label}
+            </label>
+          )}
+          <input
+            id={id}
+            type={type}
+            name={name}
+            className="form-input"
+            placeholder={description}
+            required={required ? "required" : null}
+            onChange={callback}
+            {...attributes}
+            value={value}
+          />
+        </div>
       );
     }
     return result;
@@ -68,7 +98,7 @@ class Form extends React.Component {
       return null;
     }
     return this.props.inputs.map((el, i) => {
-      let { type, name, description, required, label } = el;
+      let { type, name, description, required, label, attributes } = el;
       return Form.createInput(
         Object.keys(this.state.values)[i],
         type,
@@ -76,7 +106,9 @@ class Form extends React.Component {
         description,
         this.updateValue,
         required,
-        label
+        label,
+        attributes,
+        this.state.values[Object.keys(this.state.values)[i]].value
       );
     });
   }
@@ -92,15 +124,20 @@ class Form extends React.Component {
   render() {
     return (
       <>
-        <form method={this.props.method} action={this.props.action}>
+        <form
+          method={this.props.method}
+          action={this.props.action}
+          className={"form " + this.props.className || ""}
+          style={Object.assign({}, this.props.style)}
+        >
           {this.createInputs()}
-          <button
-            type="submit"
-            onClick={event => {
+          {React.cloneElement(this.props.submitButton, {
+            type: "submit",
+            action: event => {
               event.preventDefault();
               this.props.onSubmit(this.formatValues());
-            }}
-          ></button>
+            }
+          })}
         </form>
       </>
     );

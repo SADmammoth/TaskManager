@@ -13,10 +13,8 @@ class CalendarView extends React.Component {
   };
 
   async componentDidMount() {
-    console.log(this.props.startDate);
     let tasks = {};
     (await Client.getAllTasks()).tasks.forEach(el => {
-      console.log(el);
       if (el.assignedTo)
         tasks[new Date(el.assignedTo).valueOf().toString()] = el;
     });
@@ -49,6 +47,7 @@ class CalendarView extends React.Component {
       let firstCell;
       let array = [];
       let row;
+      let skip = [];
       for (let r = 1; r < this.props.rows + 1; r++) {
         row = [];
         firstCell = (() => {
@@ -60,29 +59,31 @@ class CalendarView extends React.Component {
         })();
         row.push(firstCell);
         for (let c = 1; c < this.props.columns + 1; c++) {
+          let index = skip.indexOf(r.toString() + c.toString());
+          if (index >= 0) {
+            skip.splice(index, 1);
+            continue;
+          }
           let startDate = new Date(this.state.startDate);
-          console.log(r);
           startDate.setDate(startDate.getDate() + c - 1);
           let arrangeDate = startDate;
           arrangeDate.setHours(
             arrangeDate.getHours() + (r - 1) * this.props.timeStep
           );
-          console.log(
-            Object.keys(this.state.tasks).map(el => new Date(parseInt(el))),
-            arrangeDate
-          );
-          console.log(arrangeDate.valueOf());
           let task = this.state.tasks[arrangeDate.valueOf()];
 
-          console.log(task);
           if (task) {
-            alert(0);
+            for (let i = r + 1; i < task.duration + r; i++) {
+              skip.push(i.toString() + c.toString());
+            }
             row.push(
-              <div key={shortid.generate()} index={{ x: r, y: c }}>
-                {task.title}
-              </div>
+              this.rowspan_cb(
+                <div key={shortid.generate()} index={{ x: r, y: c }}>
+                  {task.title}
+                </div>,
+                task.duration
+              )
             );
-            console.log(row);
             continue;
           }
           row.push(
@@ -127,11 +128,10 @@ class CalendarView extends React.Component {
   arrangeTask = data => {
     let { index, height, listId, taskId } = data;
     let startDate = new Date(this.state.startDate);
-    startDate.setDate(startDate.getDate() + index.x);
+    startDate.setDate(startDate.getDate() + (index.y - 1));
     let arrangeDate = startDate;
-    console.log(index);
     arrangeDate.setHours(
-      arrangeDate.getHours() + index.y * this.props.timeStep
+      arrangeDate.getHours() + (index.x - 1) * this.props.timeStep
     );
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };

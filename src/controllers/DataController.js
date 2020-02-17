@@ -48,9 +48,9 @@ exports.addTask = async function(req, res) {
   try {
     let id = parseInt(req.params.taskListID);
     let task = await Task.create(
-      retrieveFields(req.body, ["title", "content", "assignedTo"])
+      retrieveFields(req.body, ["title", "content", "assignedTo", "duration"])
     );
-    console.log(task);
+
     (await TaskList.findOne({ _id: root.children[id] }).exec()).addTask(task); //TODO Refactor
     res.json(task);
   } catch (err) {
@@ -63,14 +63,12 @@ exports.editTask = async function(req, res) {
   try {
     let listID = parseInt(req.params.taskListID);
     let taskID = parseInt(req.params.taskID);
-
-    console.log(retrieveFields(req.body, ["title", "content", "assignedTo"]));
     let list = await TaskList.findOne({ _id: root.children[listID] }).exec();
     let task = await Task.updateOne(
       { _id: list.tasks[taskID] },
-      retrieveFields(req.body, ["title", "content", "assignedTo"])
+      retrieveFields(req.body, ["title", "content", "assignedTo", "duration"])
     ).exec();
-    res.send();
+    res.json(task);
   } catch (err) {
     res.status(404);
     res.send(err.message);

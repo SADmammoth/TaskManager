@@ -5,12 +5,13 @@ import Task from "./TaskCard";
 
 class DraggableTask extends React.Component {
   render() {
+    console.log(this.props);
     return (
       <DraggableElement
         data={{
           taskId: this.props.taskId,
           listId: this.props.listId,
-          height: 2,
+          height: this.props.duration,
           title: this.props.title
         }}
         datatype="application/json"

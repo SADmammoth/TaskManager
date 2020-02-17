@@ -11,6 +11,7 @@ class Button extends React.Component {
         onClick={this.props.action}
         title={this.props.title}
         style={this.props.style}
+        type={this.props.type}
       >
         {(() => {
           let array = [];
