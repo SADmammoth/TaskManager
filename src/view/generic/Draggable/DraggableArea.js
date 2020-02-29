@@ -5,18 +5,12 @@ class DraggableArea extends React.Component {
   state = {
     swap: false
   };
+
   render() {
     return this.state.swap ? (
       <div>text</div>
     ) : (
       <div
-        // style={{
-        //   position: "absolute",
-        //   width: "100%",
-        //   height: "100%",
-        //   left: 0,
-        //   top: 0
-        // }}
         onDragOver={e => {
           e.preventDefault();
         }}
@@ -24,7 +18,7 @@ class DraggableArea extends React.Component {
           let data = JSON.parse(e.dataTransfer.getData("application/json"));
           this.props.setData({
             index: this.props.index,
-            ...data
+            ...data   
           });
 
           e.target.id = e.target.id + " dragging";

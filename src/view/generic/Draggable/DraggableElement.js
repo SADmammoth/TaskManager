@@ -1,6 +1,7 @@
 import React from "react";
 import propTypes from "prop-types";
 import ReactDOM from "react-dom";
+import shortid from "shortid";
 
 class DraggableElement extends React.Component {
   lastPos = { x: null, y: null };
@@ -12,6 +13,7 @@ class DraggableElement extends React.Component {
       return parseInt(str.match(/[0-9]*/)[0]);
     }
     if (this.dragging) {
+      console.log("drag");
       this.dragging.style.left =
         getnums(this.dragging.style.left) + e.clientX - this.lastPos.x + "px";
       this.lastPos.x = e.clientX;
@@ -22,6 +24,7 @@ class DraggableElement extends React.Component {
   };
 
   dragAbort = e => {
+    console.log("abort");
     document.getElementById("dragging").id = this.oldId;
     this.dragging.style.pointerEvents = "auto";
     this.dragging.style.position = "static";
@@ -30,15 +33,17 @@ class DraggableElement extends React.Component {
     this.dragging = null;
     this.lastPos.y = null;
     this.lastPos.x = null;
-    document
-      .getElementById("root")
-      .removeEventListener("drag", this.dragProcess);
-    document
-      .getElementById("root")
-      .removeEventListener("dragend", this.dragEnd);
+    // document
+    //   .getElementById("root")
+    //   .removeEventListener("drag", this.dragProcess);
+    // document
+    //   .getElementById("root")
+    //   .removeEventListener("dragend", this.dragEnd);
+    // e.currentTarget.removeEventListener("mousedown", this.mouseDown);
   };
 
   dragEnd = e => {
+    console.log("dragend");
     if (
       this.dragging &&
       document.getElementById("dragging").getAttribute("dropped")
@@ -46,59 +51,60 @@ class DraggableElement extends React.Component {
       document.getElementById("dragging").removeAttribute("dropped");
 
       document.getElementById("dragging").id = this.oldId;
-      this.dragging.style.pointerEvents = "auto";
-      this.dragging.style.display = "none";
-      this.dragging = null;
-      this.lastPos.y = null;
-      this.lastPos.x = null;
-      document
-        .getElementById("root")
-        .removeEventListener("drag", this.dragProcess);
-      document
-        .getElementById("root")
-        .removeEventListener("dragend", this.dragEnd);
+      this.dragging.hidden = false;
+      // document
+      //   .getElementById("root")
+      //   .removeEventListener("drag", this.dragProcess);
+      // document
+      //   .getElementById("root")
+      //   .removeEventListener("dragend", this.dragEnd);
+      // e.currentTarget.removeEventListener("mousedown", this.mouseDown);
     } else {
       this.dragAbort(e);
     }
   };
+
+  mouseDown = e => {
+    this.dragging.style.position = "absolute";
+    this.lastPos.x = e.pageX;
+    this.dragging.style.left = this.lastPos.x + "px";
+    this.lastPos.y = e.pageY;
+    this.dragging.style.top = this.lastPos.y + "px";
+    document.getElementById("root").addEventListener("mouseup", this.dragAbort);
+    document.getElementById("root").addEventListener("dragend", this.dragEnd);
+    document
+      .getElementById("root")
+      .addEventListener("mousemove", this.dragProcess);
+  };
+
+  convertToHtml(component) {
+    let div = document.createElement("div");
+    ReactDOM.render(component, div);
+    return div.children[0];
+  }
 
   render() {
     let Avatar = this.props.avatar;
     return (
       <div
         className="draggable"
-        draggable="true"
-        onDragStart={e => {
+        draggable="false"
+        onMouseDown={e => {
+          console.log("dragstart");
           this.oldId = e.currentTarget.id;
           e.currentTarget.id = "dragging" + this.oldId;
-          e.dataTransfer.setDragImage(<Avatar {...this.props.data} />, 0, 0);
-          e.dataTransfer.setData(
-            this.props.datatype,
-            JSON.stringify(
-              Object.assign(this.props.data, { avatar: <Avatar /> })
-            )
-          );
-        }}
-        onMouseDown={e => {
           this.dragging = e.currentTarget;
-          e.currentTarget.style.position = "absolute";
-          this.lastPos.x =
-            e.clientX + e.currentTarget.getBoundingClientRect().width / 2;
-          e.currentTarget.style.left = e.clientX + "px";
-          this.lastPos.y =
-            e.clientY + e.currentTarget.getBoundingClientRect().height / 2;
-          e.currentTarget.style.top = e.clientY + "px";
-          document
-            .getElementById("root")
-            .addEventListener("mouseup", this.mouseUp);
-          document
-            .getElementById("root")
-            .addEventListener("dragend", this.dragEnd);
-          document
-            .getElementById("root")
-            .addEventListener("drag", this.dragProcess);
-          e.currentTarget.style.pointerEvents = "none";
+          this.dragging.style.position = "absolute";
+          this.lastPos.x = e.pageX;
+          this.dragging.style.left =
+            this.dragging.getBoundingClientRect().left + "px";
+          this.lastPos.y = e.pageY;
+          this.dragging.style.top =
+            this.dragging.getBoundingClientRect().top + "px";
+          e.preventDefault();
         }}
+        onMouseMove={this.dragProcess}
+        onMouseUp={this.dragEnd}
       >
         {this.props.children}
       </div>

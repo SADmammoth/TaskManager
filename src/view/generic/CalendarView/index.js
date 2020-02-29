@@ -75,13 +75,15 @@ class CalendarView extends React.Component {
             for (let i = r + 1; i < task.duration + r; i++) {
               skip.push(i.toString() + c.toString());
             }
+            let { title, duration } = task;
             row.push(
-              this.rowspan_cb(
-                <TaskAvatar
-                  key={shortid.generate()}
-                  index={{ x: r, y: c }}
-                  {...task}
-                />,
+              this.createAvatar(
+                {
+                  key: shortid.generate(),
+                  index: { x: r, y: c },
+                  title: title,
+                  height: duration
+                },
                 task.duration
               )
             );
@@ -116,7 +118,7 @@ class CalendarView extends React.Component {
             <DragMap
               rows={this.props.rows}
               columns={this.props.columns}
-              rowspan_cb={this.rowspan_cb}
+              createAvatar={this.createAvatar}
               onDataUpdate={this.arrangeTask}
             >
               {RenderBody()}
@@ -134,16 +136,20 @@ class CalendarView extends React.Component {
     arrangeDate.setHours(
       arrangeDate.getHours() + (index.x - 1) * this.props.timeStep
     );
+    console.log(arrangeDate);
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
 
-  rowspan_cb(element, count) {
-    return React.cloneElement(element, {
-      style: Object.assign(element.props.style || {}, {
-        gridColumn: element.props.index.y + 1,
-        gridRow: element.props.index.x + 1 + "/span " + count
-      })
-    });
+  createAvatar(attributes, count) {
+    return (
+      <TaskAvatar
+        {...attributes}
+        style={Object.assign(attributes.style || {}, {
+          gridColumn: attributes.index.y + 1,
+          gridRow: attributes.index.x + 1 + "/span " + count
+        })}
+      />
+    );
   }
 }
 

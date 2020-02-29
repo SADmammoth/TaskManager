@@ -6,7 +6,7 @@ class TaskAvatar extends React.Component {
       <div
         className={"task-avatar " + (this.props.className || "")}
         style={Object.assign(
-          { "--height": this.props.duration },
+          { "--height": this.props.height },
           this.props.style
         )}
       >

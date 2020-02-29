@@ -1,7 +1,6 @@
 import React from "react";
 import TaskCard from "../TaskListView/TaskCard";
 import DraggableArea from "./DraggableArea";
-import TaskAvatar from "../TaskListView/TaskAvatar";
 
 class DragMap extends React.Component {
   state = {
@@ -21,31 +20,35 @@ class DragMap extends React.Component {
   }
 
   setData = data => {
-    let { height, index, title, Avatar = avatar } = data;
+    console.log(data);
+    let { height, index, title } = data;
     let array = [...this.state.body];
-    let curr;
-    for (let i = 0; i < height; i++) {
-      curr = array[(index.x + i - 1) * this.props.columns + index.y];
+    // let curr;
+    // for (let i = 0; i < height; i++) {
+    //   curr = array[(index.x + i - 1) * this.props.columns + index.y];
+    //   if (!(curr.type === DraggableArea)) {
+    //     return;
+    //   }
+    // }
+    let curr = null;
+    for (let i = index.x; i < index.x + height; i++) {
+      curr = array[(i - 1) * this.props.columns + index.y - 1];
       if (!(curr.type === DraggableArea)) {
         return;
       }
+      array[(i - 1) * this.props.columns + index.y - 1] = null;
     }
-    for (let i = 0; i < height; i++) {
-      if (i === 1) {
-        array[
-          (index.x - 1) * this.props.columns + index.y
-        ] = this.props.rowspan_cb(
-          React.cloneElement(Avatar, {
-            key: shortid.generate(),
-            index: index,
-            duration: height,
-            title: title
-          }),
-          height
-        );
-      }
-      array[(index.x + i - 1) * this.props.columns + index.y] = null;
-    }
+
+    array[
+      (index.x - 1) * this.props.columns + index.y - 1
+    ] = this.props.createAvatar(
+      {
+        index: index,
+        title: title,
+        height: height
+      },
+      height
+    );
     this.setState({ body: array });
 
     this.props.onDataUpdate(data);

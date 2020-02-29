@@ -64,8 +64,11 @@ exports.editTask = async function(req, res) {
     let listID = parseInt(req.params.taskListID);
     let taskID = parseInt(req.params.taskID);
     let list = await TaskList.findOne({ _id: root.children[listID] }).exec();
+    console.log(
+      retrieveFields(req.body, ["title", "content", "assignedTo", "duration"])
+    );
     let task = await Task.updateOne(
-      { _id: list.tasks[taskID] },
+      { _id: list.tasks[taskID] },  
       retrieveFields(req.body, ["title", "content", "assignedTo", "duration"])
     ).exec();
     res.json(task);

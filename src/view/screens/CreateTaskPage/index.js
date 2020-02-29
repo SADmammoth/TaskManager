@@ -18,8 +18,7 @@ export default class CreateTaskPage extends React.Component {
         </Helmet>
         <h1 className="h1">Create task</h1>
         <Form
-          onSubmit={data => {
-            console.log(data), Client.addTask(data, 0);
+          onSubmit={data => {Client.addTask(data, 0);
           }}
           inputs={[
             {
