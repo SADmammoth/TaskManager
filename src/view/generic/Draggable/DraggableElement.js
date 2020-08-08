@@ -17,10 +17,6 @@ class DraggableElement extends React.Component {
     };
 
     this.dragged = React.createRef();
-    this.mouseDown = this.mouseDown.bind(this);
-    this.mouseMove = this.mouseMove.bind(this);
-    this.mouseUp = this.mouseUp.bind(this);
-    this.reset = this.reset.bind(this);
   }
 
   componentDidMount() {
@@ -30,7 +26,13 @@ class DraggableElement extends React.Component {
       .addEventListener('dragover', this.mouseMove);
   }
 
-  reset() {
+  componentWillUnmount() {
+    document
+      .getElementById('root')
+      .removeEventListener('dragover', this.mouseMove);
+  }
+
+  reset = () => {
     let { current: dragged } = this.dragged;
     let draggedRect = dragged.getBoundingClientRect();
 
@@ -45,7 +47,7 @@ class DraggableElement extends React.Component {
         y: parseInt(draggedRect.top),
       },
     });
-  }
+  };
 
   convertToHtml(component) {
     let div = document.createElement('div');
@@ -57,13 +59,17 @@ class DraggableElement extends React.Component {
     event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
   }
 
-  mouseDown(event) {
-    this.setDragImage(event);
+  setData(event) {
     event.dataTransfer.setData(
       'application/json',
       JSON.stringify(this.props.data)
     );
-    let { pageX, pageY } = event;
+  }
+
+  mouseDown = (event) => {
+    this.setDragImage(event);
+    this.setData(event);
+
     this.setState((state) => {
       return {
         ...state,
@@ -78,13 +84,14 @@ class DraggableElement extends React.Component {
         dragging: true,
       };
     });
-  }
+  };
 
-  mouseUp(event) {
+  mouseUp = (event) => {
     if (!event.dataTransfer.dropEffect === 'none') {
       this.reset();
       return;
     }
+
     this.setState((state) => {
       return {
         ...state,
@@ -95,9 +102,9 @@ class DraggableElement extends React.Component {
         dragging: false,
       };
     });
-  }
+  };
 
-  mouseMove(event) {
+  mouseMove = (event) => {
     if (this.state.dragging) {
       this.setState((state) => {
         let diffX = state.lastPos.x - event.pageX;
@@ -118,7 +125,7 @@ class DraggableElement extends React.Component {
         };
       });
     }
-  }
+  };
 
   render() {
     const { style } = this.state;
@@ -128,16 +135,6 @@ class DraggableElement extends React.Component {
         className="draggable"
         draggable="true"
         style={style}
-        // onDragStart={(e) => {
-        //   e.dataTransfer.setData(
-        //     'application/json',
-        //     JSON.stringify(this.props.data)
-        //   );
-        // }}
-        onDragAbort={(e) => {
-          this.reset();
-        }}
-        // onDrag={this.mouseMove}
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}
       >

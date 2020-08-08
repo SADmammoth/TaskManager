@@ -1,54 +1,59 @@
-import React from "react";
-import TaskCard from "../TaskListView/TaskCard";
-import DraggableArea from "./DraggableArea";
+import React from 'react';
+import DropArea from './DropArea';
 
 class DragMap extends React.Component {
-  state = {
-    body: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      body: [],
+    };
+  }
+
   componentDidMount() {
+    let body = React.Children.map(this.props.children, (child) => {
+      return child.type === DropArea
+        ? React.cloneElement(child, { setData: this.setData })
+        : child;
+    });
+
     this.setState({
-      body: React.Children.map(this.props.children, child =>
-        child.type === DraggableArea
-          ? React.cloneElement(child, { setData: this.setData })
-          : child
-      )
+      body,
     });
   }
   render() {
     return <>{this.state.body}</>;
   }
 
-  setData = data => {
-    console.log(data);
+  setData = (data) => {
     let { height, index, title } = data;
     let array = [...this.state.body];
-    // let curr;
-    // for (let i = 0; i < height; i++) {
-    //   curr = array[(index.x + i - 1) * this.props.columns + index.y];
-    //   if (!(curr.type === DraggableArea)) {
-    //     return;
-    //   }
-    // }
     let curr = null;
+
+    let currentIndex = (i) => {
+      return (i - 1) * this.props.columns + index.y - 1;
+    };
+
+    let indBuff;
+
     for (let i = index.x; i < index.x + height; i++) {
-      curr = array[(i - 1) * this.props.columns + index.y - 1];
-      if (!(curr.type === DraggableArea)) {
+      indBuff = currentIndex(i);
+      curr = array[indBuff];
+
+      if (!(curr.type === DropArea)) {
         return;
       }
-      array[(i - 1) * this.props.columns + index.y - 1] = null;
+
+      array[indBuff] = null;
     }
 
-    array[
-      (index.x - 1) * this.props.columns + index.y - 1
-    ] = this.props.createAvatar(
+    array[currentIndex(index.x)] = this.props.createAvatar(
       {
-        index: index,
-        title: title,
-        height: height
+        index,
+        title,
       },
       height
     );
+
     this.setState({ body: array });
 
     this.props.onDataUpdate(data);
