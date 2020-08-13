@@ -59,7 +59,7 @@ exports.addTask = async function (req, res) {
     TaskList.findOne({ _id: root.children[id] }).then((list) =>
       list.addTask(task)
     );
-
+    console.log(21);
     SubscriptionController.update(userId);
 
     res.json(task);
