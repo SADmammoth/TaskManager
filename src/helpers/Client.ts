@@ -12,6 +12,14 @@ export default class Client {
   private static subLoop = 0;
   private static abortController = new AbortController();
   private static signal = Client.abortController.signal;
+  private static headers = { Authorization: "" };
+
+  static addToken(token: string) {
+    let cleanToken = token.replace("JWT ", "");
+    Client.headers.Authorization = `bearer ${cleanToken}`;
+    console.log(Client.headers.Authorization);
+    localStorage.setItem("token", cleanToken);
+  }
 
   static async changeTask(
     task: object,
@@ -23,8 +31,8 @@ export default class Client {
       path.join(Client.apiPath, "lists", listId.toString(), taskId.toString()),
       {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(task)
+        headers: { "Content-Type": "application/json", ...Client.headers },
+        body: JSON.stringify(task),
       }
     )
       .then(Client.checkStatus)
@@ -36,15 +44,15 @@ export default class Client {
     listId: number,
     callback: (response: object) => any
   ) {
-    console.log(task, JSON.stringify(task));
     let response = await fetch(
       path.join(Client.apiPath, "lists", listId.toString()),
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          ...Client.headers,
         },
-        body: JSON.stringify(task)
+        body: JSON.stringify(task),
       }
     )
       .then(Client.checkStatus)
@@ -58,7 +66,7 @@ export default class Client {
   private static Notify(object?: object) {
     console.log("View updated");
 
-    Object.values(Client.subscribers).forEach(cb => !cb || cb(object));
+    Object.values(Client.subscribers).forEach((cb) => !cb || cb(object));
   }
 
   static async SubscribeOnDataUpdate(
@@ -69,7 +77,7 @@ export default class Client {
     Client.subLoop = 0;
     Client.subscribed = true;
     while (Client.subscribed) {
-      let response = await Client.RequestSubscription(res =>
+      let response = await Client.RequestSubscription((res) =>
         Client.Notify(Client.parseJSON(res))
       );
       if (Client.subLoop > 5) {
@@ -81,7 +89,7 @@ export default class Client {
   static async Unsubscribe(path: string) {
     console.log("Unsubscribed");
     Client.subscribers[path] = undefined;
-    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter((el) => !!el).length === 0) {
       Client.subscribed = false;
       Client.abortController.abort();
       Client.abortController = new AbortController();
@@ -91,7 +99,7 @@ export default class Client {
   }
 
   private static async RequestSubscription(onSuccess: (res: Response) => any) {
-    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter((el) => !!el).length === 0) {
       Client.subscribed = false;
       return;
     }
@@ -99,16 +107,20 @@ export default class Client {
 
     console.log("Subscribed");
     return fetch(path.join(Client.apiPath, "/subscribe"), {
-      signal: Client.signal
+      signal: Client.signal,
+      headers: { ...Client.headers },
     })
-      .then(res => ((Client.subLoop = 0), Client.checkStatus(res)))
+      .then((res) => ((Client.subLoop = 0), Client.checkStatus(res)))
       .then(onSuccess)
-      .catch(e => (Client.subLoop++, console.log(e)));
+      .catch((e) => (Client.subLoop++, console.log(e)));
   }
 
   static async getTasks(taskListID: number, callback: (object: object) => any) {
     let response = await fetch(
-      path.join(Client.apiPath, "/lists/", taskListID.toString())
+      path.join(Client.apiPath, "/lists/", taskListID.toString()),
+      {
+        headers: { ...Client.headers },
+      }
     ).then(Client.checkStatus);
 
     let responseObject = Client.parseJSON(response);
@@ -120,9 +132,9 @@ export default class Client {
   }
 
   static async getAllTasks(callback: (object: object) => any) {
-    let response = await fetch(path.join(Client.apiPath, "/lists/all")).then(
-      Client.checkStatus
-    );
+    let response = await fetch(path.join(Client.apiPath, "/lists/all"), {
+      headers: { ...Client.headers },
+    }).then(Client.checkStatus);
 
     let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
@@ -135,12 +147,26 @@ export default class Client {
   static async registerUser(login: string, password: string) {
     await fetch(path.join(Client.apiPath, "/users"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ login: login, password: password })
+      headers: { "Content-Type": "application/json", ...Client.headers },
+      body: JSON.stringify({ login: login, password: password }),
     });
   }
 
+  static async loginUser(login: string, password: string) {
+    let { token } = await fetch(path.join(Client.apiPath, "/users/login"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...Client.headers },
+      body: JSON.stringify({ login: login, password: password }),
+    })
+      .then(Client.checkStatus)
+      .then(Client.parseJSON);
+    Client.addToken(token);
+  }
+
   static checkStatus(response: Response) {
+    // if (response.status === 403) {
+    //   document.location.href = "/login";
+    // }
     if (response.ok) {
       return response;
     }
