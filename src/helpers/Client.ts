@@ -132,16 +132,27 @@ export default class Client {
   }
 
   static async getAllTasks(callback: (object: object) => any) {
+    let response = await fetch(path.join(Client.apiPath, "/lists/tasks/all"), {
+      headers: { ...Client.headers },
+    }).then(Client.checkStatus);
+
+    let responseObject = await Client.parseJSON(response);
+    if (callback) callback(responseObject);
+
+    return responseObject;
+  }
+
+  static async getListsNames() {
     let response = await fetch(path.join(Client.apiPath, "/lists/all"), {
       headers: { ...Client.headers },
     }).then(Client.checkStatus);
 
-    let responseObject = Client.parseJSON(response);
-    if (callback) callback(responseObject);
+    let responseObject = await Client.parseJSON(response);
 
-    return new Promise((resolve, reject) => {
-      resolve(responseObject);
-    });
+    return responseObject.map((list: object, i: number) => ({
+      label: list.title,
+      value: i,
+    }));
   }
 
   static async registerUser(login: string, password: string) {
