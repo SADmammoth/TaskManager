@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import Form from '../../generic/Form';
+import Form from '@sadmammoth/react-form';
 import Button from '../../generic/Button';
 import Client from '../../../helpers/Client.ts';
 

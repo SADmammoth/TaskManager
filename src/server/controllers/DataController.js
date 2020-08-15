@@ -121,6 +121,21 @@ exports.getList = async function (req, res) {
   }
 };
 
+exports.getAllLists = async function (req, res) {
+  let {
+    user: { _id: userId },
+  } = req;
+  let lists = [
+    ...(await Promise.all(
+      (await getRoot(userId)).children.map(({ _id }) =>
+        TaskList.findOne({ _id })
+      )
+    )),
+  ];
+
+  res.json(lists);
+};
+
 exports.getAllTasks = async function (req, res) {
   let {
     user: { _id: userId },
