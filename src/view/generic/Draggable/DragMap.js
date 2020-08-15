@@ -20,7 +20,9 @@ class DragMap extends React.Component {
       body,
     });
   }
+
   render() {
+    console.log(this.state.body);
     return <>{this.state.body}</>;
   }
 

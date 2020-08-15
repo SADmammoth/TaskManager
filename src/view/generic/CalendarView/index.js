@@ -17,7 +17,7 @@ class CalendarView extends React.Component {
   }
 
   componentDidMount() {
-    Client.getAllTasks()
+    Client.getTasks(0)
       .then((res) => {
         let tasks = {};
         res.tasks.forEach((el) => {
@@ -175,7 +175,7 @@ class CalendarView extends React.Component {
           gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`,
         })}
       >
-        {!this.state.loadEnded || (
+        {this.state.loadEnded && (
           <>
             {this.renderHeader()}
             <DragMap
