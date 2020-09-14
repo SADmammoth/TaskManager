@@ -12,29 +12,20 @@ class CalendarView extends React.Component {
       _id: null,
       startDate: new Date(),
       tasks: {},
-      loadEnded: false,
     };
   }
 
   componentDidMount() {
-    Client.getTasks(0)
-      .then((res) => {
-        let tasks = {};
-        res.tasks.forEach((el) => {
-          if (el.assignedTo) {
-            tasks[new Date(el.assignedTo).valueOf().toString()] = el;
-          }
-        });
-        return tasks;
-      })
-      .then((tasks) => {
-        this.setState({
-          _id: shortid.generate(),
-          startDate: new Date(this.props.startDate),
-          tasks: tasks,
-          loadEnded: true,
-        });
-      });
+    this.setState({ _id: shortid.generate() });
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log(props.tasks || {});
+    return {
+      ...state,
+      tasks: props.tasks || {},
+      startDate: new Date(props.startDate),
+    };
   }
 
   renderHeader = () => {
@@ -105,8 +96,9 @@ class CalendarView extends React.Component {
         }
 
         arrangeDate = this.moveDate(startDate, r, c);
-
         task = this.state.tasks[arrangeDate.valueOf()];
+
+        console.log(task);
 
         if (task) {
           for (let i = 0; i < task.duration; i++) {
@@ -175,19 +167,15 @@ class CalendarView extends React.Component {
           gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`,
         })}
       >
-        {this.state.loadEnded && (
-          <>
-            {this.renderHeader()}
-            <DragMap
-              rows={this.props.rows}
-              columns={this.props.columns}
-              createAvatar={this.createAvatar}
-              onDataUpdate={this.arrangeTask}
-            >
-              {this.renderBody()}
-            </DragMap>
-          </>
-        )}
+        {this.renderHeader()}
+        <DragMap
+          rows={this.props.rows}
+          columns={this.props.columns}
+          createAvatar={this.createAvatar}
+          onDataUpdate={this.arrangeTask}
+        >
+          {this.renderBody()}
+        </DragMap>
       </div>
     );
   }
@@ -196,6 +184,7 @@ class CalendarView extends React.Component {
 CalendarView.propTypes = {
   rows: PropTypes.number.isRequired,
   columns: PropTypes.number.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   timeStep: PropTypes.number.isRequired,
 };

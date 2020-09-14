@@ -33,15 +33,20 @@ function getRoot(ownerId) {
 exports.createList = async function (req, res) {
   let {
     user: { _id: userId },
+    body: { title },
   } = req;
 
+  console.log(req.body);
+
   let list = await TaskList.create({
-    title: req.body.title,
+    title,
     owner: userId,
   });
   getRoot(userId).then((root) => root.addChildren(list));
 
   SubscriptionController.update(req, res);
+
+  res.send(`List ${title} created`);
 };
 
 exports.addTask = async function (req, res) {

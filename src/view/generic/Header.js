@@ -12,7 +12,14 @@ export default function Header(props) {
         <p className="sitename">TaskManager</p>
         <nav className="header-nav">
           <ul>
-            <Nav items={{ Main: '/', AddTask: '/add' }}></Nav>
+            <Nav
+              items={{
+                Main: '/',
+                'Add Task': '/add',
+                'New List': '/list',
+                Login: '/login',
+              }}
+            ></Nav>
           </ul>
         </nav>
         {props.location && props.location.pathname !== '/404-error-page' ? (

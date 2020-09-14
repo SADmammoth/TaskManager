@@ -1,14 +1,15 @@
-import React from "react";
-import propTypes from "prop-types";
-import { Redirect } from "react-router-dom";
-import DraggableTask from "./DraggableTask";
-import Client from "../../../helpers/Client.ts";
+import React from 'react';
+import propTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import DraggableTask from './DraggableTask';
+import Client from '../../../helpers/Client.ts';
+import Task from './TaskCard';
 
 class TaskListView extends React.Component {
   state = {
     tasks: [],
     interval: null,
-    location: ""
+    location: '',
   };
 
   componentDidMount() {
@@ -18,6 +19,17 @@ class TaskListView extends React.Component {
       document.location.pathname,
       this.requestTaskList
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.listId !== this.props.listId) {
+      this.requestTaskList();
+      this.setState({ location: document.location.pathname });
+      Client.SubscribeOnDataUpdate(
+        document.location.pathname,
+        this.requestTaskList
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -43,7 +55,7 @@ class TaskListView extends React.Component {
   render() {
     return (
       <ul
-        className={"no-type-list " + this.props.className || ""}
+        className={'no-type-list ' + this.props.className || ''}
         style={this.props.style}
       >
         {this.state.tasks.map((el, i) => {
@@ -57,7 +69,7 @@ class TaskListView extends React.Component {
 }
 
 TaskListView.propTypes = {
-  listId: propTypes.number
+  listId: propTypes.number,
 };
 
 export default TaskListView;

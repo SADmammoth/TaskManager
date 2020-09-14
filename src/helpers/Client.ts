@@ -155,6 +155,14 @@ export default class Client {
     }));
   }
 
+  static async createList(title: string) {
+    let response = await fetch(path.join(Client.apiPath, "/lists"), {
+      method: "POST",
+      body: JSON.stringify({ title }),
+      headers: { "Content-Type": "application/json", ...Client.headers },
+    }).then(Client.checkStatus);
+  }
+
   static async registerUser(login: string, password: string) {
     await fetch(path.join(Client.apiPath, "/users"), {
       method: "POST",

@@ -10,6 +10,7 @@ import Header from './generic/Header';
 import TaskAssignmentPage from './screens/TaskAssignmentPage';
 import CreateTaskPage from './screens/CreateTaskPage';
 import Error404 from './screens/Error404';
+import NewTaskList from './screens/NewTaskList';
 
 import './styles/scss/App.scss';
 import LoginPage from './screens/LoginPage';
@@ -25,6 +26,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={TaskAssignmentPage} />
             <Route path="/add" component={CreateTaskPage} />
+            <Route path="/list" component={NewTaskList} />
             <Route path="/login" component={LoginPage} />
             <Route path="/404-error-page" component={Error404} />
             <Route>

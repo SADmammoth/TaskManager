@@ -4,7 +4,7 @@ import SubscriptionController from '../controllers/SubscriptionController';
 
 var router = express.Router();
 
-router.post('/lists/', DataController.createList);
+router.post('/lists', DataController.createList);
 router.post('/lists/:taskListID', DataController.addTask);
 router.get('/lists/all', DataController.getAllLists);
 router.get('/lists/tasks/all', DataController.getAllTasks);
