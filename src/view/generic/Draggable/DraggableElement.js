@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { isThisTypeNode } from 'typescript';
 
 class DraggableElement extends React.Component {
   constructor(props) {
@@ -33,20 +34,32 @@ class DraggableElement extends React.Component {
   }
 
   reset = () => {
-    let { current: dragged } = this.dragged;
-    let draggedRect = dragged.getBoundingClientRect();
+    this.setState(
+      {
+        style: {
+          position: 'static',
+        },
 
-    this.setState({
-      style: {
-        left: draggedRect.left + 'px',
-        top: draggedRect.top + 'px',
-        position: 'static',
+        dragging: false,
       },
-      lastPos: {
-        x: parseInt(draggedRect.left),
-        y: parseInt(draggedRect.top),
-      },
-    });
+      () => {
+        let { current: dragged } = this.dragged;
+        let draggedRect = dragged.getBoundingClientRect();
+
+        this.setState((state) => ({
+          ...state,
+          style: {
+            ...state.style,
+            left: draggedRect.left + 'px',
+            top: draggedRect.top + 'px',
+          },
+          lastPos: {
+            x: parseInt(draggedRect.left),
+            y: parseInt(draggedRect.top),
+          },
+        }));
+      }
+    );
   };
 
   convertToHtml(component) {
@@ -71,6 +84,18 @@ class DraggableElement extends React.Component {
     this.setData(event);
 
     this.setState((state) => {
+      console.log({
+        ...state,
+        style: {
+          ...state.style,
+          position: 'absolute',
+        },
+        lastPos: {
+          x: parseInt(state.style.left) - 10,
+          y: parseInt(state.style.top) - 10,
+        },
+        dragging: true,
+      });
       return {
         ...state,
         style: {
@@ -87,7 +112,7 @@ class DraggableElement extends React.Component {
   };
 
   mouseUp = (event) => {
-    if (!event.dataTransfer.dropEffect === 'none') {
+    if (event.dataTransfer.dropEffect === 'none') {
       this.reset();
       return;
     }
@@ -105,6 +130,7 @@ class DraggableElement extends React.Component {
   };
 
   mouseMove = (event) => {
+    console.log(this.state.dragging);
     if (this.state.dragging) {
       this.setState((state) => {
         let diffX = state.lastPos.x - event.pageX;

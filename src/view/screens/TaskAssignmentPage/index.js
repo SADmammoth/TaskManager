@@ -89,6 +89,7 @@ export default class TaskAssignmentPage extends React.Component {
               {
                 type: 'select',
                 name: 'listId',
+                placeholder: 'Inbox',
                 valueOptions: Client.getListsNames,
                 onChange: (name, value) => {
                   this.setState({ listId: value });
