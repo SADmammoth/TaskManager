@@ -1,6 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import Form from '@sadmammoth/react-form';
+import '@sadmammoth/react-form/dist/index.css';
+
 import Client from '../../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
@@ -26,28 +28,29 @@ export default class CreateTaskPage extends React.Component {
               type: 'text',
               name: 'title',
               placeholder: 'Title',
-              required: true,
+              required: false,
               label: 'Title',
             },
             {
-              type: 'textarea',
+              type: 'markdown',
               name: 'content',
               required: false,
               label: 'Content',
+              editable: true,
             },
             {
               type: 'select',
               name: 'list',
               valueOptions: Client.getListsNames,
-              required: true,
+              required: false,
             },
             {
               type: 'number',
               name: 'duration',
               value: 1,
-              required: true,
+              required: false,
               label: 'Duration, hrs',
-              attributes: { min: 1, max: 8 },
+              attributes: { min: 1, max: 8, step: 0.5 },
             },
           ]}
           style={{ width: '20vw', margin: '0 auto' }}

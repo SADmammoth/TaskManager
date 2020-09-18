@@ -1,16 +1,15 @@
-import React from "react";
-import ReactHtmlParser from "react-html-parser";
+import React from 'react';
+import Form, { MarkdownOutput } from '@sadmammoth/react-form';
 
 class Task extends React.Component {
   render() {
     return (
       <div
-        {...this.props}
-        className={"task-card " + (this.props.className || "")}
+        className={'task-card ' + (this.props.className || '')}
         style={this.props.style}
       >
-        <p class="title">{this.props.title}</p>
-        <div class="content">{ReactHtmlParser(this.props.content)}</div>
+        <p className="title">{this.props.title}</p>
+        <MarkdownOutput value={this.props.content} />
       </div>
     );
   }
