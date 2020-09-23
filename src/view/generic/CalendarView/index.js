@@ -98,7 +98,7 @@ class CalendarView extends React.Component {
         task = this.state.tasks[arrangeDate.valueOf()];
 
         if (task) {
-          for (let i = 1; i < task.duration; i++) {
+          for (let i = 0; i < task.duration; i++) {
             skip.push(r + i, c);
           }
 

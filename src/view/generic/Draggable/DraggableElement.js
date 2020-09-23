@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { isThisTypeNode } from 'typescript';
 
 class DraggableElement extends React.Component {
   constructor(props) {
@@ -154,7 +153,8 @@ class DraggableElement extends React.Component {
   };
 
   render() {
-    const { style } = this.state;
+    const { style, dragging } = this.state;
+    const { avatar } = this.props;
     return (
       <div
         ref={this.dragged}
@@ -164,7 +164,7 @@ class DraggableElement extends React.Component {
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}
       >
-        {this.props.children}
+        {dragging ? avatar : this.props.children}
       </div>
     );
   }
