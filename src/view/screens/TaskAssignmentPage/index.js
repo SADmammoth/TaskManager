@@ -16,7 +16,7 @@ export default class TaskAssignmentPage extends React.Component {
     super(props);
 
     this.state = {
-      tasks: {},
+      tasks: null,
       listId: 0,
     };
   }

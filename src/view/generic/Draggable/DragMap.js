@@ -1,65 +1,77 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import DropArea from './DropArea';
 
-class DragMap extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      body: [],
-    };
-  }
+const DragMap = (props) => {
+  let [body, setBody] = useState([]);
 
-  componentDidMount() {
-    let body = React.Children.map(this.props.children, (child) => {
-      return child.type === DropArea
-        ? React.cloneElement(child, { setData: this.setData })
-        : child;
-    });
-
-    this.setState({
-      body,
-    });
-  }
-
-  render() {
-    console.log(this.state.body);
-    return <>{this.state.body}</>;
-  }
-
-  setData = (data) => {
+  function setData(data, body) {
     let { height, index, title } = data;
-    let array = [...this.state.body];
+    console.log(body);
+    let array = [...body];
     let curr = null;
-
     let currentIndex = (i) => {
-      return (i - 1) * this.props.columns + index.y - 1;
+      return (i - 1) * props.columns + index.y - 1;
     };
 
     let indBuff;
 
     for (let i = index.x; i < index.x + height; i++) {
       indBuff = currentIndex(i);
+      console.log(array, indBuff);
       curr = array[indBuff];
 
-      if (!(curr.type === DropArea)) {
+      if (curr.type !== 'droparea') {
         return;
       }
 
       array[indBuff] = null;
     }
 
-    array[currentIndex(index.x)] = this.props.createAvatar(
-      {
-        index,
-        title,
-      },
-      height
-    );
+    array[currentIndex(index.x)] = {
+      type: 'avatar',
+      avatar: props.createAvatar(
+        {
+          index,
+          title,
+        },
+        height
+      ),
+    };
 
-    this.setState({ body: array });
+    setBody(array);
+    props.onDataUpdate(data);
+  }
 
-    this.props.onDataUpdate(data);
+  useLayoutEffect(() => {
+    setBody(props.map.flat());
+  }, [props.map]);
+
+  let drawBody = () => {
+    return body.map((child) => {
+      if (!child) {
+        return child;
+      }
+      let { type } = child;
+      console.log(type, child);
+      if (type === 'avatar') {
+        return child.avatar;
+      } else if (type === 'droparea') {
+        let { key, index, className } = child;
+        return (
+          <DropArea
+            key={key}
+            index={index}
+            className={className}
+            setData={(data) => setData(data, body)}
+          ></DropArea>
+        );
+      } else {
+        return child;
+      }
+    });
   };
-}
+
+  return <>{drawBody()}</>;
+};
 
 export default DragMap;

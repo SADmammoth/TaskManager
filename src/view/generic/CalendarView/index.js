@@ -11,7 +11,7 @@ class CalendarView extends React.Component {
     this.state = {
       _id: null,
       startDate: new Date(),
-      tasks: {},
+      tasks: null,
     };
   }
 
@@ -20,10 +20,9 @@ class CalendarView extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(props.tasks || {});
     return {
       ...state,
-      tasks: props.tasks || {},
+      tasks: props.tasks || null,
       startDate: new Date(props.startDate),
     };
   }
@@ -89,7 +88,7 @@ class CalendarView extends React.Component {
 
       for (let c = 1; c < this.props.columns + 1; c++) {
         let index = skip.indexOf(r, c);
-
+        console.log(skip.array, r, c, index);
         if (index >= 0) {
           skip.removeAt(index);
           continue;
@@ -98,17 +97,16 @@ class CalendarView extends React.Component {
         arrangeDate = this.moveDate(startDate, r, c);
         task = this.state.tasks[arrangeDate.valueOf()];
 
-        console.log(task);
-
         if (task) {
-          for (let i = 0; i < task.duration; i++) {
-            skip.push(r, c);
+          for (let i = 1; i < task.duration; i++) {
+            skip.push(r + i, c);
           }
 
           let { title, duration } = task;
 
-          row.push(
-            this.createAvatar(
+          row.push({
+            type: 'avatar',
+            avatar: this.createAvatar(
               {
                 key: shortid.generate(),
                 index: { x: r, y: c },
@@ -116,16 +114,15 @@ class CalendarView extends React.Component {
                 height: duration,
               },
               task.duration
-            )
-          );
+            ),
+          });
         } else {
-          row.push(
-            <DropArea
-              className="calendar-cell"
-              key={key(r, c)}
-              index={{ x: r, y: c }}
-            />
-          );
+          row.push({
+            type: 'droparea',
+            className: 'calendar-cell',
+            key: key(r, c),
+            index: { x: r, y: c },
+          });
         }
       }
 
@@ -144,6 +141,7 @@ class CalendarView extends React.Component {
   };
 
   createAvatar(attributes, count) {
+    console.log(count);
     return (
       <TaskAvatar
         {...attributes}
@@ -167,15 +165,20 @@ class CalendarView extends React.Component {
           gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`,
         })}
       >
-        {this.renderHeader()}
-        <DragMap
-          rows={this.props.rows}
-          columns={this.props.columns}
-          createAvatar={this.createAvatar}
-          onDataUpdate={this.arrangeTask}
-        >
-          {this.renderBody()}
-        </DragMap>
+        {!this.state.tasks ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            {this.renderHeader()}
+            <DragMap
+              rows={this.props.rows}
+              columns={this.props.columns}
+              createAvatar={this.createAvatar}
+              onDataUpdate={this.arrangeTask}
+              map={this.renderBody()}
+            />
+          </>
+        )}
       </div>
     );
   }
