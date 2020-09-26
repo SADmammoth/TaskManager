@@ -7,9 +7,9 @@ class CreateTaskWidget extends React.Component {
   }
 
   createTask = async () => {
-    console.log(
-      await Client.addTask({ title: this.props.title }, this.props.listId)
-    );
+    // console.log(
+    //   await Client.addTask({ title: this.props.title }, this.props.listId)
+    // );
     // Client.RequestToNotify();
     // this.props.updateTasks();
   };

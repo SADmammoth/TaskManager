@@ -242,6 +242,9 @@ table {
 .calendar-cell {
   position: relative;
   border: 2px solid black;
+  &.hidden {
+    display: none;
+  }
 }
 
 .form {

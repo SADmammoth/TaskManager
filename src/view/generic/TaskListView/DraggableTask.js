@@ -6,15 +6,22 @@ import TaskAvatar from './TaskAvatar';
 
 class DraggableTask extends React.Component {
   render() {
-    console.log(this.props);
-    let { duration, title, content, style, className } = this.props;
+    let {
+      taskId,
+      listId,
+      duration,
+      title,
+      content,
+      style,
+      className,
+    } = this.props;
     return (
       <DraggableElement
         data={{
-          taskId: this.props.taskId,
-          listId: this.props.listId,
-          height: this.props.duration,
-          title: this.props.title,
+          taskId,
+          listId,
+          height: duration,
+          title,
         }}
         datatype="application/json"
         avatar={

@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import { DropArea, DragMap } from '../Draggable';
 import Client from '../../../helpers/Client.ts';
 import TaskAvatar from '../TaskListView/TaskAvatar';
+import { isThisTypeNode } from 'typescript';
 
 class CalendarView extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class CalendarView extends React.Component {
       _id: null,
       startDate: new Date(),
       tasks: null,
+      draggingTask: null,
     };
   }
 
@@ -88,7 +90,6 @@ class CalendarView extends React.Component {
 
       for (let c = 1; c < this.props.columns + 1; c++) {
         let index = skip.indexOf(r, c);
-        console.log(skip.array, r, c, index);
         if (index >= 0) {
           skip.removeAt(index);
           continue;
@@ -97,7 +98,7 @@ class CalendarView extends React.Component {
         arrangeDate = this.moveDate(startDate, r, c);
         task = this.state.tasks[arrangeDate.valueOf()];
 
-        if (task) {
+        if (task && this.state.draggingTask !== task._id) {
           for (let i = 0; i < task.duration; i++) {
             skip.push(r + i, c);
           }
@@ -106,9 +107,12 @@ class CalendarView extends React.Component {
 
           row.push({
             type: 'avatar',
+            className: 'calendar-cell',
+            key: key(r, c),
+            index: { x: r, y: c },
             avatar: this.createAvatar(
               {
-                key: shortid.generate(),
+                key: key(r, c),
                 index: { x: r, y: c },
                 title: title,
                 height: duration,
@@ -140,8 +144,16 @@ class CalendarView extends React.Component {
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
 
+  replaceBack = ({ index: { x, y } }) => {
+    let arrangeDate = this.moveDate(this.state.startDate, x, y);
+    let task = this.state.tasks[arrangeDate.valueOf()];
+    console.log(task);
+    this.setState({
+      draggingTask: task._id,
+    });
+  };
+
   createAvatar(attributes, count) {
-    console.log(count);
     return (
       <TaskAvatar
         {...attributes}
@@ -150,6 +162,7 @@ class CalendarView extends React.Component {
           gridColumn: attributes.index.y + 1,
           gridRow: attributes.index.x + 1 + '/span ' + count,
         })}
+        onDragStart={() => this.replaceBack(attributes)}
       />
     );
   }

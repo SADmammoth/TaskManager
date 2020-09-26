@@ -10,8 +10,8 @@ class DraggableElement extends React.Component {
         top: 0,
       },
       lastPos: {
-        x: 0,
-        y: 0,
+        x: null,
+        y: null,
       },
       dragging: false,
     };
@@ -49,12 +49,13 @@ class DraggableElement extends React.Component {
           ...state,
           style: {
             ...state.style,
+            cursor: 'grab',
             left: draggedRect.left + 'px',
             top: draggedRect.top + 'px',
           },
           lastPos: {
-            x: parseInt(draggedRect.left),
-            y: parseInt(draggedRect.top),
+            x: null,
+            y: null,
           },
         }));
       }
@@ -79,35 +80,29 @@ class DraggableElement extends React.Component {
   }
 
   mouseDown = (event) => {
+    event.dataTransfer.effectAllowed = 'copyMove';
     this.setDragImage(event);
     this.setData(event);
 
-    this.setState((state) => {
-      console.log({
-        ...state,
-        style: {
-          ...state.style,
-          position: 'absolute',
-        },
-        lastPos: {
-          x: parseInt(state.style.left) - 10,
-          y: parseInt(state.style.top) - 10,
-        },
-        dragging: true,
-      });
-      return {
-        ...state,
-        style: {
-          ...state.style,
-          position: 'absolute',
-        },
-        lastPos: {
-          x: parseInt(state.style.left) - 10,
-          y: parseInt(state.style.top) - 10,
-        },
-        dragging: true,
-      };
-    });
+    this.setState(
+      (state) => {
+        return {
+          ...state,
+          style: {
+            ...state.style,
+            position: 'absolute',
+          },
+          dragging: true,
+        };
+      },
+      () => {
+        setTimeout(() => this.props.onDragStart && this.props.onDragStart(), 0);
+      }
+    );
+
+    document.addEventListener('mouseup', (event) =>
+      this.setState({ style: { ...this.state.style, pointerEvents: 'auto' } })
+    );
   };
 
   mouseUp = (event) => {
@@ -120,8 +115,8 @@ class DraggableElement extends React.Component {
       return {
         ...state,
         lastPos: {
-          x: 0,
-          y: 0,
+          x: null,
+          y: null,
         },
         dragging: false,
       };
@@ -129,23 +124,33 @@ class DraggableElement extends React.Component {
   };
 
   mouseMove = (event) => {
-    console.log(this.state.dragging);
     if (this.state.dragging) {
+      if (this.state.lastPos.x === null) {
+        this.setState({
+          ...this.state,
+          lastPos: {
+            x: event.clientX,
+            y: event.clientY,
+          },
+        });
+        return;
+      }
       this.setState((state) => {
-        let diffX = state.lastPos.x - event.pageX;
-        let diffY = state.lastPos.y - event.pageY;
+        let diffX = state.lastPos.x - event.clientX;
+        let diffY = state.lastPos.y - event.clientY;
 
-        console.log({ ...state }, diffX);
+        console.log(diffX, state.lastPos);
         return {
           ...state,
           style: {
             ...state.style,
+            pointerEvents: 'none',
             left: parseInt(state.style.left) - diffX + 'px',
             top: parseInt(state.style.top) - diffY + 'px',
           },
           lastPos: {
-            x: event.pageX,
-            y: event.pageY,
+            x: event.clientX,
+            y: event.clientY,
           },
         };
       });
@@ -154,13 +159,22 @@ class DraggableElement extends React.Component {
 
   render() {
     const { style, dragging } = this.state;
-    const { avatar } = this.props;
+    let { avatar, className, style: propsStyle } = this.props;
+    if (!propsStyle) {
+      propsStyle = [];
+    }
+
     return (
       <div
         ref={this.dragged}
-        className="draggable"
+        className={`draggable ${className || ''}`}
         draggable="true"
-        style={style}
+        style={{ ...propsStyle, ...style }}
+        onMouseDown={() =>
+          this.setState({
+            style: { ...this.state.style, cursor: 'grabbing' },
+          })
+        }
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}
       >

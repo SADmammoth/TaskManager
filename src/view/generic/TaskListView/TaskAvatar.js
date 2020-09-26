@@ -1,17 +1,44 @@
 import React from 'react';
+import { DraggableElement } from '../Draggable';
 
 class TaskAvatar extends React.Component {
   render() {
-    return (
+    let {
+      taskId,
+      listId,
+      height,
+      title,
+      content,
+      style,
+      className,
+      onDragStart,
+    } = this.props;
+
+    let avatarContent = (
       <div
-        className={'task-avatar ' + (this.props.className || '')}
-        style={Object.assign(
-          { '--height': this.props.height },
-          this.props.style
-        )}
+        className={'task-avatar ' + (className || '')}
+        style={Object.assign({ '--height': height }, style)}
       >
-        <p className="title">{this.props.title}</p>
+        <p className="title">{title}</p>
       </div>
+    );
+
+    return (
+      <DraggableElement
+        className={'task-avatar ' + (className || '')}
+        style={Object.assign({ '--height': height }, style)}
+        data={{
+          taskId,
+          listId,
+          height,
+          title,
+        }}
+        datatype="application/json"
+        avatar={avatarContent}
+        onDragStart={onDragStart}
+      >
+        {<p className="title">{title}</p>}
+      </DraggableElement>
     );
   }
 }

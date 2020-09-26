@@ -5,7 +5,6 @@ export default class SubscriptionController {
   static triggers = {};
 
   static createPromise(userId) {
-    console.log(1);
     SubscriptionController.promises[userId] = new Promise((resolve, reject) => {
       SubscriptionController.triggers[userId] = () => resolve(true);
     });
@@ -36,7 +35,7 @@ export default class SubscriptionController {
     let {
       user: { _id: userId },
     } = req;
-    console.log(234);
+
     SubscriptionController.createPromise(userId);
     let shouldUpdate = await SubscriptionController.promises[userId];
     req.on('close', function (err) {

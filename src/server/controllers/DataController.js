@@ -26,7 +26,6 @@ exports._init = async function (userId) {
 };
 
 function getRoot(ownerId) {
-  console.log(ownerId);
   return Folder.findOne({ title: '$root', owner: ownerId });
 }
 
@@ -35,8 +34,6 @@ exports.createList = async function (req, res) {
     user: { _id: userId },
     body: { title },
   } = req;
-
-  console.log(req.body);
 
   let list = await TaskList.create({
     title,
@@ -56,7 +53,6 @@ exports.addTask = async function (req, res) {
 
   // try {
   let id = parseInt(req.params.taskListID);
-  console.log(req.user);
   let root = await getRoot(userId);
   Task.create(
     retrieveFields(req.body, ['title', 'content', 'assignedTo', 'duration'])
@@ -64,7 +60,7 @@ exports.addTask = async function (req, res) {
     TaskList.findOne({ _id: root.children[id] }).then((list) =>
       list.addTask(task)
     );
-    console.log(21);
+
     SubscriptionController.update(userId);
 
     res.json(task);

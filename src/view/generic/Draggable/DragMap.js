@@ -6,7 +6,6 @@ const DragMap = (props) => {
 
   function setData(data, body) {
     let { height, index, title } = data;
-    console.log(body);
     let array = [...body];
     let curr = null;
     let currentIndex = (i) => {
@@ -17,7 +16,7 @@ const DragMap = (props) => {
 
     for (let i = index.x; i < index.x + height; i++) {
       indBuff = currentIndex(i);
-      console.log(array, indBuff);
+
       curr = array[indBuff];
 
       if (curr.type !== 'droparea') {
@@ -29,13 +28,7 @@ const DragMap = (props) => {
 
     array[currentIndex(index.x)] = {
       type: 'avatar',
-      avatar: props.createAvatar(
-        {
-          index,
-          title,
-        },
-        height
-      ),
+      avatar: props.createAvatar(data, height),
     };
 
     setBody(array);
@@ -51,12 +44,20 @@ const DragMap = (props) => {
       if (!child) {
         return child;
       }
-      let { type } = child;
-      console.log(type, child);
+      let { type, key, index, className } = child;
       if (type === 'avatar') {
-        return child.avatar;
+        return (
+          <>
+            {child.avatar}
+            <DropArea
+              key={key}
+              index={index}
+              className={className + ' hidden'}
+              setData={(data) => setData(data, body)}
+            ></DropArea>
+          </>
+        );
       } else if (type === 'droparea') {
-        let { key, index, className } = child;
         return (
           <DropArea
             key={key}

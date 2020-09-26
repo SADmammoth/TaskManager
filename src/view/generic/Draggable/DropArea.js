@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const DropArea = (props) => {
+  const [className, setClassName] = useState('');
   return (
     <div
+      // onMouseOver={() => {
+      //   console.log(9);
+      // }}
       onDragOver={(e) => {
         e.preventDefault();
       }}
@@ -13,7 +17,7 @@ const DropArea = (props) => {
           ...data,
         });
       }}
-      className={props.className}
+      className={props.className + className}
       style={props.style}
     >
       {props.children}

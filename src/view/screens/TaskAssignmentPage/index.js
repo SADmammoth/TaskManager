@@ -61,7 +61,6 @@ export default class TaskAssignmentPage extends React.Component {
   }
 
   render() {
-    console.log(this.state.tasks);
     return (
       <>
         <Helmet>
@@ -82,7 +81,7 @@ export default class TaskAssignmentPage extends React.Component {
           content="Register user"
           onClick={() => Client.registerUser('root', 'user')}
         ></Button>
-        <Sidebar style={{ height: '70vh' }}>
+        <Sidebar style={{ height: '70vh', width: '30vw' }}>
           <Form
             onSubmit={null}
             inputs={[
