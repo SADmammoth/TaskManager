@@ -100,9 +100,10 @@ class DraggableElement extends React.Component {
       }
     );
 
-    document.addEventListener('mouseup', (event) =>
-      this.setState({ style: { ...this.state.style, pointerEvents: 'auto' } })
-    );
+    document.addEventListener('mouseup', (event) => {
+      let { pointerEvents, ...rest } = this.state.style;
+      this.setState({ style: { ...rest } });
+    });
   };
 
   mouseUp = (event) => {
@@ -135,24 +136,43 @@ class DraggableElement extends React.Component {
         });
         return;
       }
+      if (this.dragged.current.hasAttribute('data-snap')) {
+        let [left, top] = this.dragged.current
+          .getAttribute('data-snap')
+          .split(',');
+        this.setState({
+          style: {
+            ...this.state.style,
+            pointerEvents: 'none',
+            left: left + 'px',
+            top: top + 'px',
+          },
+          lastPos: {
+            x: parseInt(left),
+            y: parseInt(top),
+          },
+        });
+        return;
+      }
+
       this.setState((state) => {
         let diffX = state.lastPos.x - event.clientX;
         let diffY = state.lastPos.y - event.clientY;
-
-        console.log(diffX, state.lastPos);
-        return {
-          ...state,
-          style: {
-            ...state.style,
-            pointerEvents: 'none',
-            left: parseInt(state.style.left) - diffX + 'px',
-            top: parseInt(state.style.top) - diffY + 'px',
-          },
-          lastPos: {
-            x: event.clientX,
-            y: event.clientY,
-          },
-        };
+        if (Math.abs(diffX) > 2 || Math.abs(diffY) > 2) {
+          return {
+            ...state,
+            style: {
+              ...state.style,
+              pointerEvents: 'none',
+              left: parseInt(state.style.left) - diffX + 'px',
+              top: parseInt(state.style.top) - diffY + 'px',
+            },
+            lastPos: {
+              x: event.clientX,
+              y: event.clientY,
+            },
+          };
+        }
       });
     }
   };
@@ -167,6 +187,7 @@ class DraggableElement extends React.Component {
     return (
       <div
         ref={this.dragged}
+        id={dragging ? 'dragging' : ''}
         className={`draggable ${className || ''}`}
         draggable="true"
         style={{ ...propsStyle, ...style }}
@@ -175,6 +196,7 @@ class DraggableElement extends React.Component {
             style: { ...this.state.style, cursor: 'grabbing' },
           })
         }
+        data-height={this.props.height}
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}
       >

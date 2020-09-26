@@ -23,6 +23,7 @@ class DraggableTask extends React.Component {
           height: duration,
           title,
         }}
+        height={duration}
         datatype="application/json"
         avatar={
           <TaskAvatar

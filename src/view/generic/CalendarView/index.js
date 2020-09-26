@@ -91,6 +91,12 @@ class CalendarView extends React.Component {
       for (let c = 1; c < this.props.columns + 1; c++) {
         let index = skip.indexOf(r, c);
         if (index >= 0) {
+          row.push({
+            className: 'calendar-cell',
+            key: key(r, c),
+            index: { x: r, y: c },
+            type: 'hidden',
+          });
           skip.removeAt(index);
           continue;
         }
@@ -185,7 +191,7 @@ class CalendarView extends React.Component {
             {this.renderHeader()}
             <DragMap
               rows={this.props.rows}
-              columns={this.props.columns}
+              columns={this.props.columns + 1}
               createAvatar={this.createAvatar}
               onDataUpdate={this.arrangeTask}
               map={this.renderBody()}

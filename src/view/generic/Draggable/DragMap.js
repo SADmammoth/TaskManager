@@ -35,6 +35,26 @@ const DragMap = (props) => {
     props.onDataUpdate(data);
   }
 
+  function checkSnap(index, height) {
+    let currentIndex = (i) => {
+      return (i - 1) * props.columns + index.y;
+    };
+    let indBuff;
+    let curr;
+
+    console.log(index, height);
+    for (let i = index.x; i < index.x + height; i++) {
+      console.log(currentIndex(i));
+      indBuff = currentIndex(i);
+      console.log(body, indBuff);
+      curr = body[indBuff];
+      if (curr.type !== 'droparea') {
+        return false;
+      }
+    }
+    return true;
+  }
+
   useLayoutEffect(() => {
     setBody(props.map.flat());
   }, [props.map]);
@@ -45,6 +65,17 @@ const DragMap = (props) => {
         return child;
       }
       let { type, key, index, className } = child;
+      if (type === 'hidden') {
+        return (
+          <DropArea
+            key={key}
+            index={index}
+            className={className + ' hidden'}
+            setData={(data) => setData(data, body)}
+            checkSnap={checkSnap}
+          ></DropArea>
+        );
+      }
       if (type === 'avatar') {
         return (
           <>
@@ -54,6 +85,7 @@ const DragMap = (props) => {
               index={index}
               className={className + ' hidden'}
               setData={(data) => setData(data, body)}
+              checkSnap={checkSnap}
             ></DropArea>
           </>
         );
@@ -64,6 +96,7 @@ const DragMap = (props) => {
             index={index}
             className={className}
             setData={(data) => setData(data, body)}
+            checkSnap={checkSnap}
           ></DropArea>
         );
       } else {
