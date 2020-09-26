@@ -9,7 +9,7 @@ const DragMap = (props) => {
     let array = [...body];
     let curr = null;
     let currentIndex = (i) => {
-      return (i - 1) * props.columns + index.y - 1;
+      return (i - 1) * props.columns + index.y;
     };
 
     let indBuff;
@@ -23,7 +23,9 @@ const DragMap = (props) => {
         return;
       }
 
-      array[indBuff] = null;
+      console.log(array[indBuff]);
+      array[indBuff] = { ...array[indBuff], type: 'hidden' };
+      console.log(array[indBuff]);
     }
 
     array[currentIndex(index.x)] = {
@@ -66,6 +68,7 @@ const DragMap = (props) => {
       }
       let { type, key, index, className } = child;
       if (type === 'hidden') {
+        console.log(className);
         return (
           <DropArea
             key={key}
@@ -77,18 +80,7 @@ const DragMap = (props) => {
         );
       }
       if (type === 'avatar') {
-        return (
-          <>
-            {child.avatar}
-            <DropArea
-              key={key}
-              index={index}
-              className={className + ' hidden'}
-              setData={(data) => setData(data, body)}
-              checkSnap={checkSnap}
-            ></DropArea>
-          </>
-        );
+        return <>{child.avatar}</>;
       } else if (type === 'droparea') {
         return (
           <DropArea
