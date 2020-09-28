@@ -12,6 +12,7 @@ class TaskAvatar extends React.Component {
       style,
       className,
       onDragStart,
+      onReject,
     } = this.props;
 
     let avatarContent = (
@@ -36,6 +37,7 @@ class TaskAvatar extends React.Component {
         datatype="application/json"
         avatar={avatarContent}
         onDragStart={onDragStart}
+        onReject={onReject}
       >
         {<p className="title">{title}</p>}
       </DraggableElement>

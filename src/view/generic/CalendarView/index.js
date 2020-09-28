@@ -4,7 +4,9 @@ import shortid from 'shortid';
 import { DropArea, DragMap } from '../Draggable';
 import Client from '../../../helpers/Client.ts';
 import TaskAvatar from '../TaskListView/TaskAvatar';
-import { isThisTypeNode } from 'typescript';
+import compareObjects from '../../../helpers/compareObjects';
+import toLinearIndex from '../../../helpers/toLinearIndex';
+import key from '../../../helpers/getBodyKey';
 
 class CalendarView extends React.Component {
   constructor(props) {
@@ -14,6 +16,7 @@ class CalendarView extends React.Component {
       startDate: new Date(),
       tasks: null,
       draggingTask: null,
+      body: [],
     };
   }
 
@@ -27,6 +30,12 @@ class CalendarView extends React.Component {
       tasks: props.tasks || null,
       startDate: new Date(props.startDate),
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!compareObjects(this.state.tasks, prevState.tasks)) {
+      this.setState({ body: this.getBody() });
+    }
   }
 
   renderHeader = () => {
@@ -53,16 +62,14 @@ class CalendarView extends React.Component {
     return arrangeDate;
   };
 
-  renderBody = () => {
+  getBody = () => {
     let array = [];
     let row;
     let startDate = new Date(this.state.startDate);
     let arrangeDate;
     let task;
 
-    let key = (r, c) => {
-      return `${this.state._id}-body-${r}-${c}`;
-    };
+    const { _id } = this.state;
 
     let skip = {
       array: [],
@@ -83,7 +90,7 @@ class CalendarView extends React.Component {
     for (let r = 1; r < this.props.rows + 1; r++) {
       row = [];
       row.push(
-        <div key={key(r, 0)}>
+        <div key={key(r, 0, _id)}>
           {this.props.startDate.getHours() + this.props.timeStep * r - 1}
         </div>
       );
@@ -93,7 +100,7 @@ class CalendarView extends React.Component {
         if (index >= 0) {
           row.push({
             className: 'calendar-cell',
-            key: key(r, c),
+            key: key(r, c, _id),
             index: { x: r, y: c },
             type: 'hidden',
           });
@@ -104,9 +111,18 @@ class CalendarView extends React.Component {
         arrangeDate = this.moveDate(startDate, r, c);
         task = this.state.tasks[arrangeDate.valueOf()];
 
-        if (task && this.state.draggingTask !== task._id) {
+        if (task) {
           for (let i = 0; i < task.duration; i++) {
-            skip.push(r + i, c);
+            if (this.state.draggingTask === task._id && i > 0) {
+              row.push({
+                type: 'droparea',
+                className: 'calendar-cell',
+                key: key(r, c, _id),
+                index: { x: r + i, y: c },
+              });
+            } else {
+              skip.push(r + i, c);
+            }
           }
 
           let { title, duration } = task;
@@ -114,11 +130,11 @@ class CalendarView extends React.Component {
           row.push({
             type: 'avatar',
             className: 'calendar-cell',
-            key: key(r, c),
+            key: key(r, c, _id),
             index: { x: r, y: c },
             avatar: this.createAvatar(
               {
-                key: key(r, c),
+                key: key(r, c, _id),
                 index: { x: r, y: c },
                 title: title,
                 height: duration,
@@ -130,7 +146,7 @@ class CalendarView extends React.Component {
           row.push({
             type: 'droparea',
             className: 'calendar-cell',
-            key: key(r, c),
+            key: key(r, c, _id),
             index: { x: r, y: c },
           });
         }
@@ -150,25 +166,55 @@ class CalendarView extends React.Component {
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
 
-  replaceBack = ({ index: { x, y } }) => {
+  replaceBack = ({ index: { x, y }, height }) => {
     let arrangeDate = this.moveDate(this.state.startDate, x, y);
     let task = this.state.tasks[arrangeDate.valueOf()];
-    console.log(task);
+    let { body, _id } = this.state;
+    body[x - 1].splice(y + 1, 0, {
+      type: 'droparea',
+      className: 'calendar-cell',
+      key: key(x, y, _id),
+      index: { x: x, y: y },
+    });
+
+    for (let i = x + 1; i < x + height; i++) {
+      body[i - 1][y].type = 'droparea';
+    }
     this.setState({
+      body,
       draggingTask: task._id,
     });
   };
 
+  rejectDrag({ index: { x, y }, height }) {
+    let { body, _id } = this.state;
+    body[x - 1].splice(y + 1, 1);
+
+    for (let i = x + 1; i < x + height; i++) {
+      body[i - 1][y].type = 'hidden';
+    }
+
+    this.setState({
+      body,
+    });
+  }
+
   createAvatar(attributes, count) {
+    let style = attributes.style || {};
+    if (attributes.index) {
+      style = {
+        ...style,
+        gridColumn: attributes.index.y + 1,
+        gridRow: attributes.index.x + 1 + '/span ' + count,
+      };
+    }
     return (
       <TaskAvatar
         {...attributes}
         height={count}
-        style={Object.assign(attributes.style || {}, {
-          gridColumn: attributes.index.y + 1,
-          gridRow: attributes.index.x + 1 + '/span ' + count,
-        })}
+        style={style}
         onDragStart={() => this.replaceBack(attributes)}
+        onReject={() => this.rejectDrag(attributes)}
       />
     );
   }
@@ -194,7 +240,7 @@ class CalendarView extends React.Component {
               columns={this.props.columns + 1}
               createAvatar={this.createAvatar}
               onDataUpdate={this.arrangeTask}
-              map={this.renderBody()}
+              map={this.state.body}
             />
           </>
         )}

@@ -1,4 +1,5 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toLinearIndex from '../../../helpers/toLinearIndex';
 import DropArea from './DropArea';
 
 const DragMap = (props) => {
@@ -8,14 +9,11 @@ const DragMap = (props) => {
     let { height, index, title } = data;
     let array = [...body];
     let curr = null;
-    let currentIndex = (i) => {
-      return (i - 1) * props.columns + index.y;
-    };
 
     let indBuff;
 
     for (let i = index.x; i < index.x + height; i++) {
-      indBuff = currentIndex(i);
+      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
 
       curr = array[indBuff];
 
@@ -23,9 +21,7 @@ const DragMap = (props) => {
         return;
       }
 
-      console.log(array[indBuff]);
       array[indBuff] = { ...array[indBuff], type: 'hidden' };
-      console.log(array[indBuff]);
     }
 
     array[currentIndex(index.x)] = {
@@ -38,17 +34,11 @@ const DragMap = (props) => {
   }
 
   function checkSnap(index, height) {
-    let currentIndex = (i) => {
-      return (i - 1) * props.columns + index.y;
-    };
     let indBuff;
     let curr;
 
-    console.log(index, height);
     for (let i = index.x; i < index.x + height; i++) {
-      console.log(currentIndex(i));
-      indBuff = currentIndex(i);
-      console.log(body, indBuff);
+      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
       curr = body[indBuff];
       if (curr.type !== 'droparea') {
         return false;
@@ -57,9 +47,9 @@ const DragMap = (props) => {
     return true;
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setBody(props.map.flat());
-  }, [props.map]);
+  }, [JSON.stringify(props.map)]);
 
   let drawBody = () => {
     return body.map((child) => {
@@ -67,8 +57,8 @@ const DragMap = (props) => {
         return child;
       }
       let { type, key, index, className } = child;
+
       if (type === 'hidden') {
-        console.log(className);
         return (
           <DropArea
             key={key}
@@ -80,7 +70,7 @@ const DragMap = (props) => {
         );
       }
       if (type === 'avatar') {
-        return <>{child.avatar}</>;
+        return child.avatar;
       } else if (type === 'droparea') {
         return (
           <DropArea

@@ -24,12 +24,9 @@ const DropArea = (props) => {
           dragging.setAttribute('data-snap', `${left},${top}`);
         }
       }}
-      onDragEnter={(e) => {
-        console.log(12);
-      }}
       onDragLeave={(e) => {
         let dragging = document.getElementById('dragging');
-        dragging.removeAttribute('data-snap');
+        +dragging.removeAttribute('data-snap');
       }}
       onDrop={(e) => {
         let data = JSON.parse(e.dataTransfer.getData('application/json'));

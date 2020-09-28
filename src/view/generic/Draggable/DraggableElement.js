@@ -108,6 +108,7 @@ class DraggableElement extends React.Component {
 
   mouseUp = (event) => {
     if (event.dataTransfer.dropEffect === 'none') {
+      this.props.onReject(this.props.data);
       this.reset();
       return;
     }
