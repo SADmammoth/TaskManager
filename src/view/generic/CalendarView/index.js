@@ -1,16 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
+import shortid from "shortid";
 import { DraggableArea, DragMap } from "../Draggable";
 import { runInThisContext } from "vm";
+import Client from "../../../helpers/Client.ts";
 
 class CalendarView extends React.Component {
   state = {
-    startDate: new Date()
+    startDate: new Date(),
+    tasks: {},
+    loadEnded: false
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    console.log(this.props.startDate);
+    let tasks = {};
+    (await Client.getAllTasks()).tasks.forEach(el => {
+      console.log(el);
+      if (el.assignedTo)
+        tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+    });
     this.setState({
-      startDate: this.props.startDate
+      startDate: new Date(this.props.startDate),
+      tasks: tasks,
+      loadEnded: true
     });
   }
 
@@ -19,9 +32,15 @@ class CalendarView extends React.Component {
       let array = [];
       let startDate = new Date(this.state.startDate);
       array.push(<div></div>);
-      for (let i = 0; i < this.props.columns - 1; i++) {
+      for (let i = 1; i < this.props.columns + 1; i++) {
+        array.push(
+          <div key={shortid.generate()}>
+            {startDate.toLocaleDateString("ru-RU")}
+          </div>
+        );
+
+        console.log(startDate);
         startDate.setDate(startDate.getDate() + 1);
-        array.push(<div>{startDate.toLocaleDateString("ru-RU")}</div>);
       }
       return array;
     };
@@ -30,20 +49,46 @@ class CalendarView extends React.Component {
       let firstCell;
       let array = [];
       let row;
-      for (let r = 1; r < this.props.rows; r++) {
+      for (let r = 1; r < this.props.rows + 1; r++) {
         row = [];
         firstCell = (() => {
           return (
-            <div>
-              {this.props.startDate.getHours() + this.props.timeStep * r}
+            <div key={shortid.generate()}>
+              {this.props.startDate.getHours() + this.props.timeStep * r - 1}
             </div>
           );
         })();
         row.push(firstCell);
-        for (let c = 1; c < this.props.columns; c++) {
+        for (let c = 1; c < this.props.columns + 1; c++) {
+          let startDate = new Date(this.state.startDate);
+          console.log(r);
+          startDate.setDate(startDate.getDate() + c - 1);
+          let arrangeDate = startDate;
+          arrangeDate.setHours(
+            arrangeDate.getHours() + (r - 1) * this.props.timeStep
+          );
+          console.log(
+            Object.keys(this.state.tasks).map(el => new Date(parseInt(el))),
+            arrangeDate
+          );
+          console.log(arrangeDate.valueOf());
+          let task = this.state.tasks[arrangeDate.valueOf()];
+
+          console.log(task);
+          if (task) {
+            alert(0);
+            row.push(
+              <div key={shortid.generate()} index={{ x: r, y: c }}>
+                {task.title}
+              </div>
+            );
+            console.log(row);
+            continue;
+          }
           row.push(
             <DraggableArea
-              style={{ position: "relative", border: "2px solid black" }}
+              className="calendar-cell"
+              key={shortid.generate()}
               index={{ x: r, y: c }}
             />
           );
@@ -59,21 +104,37 @@ class CalendarView extends React.Component {
         style={Object.assign(this.props.style, {
           display: "grid",
           gridAutoFlow: "row",
-          gridTemplateColumns: `repeat(${this.props.columns},1fr)`,
-          gridTemplateRows: `repeat(${this.props.rows},1fr)`
+          gridTemplateColumns: `repeat(${this.props.columns + 1},1fr)`,
+          gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`
         })}
       >
-        {RenderHeader()}
-        <DragMap
-          rows={this.props.rows}
-          columns={this.props.columns}
-          rowspan_cb={this.rowspan_cb}
-        >
-          {RenderBody()}
-        </DragMap>
+        {!this.state.loadEnded || (
+          <>
+            {RenderHeader()}
+            <DragMap
+              rows={this.props.rows}
+              columns={this.props.columns}
+              rowspan_cb={this.rowspan_cb}
+              onDataUpdate={this.arrangeTask}
+            >
+              {RenderBody()}
+            </DragMap>
+          </>
+        )}
       </div>
     );
   }
+  arrangeTask = data => {
+    let { index, height, listId, taskId } = data;
+    let startDate = new Date(this.state.startDate);
+    startDate.setDate(startDate.getDate() + index.x);
+    let arrangeDate = startDate;
+    console.log(index);
+    arrangeDate.setHours(
+      arrangeDate.getHours() + index.y * this.props.timeStep
+    );
+    Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
+  };
 
   rowspan_cb(element, count) {
     return React.cloneElement(element, {

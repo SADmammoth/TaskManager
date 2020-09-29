@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import CreateCustomSchema, { mongooseBase } from "../mongooseBase";
+import CustomSchema, { mongooseBase } from "../mongooseBase";
 const Schema = mongoose.Schema;
 
 import Task, { ITask } from "../entities/Task";
@@ -12,7 +12,7 @@ export interface ITaskList extends IList {
   tasks: ITask["_id"];
 }
 
-let TaskListSchema = CreateCustomSchema({
+let TaskListSchema = new CustomSchema({
   title: String,
   tags: [Schema.Types.ObjectId],
   owner: [Schema.Types.ObjectId],

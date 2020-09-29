@@ -1,18 +1,18 @@
-import React from 'react';
-import propTypes from 'prop-types';
-import MenuButton from './MenuButton';
+import React from "react";
+import propTypes from "prop-types";
+import Button from "../Button";
 
 class Menu extends React.Component {
   render() {
     return (
       <nav
         className={`menu ${
-          this.props.vertical ? 'horizontal-stack' : 'vertical-stack'
-        } ${this.props.className || ''}`}
+          this.props.vertical ? "horizontal-stack" : "vertical-stack"
+        } ${this.props.className || ""}`}
         style={this.props.style}
       >
         {this.props.buttons.map((el, i, arr) => (
-          <MenuButton className={'menu-item ' + this.props.className} {...el} />
+          <Button className={"menu-item " + this.props.className} {...el} />
         ))}
       </nav>
     );
@@ -20,7 +20,7 @@ class Menu extends React.Component {
 }
 
 Menu.propTypes = {
-  buttons: propTypes.arrayOf(propTypes.shape(MenuButton.propTypes)).isRequired,
+  buttons: propTypes.arrayOf(propTypes.shape(Button.propTypes)).isRequired,
   vertical: propTypes.bool
 };
 

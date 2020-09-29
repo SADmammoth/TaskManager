@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-import { mongooseBase } from "../mongooseBase";
+import CustomSchema, { mongooseBase } from "../mongooseBase";
 const Schema = mongoose.Schema;
 
 export interface ITag extends mongooseBase {
   title: string;
 }
 
-let TagSchema = new Schema({ title: String });
+let TagSchema = new CustomSchema({ title: String });
 let Tag = mongoose.model<ITag>("Tag", TagSchema);
 
 export default Tag;

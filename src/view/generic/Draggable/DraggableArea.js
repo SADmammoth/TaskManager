@@ -1,4 +1,5 @@
 import React from "react";
+import DraggableElement from "./DraggableElement";
 
 class DraggableArea extends React.Component {
   state = {
@@ -9,9 +10,6 @@ class DraggableArea extends React.Component {
       <div>text</div>
     ) : (
       <div
-        onDragOver={e => {
-          e.preventDefault();
-        }}
         // style={{
         //   position: "absolute",
         //   width: "100%",
@@ -19,16 +17,17 @@ class DraggableArea extends React.Component {
         //   left: 0,
         //   top: 0
         // }}
+        onDragOver={e => {
+          e.preventDefault();
+        }}
         onDrop={e => {
-          let taskData = JSON.parse(
-            event.dataTransfer.getData("application/json")
-          );
+          let taskData = JSON.parse(e.dataTransfer.getData("application/json"));
           this.props.setData({
             index: this.props.index,
-            height: taskData.height,
-            title: taskData.title
+            ...taskData
           });
         }}
+        className={this.props.className}
         style={this.props.style}
       >
         {this.props.children}

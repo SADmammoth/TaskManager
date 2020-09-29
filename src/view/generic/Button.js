@@ -1,11 +1,13 @@
-import React from 'react';
-import propTypes from 'prop-types';
+import React from "react";
+import propTypes from "prop-types";
 
-class MenuButton extends React.Component {
+class Button extends React.Component {
   render() {
     return (
       <button
-        className={'btn ' + (this.props.className || '')}
+        className={
+          this.props.icon ? "icon-btn " : "btn " + (this.props.className || "")
+        }
         onClick={this.props.action}
         title={this.props.title}
         style={this.props.style}
@@ -25,12 +27,13 @@ class MenuButton extends React.Component {
   }
 }
 
-MenuButton.propTypes = {
+Button.propTypes = {
   title: propTypes.string.isRequired,
   action: propTypes.func.isRequired,
   icon: propTypes.string,
   content: propTypes.any,
-  className: propTypes.string
+  className: propTypes.string,
+  icon: propTypes.bool
 };
 
-export default MenuButton;
+export default Button;

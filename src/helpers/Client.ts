@@ -1,4 +1,6 @@
 import path from "path";
+import { ITask } from "../model/entities/Task";
+
 interface Subscribers {
   [key: string]: ((response?: object) => any) | undefined;
 }
@@ -9,13 +11,32 @@ export default class Client {
   private static subscribers: Subscribers = {};
   private static subLoop = 0;
 
-  static async addTask(
-    task: { title: string; content: string },
+  static async changeTask(
+    task: object,
     listId: number,
+    taskId: number,
     callback: (response: object) => any
   ) {
     let response = await fetch(
-      path.join(Client.apiPath, "/lists/", listId.toString()),
+      path.join(Client.apiPath, "lists", listId.toString(), taskId.toString()),
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task)
+      }
+    )
+      .then(Client.checkStatus)
+      .then(callback);
+  }
+
+  static async addTask(
+    task: object,
+    listId: number,
+    callback: (response: object) => any
+  ) {
+    console.log(task, JSON.stringify(task));
+    let response = await fetch(
+      path.join(Client.apiPath, "lists", listId.toString()),
       {
         method: "POST",
         headers: {
@@ -23,10 +44,9 @@ export default class Client {
         },
         body: JSON.stringify(task)
       }
-    ).then(Client.checkStatus);
-
-    let responseObject = Client.parseJSON(response);
-    if (callback) callback(responseObject);
+    )
+      .then(Client.checkStatus)
+      .then(callback);
   }
 
   static ForceUpdate(object?: object) {
@@ -45,7 +65,9 @@ export default class Client {
   ) {
     Client.subscribers[path] = callback;
     Client.subLoop = 0;
+    Client.subscribed = true;
     while (Client.subscribed) {
+      console.log("Subscribed");
       let response = await Client.RequestSubscription();
       console.log("Subscription response");
       Client.Notify(Client.parseJSON(response));
@@ -56,14 +78,15 @@ export default class Client {
   }
 
   static async Unsubscribe(path: string) {
+    console.log("Unsubscribed");
     Client.subscribers[path] = undefined;
-    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
     }
   }
 
   private static async RequestSubscription() {
-    if (Object(Client.subscribers).values.filter(el => !!el).length === 0) {
+    if (Object.values(Client.subscribers).filter(el => !!el).length === 0) {
       Client.subscribed = false;
       return;
     }
@@ -77,6 +100,19 @@ export default class Client {
     let response = await fetch(
       path.join(Client.apiPath, "/lists/", taskListID.toString())
     ).then(Client.checkStatus);
+
+    let responseObject = Client.parseJSON(response);
+    if (callback) callback(responseObject);
+
+    return new Promise((resolve, reject) => {
+      resolve(responseObject);
+    });
+  }
+
+  static async getAllTasks(callback: (object: object) => any) {
+    let response = await fetch(path.join(Client.apiPath, "/lists/all")).then(
+      Client.checkStatus
+    );
 
     let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);

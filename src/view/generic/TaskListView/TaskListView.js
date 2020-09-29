@@ -19,36 +19,34 @@ class TaskListView extends React.Component {
     );
   }
 
-  componentWillUnmount() {
+  componentDidUnmount() {
     Client.Unsubscribe(document.location.pathname);
   }
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);
     if (tasks.tasks) this.setState({ tasks: tasks.tasks });
   };
-  createTask = task => {
+  createTask = (task, taskId, listId) => {
     if (!task) {
       return task;
     }
     return this.props.draggable ? (
-      <DraggableTask title={task.title} content={task.content} />
+      <DraggableTask taskId={taskId} listId={listId} {...task} />
     ) : (
-      <Task title={task.title} content={task.content} />
+      <Task taskId={taskId} listId={listId} {...task} />
     );
   };
   render() {
     return (
-      <ul className={this.props.className || ""} style={this.props.style}>
-        <li>
-          <CreateTaskWidget
-            title="Hello"
-            updateTasks={this.requestTaskList}
-            listId={0}
-          />
-        </li>
-        {this.state.tasks.map(el => (
-          <li>{this.createTask(el)}</li>
-        ))}
+      <ul
+        className={"no-type-list " + this.props.className || ""}
+        style={this.props.style}
+      >
+        {this.state.tasks.map((el, i) => {
+          if (!el.assignedTo) {
+            return <li>{this.createTask(el, i, this.props.listId)}</li>;
+          }
+        })}
       </ul>
     );
   }

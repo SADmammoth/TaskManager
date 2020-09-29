@@ -82,7 +82,7 @@ class Form extends React.Component {
   }
 
   formatValues() {
-    let values = [];
+    let values = {};
     Object.values(this.state.values).forEach(
       el => (values[el.name] = el.value)
     );

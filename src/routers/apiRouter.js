@@ -7,8 +7,10 @@ var router = express.Router();
 
 router.post("/lists/", DataController.createList);
 router.post("/lists/:taskListID", DataController.addTask);
+router.get("/lists/all", DataController.getAllTasks);
 router.get("/lists/:taskListID", DataController.getList);
 router.get("/subscribe", SubscriptionController.subscribe);
 router.get("/dataUpdated", SubscriptionController.update);
 router.post("/users", UserController.registerNew);
+router.put("/lists/:taskListID/:taskID", DataController.editTask);
 export default router;

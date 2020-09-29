@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import CreateCustomSchema, { mongooseBase } from "../mongooseBase";
+import CustomSchema, { mongooseBase } from "../mongooseBase";
 
 //TODO Change password to password hash
 //TODO Use Password.js
@@ -8,7 +8,7 @@ export interface IUser extends mongooseBase {
   password: string;
 }
 
-let UserSchema = CreateCustomSchema({ login: String, password: String });
+let UserSchema = new CustomSchema({ login: String, password: String });
 
 let User = mongoose.model<IUser>("User", UserSchema);
 
