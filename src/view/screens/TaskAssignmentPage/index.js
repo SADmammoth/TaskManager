@@ -1,5 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Form from '@sadmammoth/react-form';
+import shortid from 'shortid';
 
 import CalendarView from '../../generic/CalendarView';
 import Sidebar from '../../generic/Sidebar';
@@ -10,6 +12,54 @@ import Client from '../../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
 export default class TaskAssignmentPage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tasks: null,
+      listId: 0,
+    };
+  }
+
+  componentDidMount() {
+    Client.getTasks(this.state.listId)
+      .then((res) => {
+        let tasks = {};
+        res.tasks.forEach((el) => {
+          if (el.assignedTo) {
+            tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+          }
+        });
+        return tasks;
+      })
+      .then((tasks) => {
+        this.setState({
+          tasks,
+          // loadEnded: true,
+        });
+      });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.listId !== this.state.listId)
+      Client.getTasks(this.state.listId)
+        .then((res) => {
+          let tasks = {};
+          res.tasks.forEach((el) => {
+            if (el.assignedTo) {
+              tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+            }
+          });
+          return tasks;
+        })
+        .then((tasks) => {
+          this.setState({
+            tasks,
+            // loadEnded: true,
+          });
+        });
+  }
+
   render() {
     return (
       <>
@@ -23,6 +73,7 @@ export default class TaskAssignmentPage extends React.Component {
           columns={9}
           startDate={new Date(2020, 1, 12, 12, 0, 0, 0)}
           timeStep={1}
+          tasks={this.state.tasks}
           style={{ width: '70%', float: 'left', height: '70vh' }}
         ></CalendarView>
 
@@ -30,7 +81,21 @@ export default class TaskAssignmentPage extends React.Component {
           content="Register user"
           onClick={() => Client.registerUser('root', 'user')}
         ></Button>
-        <Sidebar style={{ height: '70vh' }}>
+        <Sidebar style={{ height: '70vh', width: '30vw' }}>
+          <Form
+            onSubmit={null}
+            inputs={[
+              {
+                type: 'select',
+                name: 'listId',
+                placeholder: 'Inbox',
+                valueOptions: Client.getListsNames,
+                onChange: (name, value) => {
+                  this.setState({ listId: value });
+                },
+              },
+            ]}
+          />
           <Menu
             buttons={[
               {
@@ -64,7 +129,10 @@ export default class TaskAssignmentPage extends React.Component {
             ]}
             style={{ float: 'left' }}
           />
-          <DraggableTaskList listId={0} style={{ float: 'left' }} />
+          <DraggableTaskList
+            listId={this.state.listId}
+            style={{ float: 'left' }}
+          />
         </Sidebar>
       </>
     );

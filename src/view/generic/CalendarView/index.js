@@ -1,156 +1,260 @@
-import React from "react";
-import PropTypes from "prop-types";
-import shortid from "shortid";
-import { DraggableArea, DragMap } from "../Draggable";
-import { runInThisContext } from "vm";
-import Client from "../../../helpers/Client.ts";
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import shortid from 'shortid';
+import { DropArea, DragMap } from '../Draggable';
+import Client from '../../../helpers/Client.ts';
+import TaskAvatar from '../TaskListView/TaskAvatar';
+import compareObjects from '../../../helpers/compareObjects';
+import toLinearIndex from '../../../helpers/toLinearIndex';
+import key from '../../../helpers/getBodyKey';
 
 class CalendarView extends React.Component {
-  state = {
-    startDate: new Date(),
-    tasks: {},
-    loadEnded: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      _id: null,
+      startDate: new Date(),
+      tasks: null,
+      draggingTask: null,
+      body: [],
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ _id: shortid.generate() });
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return {
+      ...state,
+      tasks: props.tasks || null,
+      startDate: new Date(props.startDate),
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!compareObjects(this.state.tasks, prevState.tasks)) {
+      this.setState({ body: this.getBody() });
+    }
+  }
+
+  renderHeader = () => {
+    let array = [<div key={`${this.state._id}-header-0`}></div>];
+    let startDate = new Date(this.state.startDate);
+    let date = startDate.toLocaleDateString('ru-RU');
+
+    for (let i = 1; i < this.props.columns + 1; i++) {
+      array.push(<div key={`${this.state._id}-header-${i}`}>{date}</div>);
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    return array;
   };
 
-  async componentDidMount() {
-    console.log(this.props.startDate);
-    let tasks = {};
-    (await Client.getAllTasks()).tasks.forEach(el => {
-      console.log(el);
-      if (el.assignedTo)
-        tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+  moveDate = (date, x, y) => {
+    let arrangeDate = new Date(date);
+    arrangeDate.setDate(arrangeDate.getDate() + x - 1);
+
+    arrangeDate.setHours(
+      arrangeDate.getHours() + (y - 1) * this.props.timeStep
+    );
+
+    return arrangeDate;
+  };
+
+  getBody = () => {
+    let array = [];
+    let row;
+    let startDate = new Date(this.state.startDate);
+    let arrangeDate;
+    let task;
+
+    const { _id } = this.state;
+
+    let skip = {
+      array: [],
+      push: (r, c) => {
+        skip.array.push(r.toString() + ',' + c.toString());
+      },
+      indexOf: (r, c) => {
+        return skip.array.indexOf(r.toString() + ',' + c.toString());
+      },
+      get: (i) => {
+        return skip.array[i];
+      },
+      removeAt: (i) => {
+        skip.array.splice(i, 1);
+      },
+    };
+
+    for (let r = 1; r < this.props.rows + 1; r++) {
+      row = [];
+      row.push(
+        <div key={key(r, 0, _id)}>
+          {this.props.startDate.getHours() + this.props.timeStep * r - 1}
+        </div>
+      );
+
+      for (let c = 1; c < this.props.columns + 1; c++) {
+        let index = skip.indexOf(r, c);
+        if (index >= 0) {
+          row.push({
+            className: 'calendar-cell',
+            key: key(r, c, _id),
+            index: { x: r, y: c },
+            type: 'hidden',
+          });
+          skip.removeAt(index);
+          continue;
+        }
+
+        arrangeDate = this.moveDate(startDate, r, c);
+        task = this.state.tasks[arrangeDate.valueOf()];
+
+        if (task) {
+          for (let i = 0; i < task.duration; i++) {
+            if (this.state.draggingTask === task._id && i > 0) {
+              row.push({
+                type: 'droparea',
+                className: 'calendar-cell',
+                key: key(r, c, _id),
+                index: { x: r + i, y: c },
+              });
+            } else {
+              skip.push(r + i, c);
+            }
+          }
+
+          let { title, duration } = task;
+
+          row.push({
+            type: 'avatar',
+            className: 'calendar-cell',
+            key: key(r, c, _id),
+            index: { x: r, y: c },
+            avatar: this.createAvatar(
+              {
+                key: key(r, c, _id),
+                index: { x: r, y: c },
+                title: title,
+                height: duration,
+              },
+              task.duration
+            ),
+          });
+        } else {
+          row.push({
+            type: 'droparea',
+            className: 'calendar-cell',
+            key: key(r, c, _id),
+            index: { x: r, y: c },
+          });
+        }
+      }
+
+      array.push(row);
+    }
+
+    return array;
+  };
+
+  arrangeTask = (data) => {
+    let { index, listId, taskId } = data;
+
+    let arrangeDate = this.moveDate(this.state.startDate, index.x, index.y);
+
+    Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
+  };
+
+  replaceBack = ({ index: { x, y }, height }) => {
+    let arrangeDate = this.moveDate(this.state.startDate, x, y);
+    let task = this.state.tasks[arrangeDate.valueOf()];
+    let { body, _id } = this.state;
+    body[x - 1].splice(y + 1, 0, {
+      type: 'droparea',
+      className: 'calendar-cell',
+      key: key(x, y, _id),
+      index: { x: x, y: y },
     });
+
+    for (let i = x + 1; i < x + height; i++) {
+      body[i - 1][y].type = 'droparea';
+    }
     this.setState({
-      startDate: new Date(this.props.startDate),
-      tasks: tasks,
-      loadEnded: true
+      body,
+      draggingTask: task._id,
+    });
+  };
+
+  rejectDrag({ index: { x, y }, height }) {
+    let { body, _id } = this.state;
+    body[x - 1].splice(y + 1, 1);
+
+    for (let i = x + 1; i < x + height; i++) {
+      body[i - 1][y].type = 'hidden';
+    }
+
+    this.setState({
+      body,
     });
   }
 
+  createAvatar(attributes, count) {
+    let style = attributes.style || {};
+    if (attributes.index) {
+      style = {
+        ...style,
+        gridColumn: attributes.index.y + 1,
+        gridRow: attributes.index.x + 1 + '/span ' + count,
+      };
+    }
+    return (
+      <TaskAvatar
+        {...attributes}
+        height={count}
+        style={style}
+        onDragStart={() => this.replaceBack(attributes)}
+        onReject={() => this.rejectDrag(attributes)}
+      />
+    );
+  }
+
   render() {
-    let RenderHeader = () => {
-      let array = [];
-      let startDate = new Date(this.state.startDate);
-      array.push(<div></div>);
-      for (let i = 1; i < this.props.columns + 1; i++) {
-        array.push(
-          <div key={shortid.generate()}>
-            {startDate.toLocaleDateString("ru-RU")}
-          </div>
-        );
-
-        console.log(startDate);
-        startDate.setDate(startDate.getDate() + 1);
-      }
-      return array;
-    };
-
-    let RenderBody = () => {
-      let firstCell;
-      let array = [];
-      let row;
-      for (let r = 1; r < this.props.rows + 1; r++) {
-        row = [];
-        firstCell = (() => {
-          return (
-            <div key={shortid.generate()}>
-              {this.props.startDate.getHours() + this.props.timeStep * r - 1}
-            </div>
-          );
-        })();
-        row.push(firstCell);
-        for (let c = 1; c < this.props.columns + 1; c++) {
-          let startDate = new Date(this.state.startDate);
-          console.log(r);
-          startDate.setDate(startDate.getDate() + c - 1);
-          let arrangeDate = startDate;
-          arrangeDate.setHours(
-            arrangeDate.getHours() + (r - 1) * this.props.timeStep
-          );
-          console.log(
-            Object.keys(this.state.tasks).map(el => new Date(parseInt(el))),
-            arrangeDate
-          );
-          console.log(arrangeDate.valueOf());
-          let task = this.state.tasks[arrangeDate.valueOf()];
-
-          console.log(task);
-          if (task) {
-            alert(0);
-            row.push(
-              <div key={shortid.generate()} index={{ x: r, y: c }}>
-                {task.title}
-              </div>
-            );
-            console.log(row);
-            continue;
-          }
-          row.push(
-            <DraggableArea
-              className="calendar-cell"
-              key={shortid.generate()}
-              index={{ x: r, y: c }}
-            />
-          );
-        }
-        array.push(row);
-      }
-
-      return array;
-    };
     return (
       <div
-        className={"calendar " + (this.props.className || "")}
+        className={'calendar ' + (this.props.className || '')}
         style={Object.assign(this.props.style, {
-          display: "grid",
-          gridAutoFlow: "row",
+          display: 'grid',
+          gridAutoFlow: 'row',
           gridTemplateColumns: `repeat(${this.props.columns + 1},1fr)`,
-          gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`
+          gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`,
         })}
       >
-        {!this.state.loadEnded || (
+        {!this.state.tasks ? (
+          <p>Loading...</p>
+        ) : (
           <>
-            {RenderHeader()}
+            {this.renderHeader()}
             <DragMap
               rows={this.props.rows}
-              columns={this.props.columns}
-              rowspan_cb={this.rowspan_cb}
+              columns={this.props.columns + 1}
+              createAvatar={this.createAvatar}
               onDataUpdate={this.arrangeTask}
-            >
-              {RenderBody()}
-            </DragMap>
+              map={this.state.body}
+            />
           </>
         )}
       </div>
     );
-  }
-  arrangeTask = data => {
-    let { index, height, listId, taskId } = data;
-    let startDate = new Date(this.state.startDate);
-    startDate.setDate(startDate.getDate() + index.x);
-    let arrangeDate = startDate;
-    console.log(index);
-    arrangeDate.setHours(
-      arrangeDate.getHours() + index.y * this.props.timeStep
-    );
-    Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
-  };
-
-  rowspan_cb(element, count) {
-    return React.cloneElement(element, {
-      style: Object.assign(element.props.style || {}, {
-        gridColumn: element.props.index.y + 1,
-        gridRow: element.props.index.x + 1 + "/span " + count
-      })
-    });
   }
 }
 
 CalendarView.propTypes = {
   rows: PropTypes.number.isRequired,
   columns: PropTypes.number.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
-  timeStep: PropTypes.number.isRequired
+  timeStep: PropTypes.number.isRequired,
 };
 
 export default CalendarView;

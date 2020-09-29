@@ -3,18 +3,22 @@ import { TaskCard } from "../../view/generic/TaskListView";
 import { ITag } from "./Tag";
 import SubscriptionController from "../../controllers/SubscriptionController";
 import CustomSchema from "../mongooseBase";
+import { ObjectId } from "mongodb";
 
 const Schema = mongoose.Schema;
 
 export interface ITask extends ITag {
   content: string;
   assignedTo: Date;
+  duration: Number;
 }
 
 let TaskSchema = new CustomSchema({
   title: String,
   content: String,
-  assignedTo: Date
+  assignedTo: Date,
+  duration: Number,
+  owner: ObjectId,
 });
 
 let Task = mongoose.model<ITask>("Task", TaskSchema);

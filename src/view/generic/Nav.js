@@ -1,12 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import shortid from "shortid";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import shortid from 'shortid';
 
 export default function Nav(props) {
   return (
     <>
-      {Object.keys(props.items).map(item => (
+      {Object.keys(props.items).map((item) => (
         <li className="nav-item" key={shortid.generate()}>
           <Link to={props.items[item]}>{item}</Link>
         </li>
@@ -16,5 +16,5 @@ export default function Nav(props) {
 }
 
 Nav.propTypes = {
-  items: PropTypes.objectOf(PropTypes.string)
+  items: PropTypes.objectOf(PropTypes.string),
 };

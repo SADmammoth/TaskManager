@@ -1,104 +1,207 @@
-import React from "react";
-import propTypes from "prop-types";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 class DraggableElement extends React.Component {
-  lastPos = { x: null, y: null };
-  dragging = null;
-  static dropped = false;
+  constructor(props) {
+    super(props);
+    this.state = {
+      style: {
+        left: 0,
+        top: 0,
+      },
+      lastPos: {
+        x: null,
+        y: null,
+      },
+      dragging: false,
+    };
 
-  dragProcess = e => {
-    function getnums(str) {
-      return parseInt(str.match(/[0-9]*/)[0]);
-    }
-    if (this.dragging) {
-      this.dragging.style.left =
-        getnums(this.dragging.style.left) + e.clientX - this.lastPos.x + "px";
-      this.lastPos.x = e.clientX;
-      this.dragging.style.top =
-        getnums(this.dragging.style.top) + e.clientY - this.lastPos.y + "px";
-      this.lastPos.y = e.clientY;
-    }
+    this.dragged = React.createRef();
+  }
+
+  componentDidMount() {
+    this.reset();
+    document
+      .getElementById('root')
+      .addEventListener('dragover', this.mouseMove);
+  }
+
+  componentWillUnmount() {
+    document
+      .getElementById('root')
+      .removeEventListener('dragover', this.mouseMove);
+  }
+
+  reset = () => {
+    this.setState(
+      {
+        style: {
+          position: 'static',
+        },
+
+        dragging: false,
+      },
+      () => {
+        let { current: dragged } = this.dragged;
+        let draggedRect = dragged.getBoundingClientRect();
+
+        this.setState((state) => ({
+          ...state,
+          style: {
+            ...state.style,
+            cursor: 'grab',
+            left: draggedRect.left + 'px',
+            top: draggedRect.top + 'px',
+          },
+          lastPos: {
+            x: null,
+            y: null,
+          },
+        }));
+      }
+    );
   };
 
-  dragAbort = e => {
-    document.getElementById("dragging").id = this.oldId;
-    this.dragging.style.pointerEvents = "auto";
-    this.dragging.style.position = "static";
-    this.dragging.style.left = undefined;
-    this.dragging.style.top = undefined;
-    this.dragging = null;
-    this.lastPos.y = null;
-    this.lastPos.x = null;
-    document
-      .getElementById("root")
-      .removeEventListener("drag", this.dragProcess);
-    document
-      .getElementById("root")
-      .removeEventListener("dragend", this.dragEnd);
+  convertToHtml(component) {
+    let div = document.createElement('div');
+    ReactDOM.render(component, div);
+    return div.children[0];
+  }
+
+  setDragImage(event) {
+    event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
+  }
+
+  setData(event) {
+    event.dataTransfer.setData(
+      'application/json',
+      JSON.stringify(this.props.data)
+    );
+  }
+
+  mouseDown = (event) => {
+    event.dataTransfer.effectAllowed = 'copyMove';
+    this.setDragImage(event);
+    this.setData(event);
+
+    this.setState(
+      (state) => {
+        return {
+          ...state,
+          style: {
+            ...state.style,
+            position: 'absolute',
+          },
+          dragging: true,
+        };
+      },
+      () => {
+        setTimeout(() => this.props.onDragStart && this.props.onDragStart(), 0);
+      }
+    );
+
+    document.addEventListener('mouseup', (event) => {
+      let { pointerEvents, ...rest } = this.state.style;
+      this.setState({ style: { ...rest } });
+    });
   };
 
-  dragEnd = e => {
-    if (
-      this.dragging &&
-      document.getElementById("dragging").getAttribute("dropped")
-    ) {
-      document.getElementById("dragging").removeAttribute("dropped");
+  mouseUp = (event) => {
+    if (event.dataTransfer.dropEffect === 'none') {
+      this.props.onReject(this.props.data);
+      this.reset();
+      return;
+    }
 
-      document.getElementById("dragging").id = this.oldId;
-      this.dragging.style.pointerEvents = "auto";
-      this.dragging.style.display = "none";
-      this.dragging = null;
-      this.lastPos.y = null;
-      this.lastPos.x = null;
-      document
-        .getElementById("root")
-        .removeEventListener("drag", this.dragProcess);
-      document
-        .getElementById("root")
-        .removeEventListener("dragend", this.dragEnd);
-    } else {
-      this.dragAbort(e);
+    this.setState((state) => {
+      return {
+        ...state,
+        lastPos: {
+          x: null,
+          y: null,
+        },
+        dragging: false,
+      };
+    });
+  };
+
+  mouseMove = (event) => {
+    if (this.state.dragging) {
+      if (this.state.lastPos.x === null) {
+        this.setState({
+          ...this.state,
+          lastPos: {
+            x: event.clientX,
+            y: event.clientY,
+          },
+        });
+        return;
+      }
+      if (this.dragged.current.hasAttribute('data-snap')) {
+        let [left, top] = this.dragged.current
+          .getAttribute('data-snap')
+          .split(',');
+        this.setState({
+          style: {
+            ...this.state.style,
+            pointerEvents: 'none',
+            left: left + 'px',
+            top: top + 'px',
+          },
+          lastPos: {
+            x: parseInt(left),
+            y: parseInt(top),
+          },
+        });
+        return;
+      }
+
+      this.setState((state) => {
+        let diffX = state.lastPos.x - event.clientX;
+        let diffY = state.lastPos.y - event.clientY;
+        if (Math.abs(diffX) > 2 || Math.abs(diffY) > 2) {
+          return {
+            ...state,
+            style: {
+              ...state.style,
+              pointerEvents: 'none',
+              left: parseInt(state.style.left) - diffX + 'px',
+              top: parseInt(state.style.top) - diffY + 'px',
+            },
+            lastPos: {
+              x: event.clientX,
+              y: event.clientY,
+            },
+          };
+        }
+      });
     }
   };
 
   render() {
+    const { style, dragging } = this.state;
+    let { avatar, className, style: propsStyle } = this.props;
+    if (!propsStyle) {
+      propsStyle = [];
+    }
+
     return (
       <div
-        className="draggable"
+        ref={this.dragged}
+        id={dragging ? 'dragging' : ''}
+        className={`draggable ${className || ''}`}
         draggable="true"
-        onDragStart={e => {
-          this.oldId = e.currentTarget.id;
-          e.currentTarget.id = "dragging" + this.oldId;
-          console.log(e.currentTarget);
-          e.dataTransfer.setDragImage(document.createElement("div"), 0, 0);
-          e.dataTransfer.setData(
-            this.props.datatype,
-            JSON.stringify(this.props.data)
-          );
-        }}
-        onMouseDown={e => {
-          this.dragging = e.currentTarget;
-          e.currentTarget.style.position = "absolute";
-          this.lastPos.x =
-            e.clientX + e.currentTarget.getBoundingClientRect().width / 2;
-          e.currentTarget.style.left = e.clientX + "px";
-          this.lastPos.y =
-            e.clientY + e.currentTarget.getBoundingClientRect().height / 2;
-          e.currentTarget.style.top = e.clientY + "px";
-          document
-            .getElementById("root")
-            .addEventListener("mouseup", this.mouseUp);
-          document
-            .getElementById("root")
-            .addEventListener("dragend", this.dragEnd);
-          document
-            .getElementById("root")
-            .addEventListener("drag", this.dragProcess);
-          e.currentTarget.style.pointerEvents = "none";
-        }}
+        style={{ ...propsStyle, ...style }}
+        onMouseDown={() =>
+          this.setState({
+            style: { ...this.state.style, cursor: 'grabbing' },
+          })
+        }
+        data-height={this.props.height}
+        onDragStart={this.mouseDown}
+        onDragEnd={this.mouseUp}
       >
-        {this.props.children}
+        {dragging ? avatar : this.props.children}
       </div>
     );
   }

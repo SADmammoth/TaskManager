@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import CustomSchema, { mongooseBase } from "../mongooseBase";
+import { ObjectId } from "mongodb";
 const Schema = mongoose.Schema;
 
 export interface ITag extends mongooseBase {
   title: string;
+  owner: ObjectId;
 }
 
 let TagSchema = new CustomSchema({ title: String });

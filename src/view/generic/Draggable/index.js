@@ -1,6 +1,5 @@
-import DraggableArea from './DraggableArea';
+import DropArea from './DropArea';
 import DraggableElement from './DraggableElement';
 import DragMap from './DragMap';
-import DraggableList from './DraggableList';
 
-export {DraggableArea, DraggableElement, DragMap, DraggableList};
+export { DropArea, DraggableElement, DragMap };

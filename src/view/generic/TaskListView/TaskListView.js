@@ -1,31 +1,46 @@
-import React from "react";
-import propTypes from "prop-types";
-import { Redirect } from "react-router-dom";
-import DraggableTask from "./DraggableTask";
-import Client from "../../../helpers/Client.ts";
-import CreateTaskWidget from "./CreateTaskWidget";
+import React from 'react';
+import propTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import DraggableTask from './DraggableTask';
+import Client from '../../../helpers/Client.ts';
+import Task from './TaskCard';
 
 class TaskListView extends React.Component {
   state = {
     tasks: [],
-    interval: null
+    interval: null,
+    location: '',
   };
 
   componentDidMount() {
     this.requestTaskList();
+    this.setState({ location: document.location.pathname });
     Client.SubscribeOnDataUpdate(
       document.location.pathname,
       this.requestTaskList
     );
   }
 
-  componentDidUnmount() {
-    Client.Unsubscribe(document.location.pathname);
+  componentDidUpdate(prevProps) {
+    if (prevProps.listId !== this.props.listId) {
+      this.requestTaskList();
+      this.setState({ location: document.location.pathname });
+      Client.SubscribeOnDataUpdate(
+        document.location.pathname,
+        this.requestTaskList
+      );
+    }
   }
+
+  componentWillUnmount() {
+    Client.Unsubscribe(this.state.location);
+  }
+
   requestTaskList = async () => {
     let tasks = await Client.getTasks(this.props.listId);
     if (tasks.tasks) this.setState({ tasks: tasks.tasks });
   };
+
   createTask = (task, taskId, listId) => {
     if (!task) {
       return task;
@@ -36,10 +51,11 @@ class TaskListView extends React.Component {
       <Task taskId={taskId} listId={listId} {...task} />
     );
   };
+
   render() {
     return (
       <ul
-        className={"no-type-list " + this.props.className || ""}
+        className={'no-type-list ' + this.props.className || ''}
         style={this.props.style}
       >
         {this.state.tasks.map((el, i) => {
@@ -53,9 +69,7 @@ class TaskListView extends React.Component {
 }
 
 TaskListView.propTypes = {
-  listId: propTypes.number
-  // tasks: propTypes.arrayOf(propTypes.shape({ name: propTypes.string, content: propTypes.string }))
-  //   .isRequired
+  listId: propTypes.number,
 };
 
 export default TaskListView;

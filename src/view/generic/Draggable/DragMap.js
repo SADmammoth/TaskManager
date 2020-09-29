@@ -1,50 +1,93 @@
-import React from "react";
-import TaskCard from "../TaskListView/TaskCard";
-import DraggableArea from "./DraggableArea";
+import React, { useEffect, useState } from 'react';
+import toLinearIndex from '../../../helpers/toLinearIndex';
+import DropArea from './DropArea';
 
-class DragMap extends React.Component {
-  state = {
-    body: []
-  };
-  componentDidMount() {
-    this.setState({
-      body: this.props.children
-    });
-  }
-  render() {
-    return (
-      <>
-        {React.Children.map(this.state.body, child =>
-          child.type === DraggableArea
-            ? React.cloneElement(child, { setData: this.setData })
-            : child
-        )}
-      </>
-    );
-  }
+const DragMap = (props) => {
+  let [body, setBody] = useState([]);
 
-  setData = data => {
+  function setData(data, body) {
     let { height, index, title } = data;
-    let array = [...this.state.body];
-    let curr;
-    for (let i = 0; i < height; i++) {
-      curr = array[(index.x + i - 1) * this.props.columns + index.y];
-      if (!(curr.type === DraggableArea)) {
+    let array = [...body];
+    let curr = null;
+
+    let indBuff;
+
+    for (let i = index.x; i < index.x + height; i++) {
+      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
+
+      curr = array[indBuff];
+
+      if (curr.type !== 'droparea') {
         return;
       }
-    }
-    for (let i = 0; i < height; i++) {
-      if (i === 1) {
-        array[
-          (index.x - 1) * this.props.columns + index.y
-        ] = this.props.rowspan_cb(<div index={index}>{title}</div>, height);
-      }
-      array[(index.x + i - 1) * this.props.columns + index.y] = null;
-    }
-    this.setState({ body: array });
 
-    this.props.onDataUpdate(data);
+      array[indBuff] = { ...array[indBuff], type: 'hidden' };
+    }
+
+    array[currentIndex(index.x)] = {
+      type: 'avatar',
+      avatar: props.createAvatar(data, height),
+    };
+
+    setBody(array);
+    props.onDataUpdate(data);
+  }
+
+  function checkSnap(index, height) {
+    let indBuff;
+    let curr;
+
+    for (let i = index.x; i < index.x + height; i++) {
+      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
+      curr = body[indBuff];
+      if (curr.type !== 'droparea') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    setBody(props.map.flat());
+  }, [JSON.stringify(props.map)]);
+
+  let drawBody = () => {
+    return body.map((child) => {
+      if (!child) {
+        return child;
+      }
+      let { type, key, index, className } = child;
+
+      if (type === 'hidden') {
+        return (
+          <DropArea
+            key={key}
+            index={index}
+            className={className + ' hidden'}
+            setData={(data) => setData(data, body)}
+            checkSnap={checkSnap}
+          ></DropArea>
+        );
+      }
+      if (type === 'avatar') {
+        return child.avatar;
+      } else if (type === 'droparea') {
+        return (
+          <DropArea
+            key={key}
+            index={index}
+            className={className}
+            setData={(data) => setData(data, body)}
+            checkSnap={checkSnap}
+          ></DropArea>
+        );
+      } else {
+        return child;
+      }
+    });
   };
-}
+
+  return <>{drawBody()}</>;
+};
 
 export default DragMap;

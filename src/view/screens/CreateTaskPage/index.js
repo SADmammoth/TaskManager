@@ -1,7 +1,10 @@
-import React from "react";
-import { Helmet } from "react-helmet";
-import Form from "../../generic/Form";
-import Client from "../../../helpers/Client.ts";
+import React from 'react';
+import { Helmet } from 'react-helmet';
+import Form from '@sadmammoth/react-form';
+import '@sadmammoth/react-form/dist/index.css';
+
+import Client from '../../../helpers/Client.ts';
+import Button from '../../generic/Button';
 
 export default class CreateTaskPage extends React.Component {
   embedValidator() {}
@@ -17,23 +20,41 @@ export default class CreateTaskPage extends React.Component {
         </Helmet>
         <h1 className="h1">Create task</h1>
         <Form
-          onSubmit={data => {
-            console.log(data), Client.addTask(data, 0);
+          onSubmit={({ list, ...data }) => {
+            return Client.addTask(data, list);
           }}
           inputs={[
             {
-              type: "text",
-              name: "title",
-              description: "Username",
-              required: true
+              type: 'text',
+              name: 'title',
+              placeholder: 'Title',
+              required: false,
+              label: 'Title',
             },
             {
-              type: "textarea",
-              name: "content",
-              description: "HTML content",
-              required: false
-            }
+              type: 'markdown',
+              name: 'content',
+              required: false,
+              label: 'Content',
+              editable: true,
+            },
+            {
+              type: 'select',
+              name: 'list',
+              valueOptions: Client.getListsNames,
+              required: false,
+            },
+            {
+              type: 'number',
+              name: 'duration',
+              value: 1,
+              required: false,
+              label: 'Duration, hrs',
+              attributes: { min: 1, max: 8, step: 0.5 },
+            },
           ]}
+          style={{ width: '20vw', margin: '0 auto' }}
+          submitButton={<Button content="Submit" />}
         />
       </>
     );
