@@ -125,7 +125,7 @@ export default class Client {
 
     let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
-
+    console.log(responseObject);
     return new Promise((resolve, reject) => {
       resolve(responseObject);
     });
