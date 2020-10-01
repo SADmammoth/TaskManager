@@ -29,6 +29,7 @@ class DraggableTask extends React.Component {
             className={className}
             height={duration}
             title={title}
+            listId={listId}
             content={content}
             style={style}
           />

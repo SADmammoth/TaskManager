@@ -20,7 +20,6 @@ const DropArea = (props) => {
           )
         ) {
           let { left, top } = droparea.current.getBoundingClientRect();
-
           dragging.setAttribute('data-snap', `${left},${top}`);
         }
       }}

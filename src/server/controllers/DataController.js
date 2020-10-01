@@ -112,7 +112,10 @@ exports.getList = async function (req, res) {
     res.json({
       tasks: await Promise.all(
         list.tasks
-          .map((el) => Task.findOne({ _id: el }).exec()) //TODO Refactor
+          .map(async (el) => ({
+            ...JSON.parse(JSON.stringify(await Task.findOne({ _id: el }))),
+            listId: id,
+          })) //TODO Refactor
           .filter((el) => !!el)
       ),
     });
@@ -151,7 +154,12 @@ exports.getAllTasks = async function (req, res) {
   ];
 
   let tasksList = await Promise.all(
-    lists.map(({ tasks }) => tasks.map(async (_id) => await Task.findById(_id)))
+    lists.map(({ _id: listId, tasks }) =>
+      tasks.map(async (_id) => ({
+        ...JSON.parse(JSON.stringify(await Task.findById(_id))),
+        listId,
+      }))
+    )
   );
 
   res.json(tasksList);

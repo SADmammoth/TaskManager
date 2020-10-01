@@ -6,6 +6,7 @@ const DragMap = (props) => {
   let [body, setBody] = useState([]);
 
   function setData(data, body) {
+    console.log(data, body);
     let { height, index, title } = data;
     let array = [...body];
     let curr = null;
@@ -24,7 +25,7 @@ const DragMap = (props) => {
       array[indBuff] = { ...array[indBuff], type: 'hidden' };
     }
 
-    array[currentIndex(index.x)] = {
+    array[toLinearIndex(index, props.columns)] = {
       type: 'avatar',
       avatar: props.createAvatar(data, height),
     };

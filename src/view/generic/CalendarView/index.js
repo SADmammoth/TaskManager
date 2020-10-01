@@ -41,10 +41,14 @@ class CalendarView extends React.Component {
   renderHeader = () => {
     let array = [<div key={`${this.state._id}-header-0`}></div>];
     let startDate = new Date(this.state.startDate);
-    let date = startDate.toLocaleDateString('ru-RU');
 
     for (let i = 1; i < this.props.columns + 1; i++) {
-      array.push(<div key={`${this.state._id}-header-${i}`}>{date}</div>);
+      array.push(
+        <div key={`${this.state._id}-header-${i}`}>
+          {startDate.toLocaleDateString('ru-RU')}
+        </div>
+      );
+
       startDate.setDate(startDate.getDate() + 1);
     }
 
@@ -53,10 +57,11 @@ class CalendarView extends React.Component {
 
   moveDate = (date, x, y) => {
     let arrangeDate = new Date(date);
-    arrangeDate.setDate(arrangeDate.getDate() + x - 1);
+    console.log(x, y);
+    arrangeDate.setDate(arrangeDate.getDate() + y - 1);
 
     arrangeDate.setHours(
-      arrangeDate.getHours() + (y - 1) * this.props.timeStep
+      arrangeDate.getHours() + (x - 1) * this.props.timeStep
     );
 
     return arrangeDate;
@@ -112,6 +117,7 @@ class CalendarView extends React.Component {
         task = this.state.tasks[arrangeDate.valueOf()];
 
         if (task) {
+          console.log(arrangeDate, r, c);
           for (let i = 0; i < task.duration; i++) {
             if (this.state.draggingTask === task._id && i > 0) {
               row.push({
@@ -125,7 +131,7 @@ class CalendarView extends React.Component {
             }
           }
 
-          let { title, duration } = task;
+          let { title, duration, listId, _id } = task;
 
           row.push({
             type: 'avatar',
@@ -137,6 +143,8 @@ class CalendarView extends React.Component {
                 key: key(r, c, _id),
                 index: { x: r, y: c },
                 title: title,
+                listId,
+                taskId: _id,
                 height: duration,
               },
               task.duration
@@ -208,11 +216,14 @@ class CalendarView extends React.Component {
         gridRow: attributes.index.x + 1 + '/span ' + count,
       };
     }
+    console.log(attributes);
     return (
       <TaskAvatar
         {...attributes}
         height={count}
         style={style}
+        taskId={attributes.taskId}
+        listId={attributes.listId}
         onDragStart={() => this.replaceBack(attributes)}
         onReject={() => this.rejectDrag(attributes)}
       />

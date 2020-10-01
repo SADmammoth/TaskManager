@@ -14,7 +14,7 @@ class TaskAvatar extends React.Component {
       onDragStart,
       onReject,
     } = this.props;
-
+    console.log(listId);
     let avatarContent = (
       <div
         className={'task-avatar ' + (className || '')}
