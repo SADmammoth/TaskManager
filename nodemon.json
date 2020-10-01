@@ -1,5 +1,5 @@
 {
   "ignore": ["node_modules", "*.css"],
-  "watch": ["src"],
+  "watch": ["src/server"],
   "ext": "*"
 }

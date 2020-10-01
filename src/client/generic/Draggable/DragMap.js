@@ -24,7 +24,7 @@ const DragMap = (props) => {
       array[indBuff] = { ...array[indBuff], type: 'hidden' };
     }
 
-    array[toLinearIndex(index, props.columns)] = {
+    array[toLinearIndex(index)] = {
       type: 'avatar',
       avatar: props.createAvatar(data, height),
     };

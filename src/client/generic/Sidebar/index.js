@@ -8,12 +8,12 @@ class Sidebar extends React.Component {
           className={'sidebar horizontal-stack ' + (this.props.className || '')}
           style={this.props.style}
         >
-          <div class="menus vertical-stack">
+          <div className="menus vertical-stack">
             {React.Children.map(this.props.children, (child) =>
               child.type === Menu ? child : null
             )}
           </div>
-          <div class="sidebar-content vertical-stack fullheight-auto">
+          <div className="sidebar-content vertical-stack fullheight-auto">
             {React.Children.map(this.props.children, (child) =>
               child.type !== Menu ? child : null
             )}

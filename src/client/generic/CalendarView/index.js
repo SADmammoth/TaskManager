@@ -41,14 +41,10 @@ class CalendarView extends React.Component {
   renderHeader = () => {
     let array = [<div key={`${this.state._id}-header-0`}></div>];
     let startDate = new Date(this.state.startDate);
+    let date = startDate.toLocaleDateString('ru-RU');
 
     for (let i = 1; i < this.props.columns + 1; i++) {
-      array.push(
-        <div key={`${this.state._id}-header-${i}`}>
-          {startDate.toLocaleDateString('ru-RU')}
-        </div>
-      );
-
+      array.push(<div key={`${this.state._id}-header-${i}`}>{date}</div>);
       startDate.setDate(startDate.getDate() + 1);
     }
 
@@ -57,10 +53,10 @@ class CalendarView extends React.Component {
 
   moveDate = (date, x, y) => {
     let arrangeDate = new Date(date);
-    arrangeDate.setDate(arrangeDate.getDate() + y - 1);
+    arrangeDate.setDate(arrangeDate.getDate() + x - 1);
 
     arrangeDate.setHours(
-      arrangeDate.getHours() + (x - 1) * this.props.timeStep
+      arrangeDate.getHours() + (y - 1) * this.props.timeStep
     );
 
     return arrangeDate;
@@ -116,7 +112,6 @@ class CalendarView extends React.Component {
         task = this.state.tasks[arrangeDate.valueOf()];
 
         if (task) {
-          console.log(arrangeDate, r, c);
           for (let i = 0; i < task.duration; i++) {
             if (this.state.draggingTask === task._id && i > 0) {
               row.push({
@@ -130,7 +125,7 @@ class CalendarView extends React.Component {
             }
           }
 
-          let { title, duration, listId, _id } = task;
+          let { title, duration } = task;
 
           row.push({
             type: 'avatar',
@@ -142,8 +137,6 @@ class CalendarView extends React.Component {
                 key: key(r, c, _id),
                 index: { x: r, y: c },
                 title: title,
-                listId,
-                taskId: _id,
                 height: duration,
               },
               task.duration
@@ -220,8 +213,6 @@ class CalendarView extends React.Component {
         {...attributes}
         height={count}
         style={style}
-        taskId={attributes.taskId}
-        listId={attributes.listId}
         onDragStart={() => this.replaceBack(attributes)}
         onReject={() => this.rejectDrag(attributes)}
       />
@@ -232,12 +223,13 @@ class CalendarView extends React.Component {
     return (
       <div
         className={'calendar ' + (this.props.className || '')}
-        style={Object.assign(this.props.style, {
+        style={{
+          ...this.props.style,
           display: 'grid',
           gridAutoFlow: 'row',
           gridTemplateColumns: `repeat(${this.props.columns + 1},1fr)`,
           gridTemplateRows: `repeat(${this.props.rows + 1},1fr)`,
-        })}
+        }}
       >
         {!this.state.tasks ? (
           <p>Loading...</p>
@@ -261,7 +253,7 @@ class CalendarView extends React.Component {
 CalendarView.propTypes = {
   rows: PropTypes.number.isRequired,
   columns: PropTypes.number.isRequired,
-  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tasks: PropTypes.objectOf(PropTypes.object),
   startDate: PropTypes.instanceOf(Date).isRequired,
   timeStep: PropTypes.number.isRequired,
 };

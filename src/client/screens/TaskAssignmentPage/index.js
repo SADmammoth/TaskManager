@@ -11,6 +11,8 @@ import { DraggableTaskList, TaskList } from '../../generic/TaskListView';
 import Client from '../../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
+import AddressCardIcon from '../../assets/icons/address-card-solid.svg';
+
 export default class TaskAssignmentPage extends React.Component {
   constructor(props) {
     super(props);
@@ -99,28 +101,32 @@ export default class TaskAssignmentPage extends React.Component {
           <Menu
             buttons={[
               {
+                key: 'address-btn-1',
                 title: 'Address',
-                icon: require('../../assets/icons/address-card-solid.svg'),
+                icon: <AddressCardIcon />,
                 className: 'icon-btn',
                 action: () => alert(0),
               },
               {
+                key: 'address-btn-2',
                 title: 'Address',
-                icon: require('../../assets/icons/address-card-solid.svg'),
+                icon: <AddressCardIcon />,
                 className: 'icon-btn',
                 action: () => alert(0),
               },
               {
+                key: 'address-btn-3',
                 title: 'Address',
                 content: 'hi',
                 className: 'icon-btn',
                 action: () => alert(0),
               },
               {
+                key: 'address-btn-4',
                 title: 'Address',
                 content: (
                   <>
-                    <i class="fas fa-ad"></i>Hello
+                    <i className="fas fa-ad"></i>Hello
                   </>
                 ),
                 className: 'icon-btn',

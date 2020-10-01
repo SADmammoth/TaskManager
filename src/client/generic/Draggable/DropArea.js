@@ -5,6 +5,9 @@ const DropArea = (props) => {
   return (
     <div
       ref={droparea}
+      // onMouseOver={() => {
+      //   console.log(9);
+      // }}
       onDragOver={(e) => {
         e.preventDefault();
         let dragging = document.getElementById('dragging');
@@ -17,6 +20,7 @@ const DropArea = (props) => {
           )
         ) {
           let { left, top } = droparea.current.getBoundingClientRect();
+
           dragging.setAttribute('data-snap', `${left},${top}`);
         }
       }}

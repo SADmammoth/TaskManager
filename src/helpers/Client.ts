@@ -17,7 +17,6 @@ export default class Client {
   static addToken(token: string) {
     let cleanToken = token.replace("JWT ", "");
     Client.headers.Authorization = `bearer ${cleanToken}`;
-    console.log(Client.headers.Authorization);
     localStorage.setItem("token", cleanToken);
   }
 
@@ -125,7 +124,6 @@ export default class Client {
 
     let responseObject = Client.parseJSON(response);
     if (callback) callback(responseObject);
-    console.log(responseObject);
     return new Promise((resolve, reject) => {
       resolve(responseObject);
     });
