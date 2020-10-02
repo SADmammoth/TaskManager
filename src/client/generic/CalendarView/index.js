@@ -41,10 +41,13 @@ class CalendarView extends React.Component {
   renderHeader = () => {
     let array = [<div key={`${this.state._id}-header-0`}></div>];
     let startDate = new Date(this.state.startDate);
-    let date = startDate.toLocaleDateString('ru-RU');
 
     for (let i = 1; i < this.props.columns + 1; i++) {
-      array.push(<div key={`${this.state._id}-header-${i}`}>{date}</div>);
+      array.push(
+        <div key={`${this.state._id}-header-${i}`}>
+          {startDate.toLocaleDateString('ru-RU')}
+        </div>
+      );
       startDate.setDate(startDate.getDate() + 1);
     }
 
@@ -53,10 +56,9 @@ class CalendarView extends React.Component {
 
   moveDate = (date, x, y) => {
     let arrangeDate = new Date(date);
-    arrangeDate.setDate(arrangeDate.getDate() + x - 1);
-
+    arrangeDate.setDate(arrangeDate.getDate() + y - 1);
     arrangeDate.setHours(
-      arrangeDate.getHours() + (y - 1) * this.props.timeStep
+      arrangeDate.getHours() + (x - 1) * this.props.timeStep
     );
 
     return arrangeDate;
@@ -109,7 +111,7 @@ class CalendarView extends React.Component {
         }
 
         arrangeDate = this.moveDate(startDate, r, c);
-        task = this.state.tasks[arrangeDate.valueOf()];
+        task = this.state.tasks[arrangeDate];
 
         if (task) {
           for (let i = 0; i < task.duration; i++) {

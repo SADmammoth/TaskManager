@@ -29,7 +29,7 @@ export default class TaskAssignmentPage extends React.Component {
         let tasks = {};
         res.tasks.forEach((el) => {
           if (el.assignedTo) {
-            tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+            tasks[new Date(el.assignedTo)] = el;
           }
         });
         return tasks;
@@ -49,7 +49,7 @@ export default class TaskAssignmentPage extends React.Component {
           let tasks = {};
           res.tasks.forEach((el) => {
             if (el.assignedTo) {
-              tasks[new Date(el.assignedTo).valueOf().toString()] = el;
+              tasks[new Date(el.assignedTo)] = el;
             }
           });
           return tasks;
