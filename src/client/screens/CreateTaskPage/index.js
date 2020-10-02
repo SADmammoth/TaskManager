@@ -25,6 +25,7 @@ export default class CreateTaskPage extends React.Component {
           }}
           inputs={[
             {
+              id: 'title',
               type: 'text',
               name: 'title',
               placeholder: 'Title',
@@ -32,6 +33,7 @@ export default class CreateTaskPage extends React.Component {
               label: 'Title',
             },
             {
+              id: 'content',
               type: 'markdown',
               name: 'content',
               required: false,
@@ -39,12 +41,14 @@ export default class CreateTaskPage extends React.Component {
               editable: true,
             },
             {
+              id: 'list',
               type: 'select',
               name: 'list',
               valueOptions: Client.getListsNames,
               required: false,
             },
             {
+              id: 'duration',
               type: 'number',
               name: 'duration',
               value: 1,

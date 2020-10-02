@@ -1,6 +1,6 @@
-@import '../css/normalize.css';
-@import '../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css';
-@import '../../assets/SF-Pro-Display/index.css';
+@import "../css/normalize.css";
+@import "../../assets/fonts/fontawesome-free-5.12.0-web/css/all.min.css";
+@import "../../assets/SF-Pro-Display/index.css";
 
 //TODO Add table of contents
 
@@ -16,29 +16,22 @@
   --btn-bg: var(--dark-bg);
   --btn-text: var(--common-text);
 }
-
-#root,
-body {
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-
 //!Typography
 
 html {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-size: 16px;
   font-weight: 400;
 }
 
 .sitename {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 400;
   font-size: 1.5rem;
 }
 
 .h1 {
-  font-family: 'SF Pro Display';
+  font-family: "SF Pro Display";
   font-weight: 700;
   font-size: 2rem;
 }
@@ -94,37 +87,37 @@ header {
   list-style-type: none;
 }
 
-table {
-  border-spacing: 2px 0;
-  tr:first-child {
-    td:first-child {
-      border: none;
-    }
-    td {
-      border: 1px solid black;
-    }
-  }
-  tr:nth-child(2) {
-    td {
-      border-top: 1px solid black;
-    }
-  }
-  tr:nth-child(n + 2) {
-    height: 20px;
-    position: relative;
-    td:first-child {
-      border: none;
-      position: relative;
-      top: 10px;
-      border-collapse: none;
-    }
-    td {
-      border-left: 1px solid black;
-      border-right: 1px solid black;
-      border-bottom: 1px dashed black;
-    }
-  }
-}
+// table {
+//   border-spacing: 2px 0;
+//   tr:first-child {
+//     td:first-child {
+//       border: none;
+//     }
+//     td {
+//       border: 1px solid black;
+//     }
+//   }
+//   tr:nth-child(2) {
+//     td {
+//       border-top: 1px solid black;
+//     }
+//   }
+//   tr:nth-child(n + 2) {
+//     height: 20px;
+//     position: relative;
+//     td:first-child {
+//       border: none;
+//       position: relative;
+//       top: 10px;
+//       border-collapse: none;
+//     }
+//     td {
+//       border-left: 1px solid black;
+//       border-right: 1px solid black;
+//       border-bottom: 1px dashed black;
+//     }
+//   }
+// }
 
 .icon-btn {
   width: 50px;
@@ -151,12 +144,10 @@ table {
 }
 
 .sidebar {
-  float: right;
   background: var(--common-bg);
 }
 
 .task-card {
-  height: 90px;
   width: 210px;
   background-color: var(--light-bg);
   padding: 10px;
@@ -177,6 +168,10 @@ table {
   }
 }
 
+.task-card:not(#dragging) {
+  height: 90px;
+}
+
 .task-avatar {
   height: calc(50px * var(--height));
   background-color: var(--light-bg);
@@ -195,12 +190,12 @@ table {
   list-style-type: none;
 }
 
-.calendar {
-  empty-cells: show;
-  td {
-    padding: 20px;
-  }
-}
+// .calendar {
+//   empty-cells: show;
+//   td {
+//     padding: 20px;
+//   }
+// }
 
 .btn {
   color: var(--btn-text);
@@ -240,7 +235,6 @@ table {
 }
 
 .calendar-cell {
-  position: relative;
   border: 2px solid black;
   &.hidden {
     display: none;

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { isThisTypeNode } from 'typescript';
 
 class DraggableElement extends React.Component {
   constructor(props) {
@@ -8,6 +9,7 @@ class DraggableElement extends React.Component {
       style: {
         left: 0,
         top: 0,
+        containment: 'window',
       },
       lastPos: {
         x: null,
@@ -80,6 +82,7 @@ class DraggableElement extends React.Component {
   }
 
   mouseDown = (event) => {
+    event.stopPropagation();
     event.dataTransfer.effectAllowed = 'copyMove';
     this.setDragImage(event);
     this.setData(event);
@@ -128,11 +131,19 @@ class DraggableElement extends React.Component {
   mouseMove = (event) => {
     if (this.state.dragging) {
       if (this.state.lastPos.x === null) {
+        let { width, height } = this.dragged.current.getBoundingClientRect();
+
+        console.log(width);
         this.setState({
           ...this.state,
+          style: {
+            ...this.state.style,
+            left: event.pageX - width / 2,
+            top: event.pageY - height / 2,
+          },
           lastPos: {
-            x: event.clientX,
-            y: event.clientY,
+            x: event.pageX,
+            y: event.pageY,
           },
         });
         return;
@@ -157,8 +168,8 @@ class DraggableElement extends React.Component {
       }
 
       this.setState((state) => {
-        let diffX = state.lastPos.x - event.clientX;
-        let diffY = state.lastPos.y - event.clientY;
+        let diffX = state.lastPos.x - event.pageX;
+        let diffY = state.lastPos.y - event.pageY;
         if (Math.abs(diffX) > 2 || Math.abs(diffY) > 2) {
           return {
             ...state,
@@ -169,8 +180,8 @@ class DraggableElement extends React.Component {
               top: parseInt(state.style.top) - diffY + 'px',
             },
             lastPos: {
-              x: event.clientX,
-              y: event.clientY,
+              x: event.pageX,
+              y: event.pageY,
             },
           };
         }
@@ -194,7 +205,10 @@ class DraggableElement extends React.Component {
         style={{ ...propsStyle, ...style }}
         onMouseDown={() =>
           this.setState({
-            style: { ...this.state.style, cursor: 'grabbing' },
+            style: {
+              ...this.state.style,
+              cursor: 'grabbing',
+            },
           })
         }
         data-height={this.props.height}
@@ -206,5 +220,9 @@ class DraggableElement extends React.Component {
     );
   }
 }
+
+DraggableElement.defaultProps = {
+  onReject: () => {},
+};
 
 export default DraggableElement;

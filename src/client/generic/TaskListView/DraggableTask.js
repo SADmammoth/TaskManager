@@ -22,6 +22,8 @@ class DraggableTask extends React.Component {
           height: duration,
           title,
         }}
+        className={'task-card ' + (this.props.className || '')}
+        style={this.props.style}
         height={duration}
         datatype="application/json"
         avatar={

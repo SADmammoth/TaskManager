@@ -149,7 +149,7 @@ export default class Client {
 
     return responseObject.map((list: object, i: number) => ({
       label: list.title,
-      value: i,
+      value: i.toString(),
     }));
   }
 

@@ -44,4 +44,5 @@ class TaskAvatar extends React.Component {
     );
   }
 }
+
 export default TaskAvatar;

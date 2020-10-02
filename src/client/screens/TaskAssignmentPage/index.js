@@ -76,7 +76,6 @@ export default class TaskAssignmentPage extends React.Component {
           startDate={new Date(2020, 1, 12, 12, 0, 0, 0)}
           timeStep={1}
           tasks={this.state.tasks}
-          style={{ width: '70%', float: 'left', height: '70vh' }}
         ></CalendarView>
 
         <Button

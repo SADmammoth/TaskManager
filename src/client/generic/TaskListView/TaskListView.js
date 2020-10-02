@@ -60,7 +60,9 @@ class TaskListView extends React.Component {
       >
         {this.state.tasks.map((el, i) => {
           if (!el.assignedTo) {
-            return <li>{this.createTask(el, i, this.props.listId)}</li>;
+            return (
+              <li key={el._id}>{this.createTask(el, i, this.props.listId)}</li>
+            );
           }
         })}
       </ul>
