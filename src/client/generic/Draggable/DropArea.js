@@ -26,7 +26,7 @@ const DropArea = (props) => {
       }}
       onDragLeave={(e) => {
         let dragging = document.getElementById('dragging');
-        +dragging.removeAttribute('data-snap');
+        if (dragging) dragging.removeAttribute('data-snap');
       }}
       onDrop={(e) => {
         let data = JSON.parse(e.dataTransfer.getData('application/json'));

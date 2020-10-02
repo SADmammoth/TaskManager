@@ -83,9 +83,10 @@ class DraggableElement extends React.Component {
 
   mouseDown = (event) => {
     event.stopPropagation();
-    event.dataTransfer.effectAllowed = 'copyMove';
     this.setDragImage(event);
     this.setData(event);
+
+    event.dataTransfer.effectAllowed = 'copyMove';
 
     this.setState(
       (state) => {
@@ -95,11 +96,18 @@ class DraggableElement extends React.Component {
             ...state.style,
             position: 'absolute',
           },
-          dragging: true,
         };
       },
       () => {
         setTimeout(() => this.props.onDragStart && this.props.onDragStart(), 0);
+        let timeout = setTimeout(() => {
+          this.setState({
+            dragging: true,
+          });
+        }, 300);
+        this.setState({
+          timeout,
+        });
       }
     );
 
@@ -110,6 +118,10 @@ class DraggableElement extends React.Component {
   };
 
   mouseUp = (event) => {
+    if (!this.state.dragging) {
+      clearTimeout(this.state.timeout);
+      this.setState({ timeout: undefined });
+    }
     if (event.dataTransfer.dropEffect === 'none') {
       this.props.onReject(this.props.data);
       this.reset();
@@ -133,7 +145,6 @@ class DraggableElement extends React.Component {
       if (this.state.lastPos.x === null) {
         let { width, height } = this.dragged.current.getBoundingClientRect();
 
-        console.log(width);
         this.setState({
           ...this.state,
           style: {
@@ -204,14 +215,27 @@ class DraggableElement extends React.Component {
         className={`draggable ${className || ''}`}
         draggable="true"
         style={{ ...propsStyle, ...style }}
-        onMouseDown={() =>
+        onMouseDown={() => {
           this.setState({
             style: {
               ...this.state.style,
               cursor: 'grabbing',
             },
-          })
-        }
+          });
+        }}
+        onMouseUp={() => {
+          console.log(9);
+          if (!this.state.dragging) {
+            clearTimeout(this.state.timeout);
+            this.setState({ timeout: undefined });
+          }
+          this.setState({
+            style: {
+              ...this.state.style,
+              cursor: 'grab',
+            },
+          });
+        }}
         data-height={this.props.height}
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}

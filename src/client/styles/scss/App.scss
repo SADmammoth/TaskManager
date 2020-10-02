@@ -168,6 +168,11 @@ header {
   }
 }
 
+#dragging {
+  box-shadow: #1f1f1f41 2px 2px 10px;
+  transition: box-shadow 300ms;
+}
+
 .task-card:not(#dragging) {
   height: 90px;
 }
