@@ -149,6 +149,7 @@ class DraggableElement extends React.Component {
         return;
       }
       if (this.dragged.current.hasAttribute('data-snap')) {
+        let { width, height } = this.dragged.current.getBoundingClientRect();
         let [left, top] = this.dragged.current
           .getAttribute('data-snap')
           .split(',');
@@ -160,8 +161,8 @@ class DraggableElement extends React.Component {
             top: top + 'px',
           },
           lastPos: {
-            x: parseInt(left),
-            y: parseInt(top),
+            x: parseInt(left) + width / 2,
+            y: parseInt(top) + height / 2,
           },
         });
         return;
