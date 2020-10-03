@@ -14,6 +14,7 @@ class DraggableTask extends React.Component {
       style,
       className,
     } = this.props;
+
     return (
       <DraggableElement
         data={{
@@ -29,12 +30,15 @@ class DraggableTask extends React.Component {
         avatar={
           <TaskAvatar
             className={className}
+            listId={listId}
+            taskId={taskId}
             height={duration}
             title={title}
             content={content}
             style={style}
           />
         }
+        dropEffect="assign"
       >
         <TaskCard
           className={className}

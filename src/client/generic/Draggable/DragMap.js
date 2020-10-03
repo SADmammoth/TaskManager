@@ -6,7 +6,7 @@ const DragMap = (props) => {
   let [body, setBody] = useState([]);
 
   function setData(data, body) {
-    let { height, index, title } = data;
+    let { height, index, title, originalIndex } = data;
     let array = [...body];
     let curr = null;
 
@@ -17,11 +17,17 @@ const DragMap = (props) => {
 
       curr = array[indBuff];
 
-      if (curr.type !== 'droparea') {
+      if (!curr && curr.type !== 'droparea') {
         return;
       }
 
       array[indBuff] = { ...array[indBuff], type: 'hidden' };
+    }
+
+    if (data.dropEffect === 'reassign') {
+      props.reassignAvatar(originalIndex, index, height);
+      props.onDataUpdate(data);
+      return;
     }
 
     array[toLinearIndex(index)] = {
@@ -36,9 +42,8 @@ const DragMap = (props) => {
   function checkSnap(index, height) {
     let indBuff;
     let curr;
-
     for (let i = index.x; i < index.x + height; i++) {
-      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
+      indBuff = toLinearIndex({ x: i, y: index.y + 1 }, props.columns);
       curr = body[indBuff];
       if (!curr || curr.type !== 'droparea') {
         return false;

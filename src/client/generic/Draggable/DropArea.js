@@ -5,14 +5,12 @@ const DropArea = (props) => {
   return (
     <div
       ref={droparea}
-      // onMouseOver={() => {
-      //   console.log(9);
-      // }}
       onDragOver={(e) => {
         e.preventDefault();
         let dragging = document.getElementById('dragging');
 
         if (
+          dragging &&
           !dragging.hasAttribute('data-snap') &&
           props.checkSnap(
             props.index,

@@ -89,6 +89,7 @@ exports.editTask = async function (req, res) {
       { _id: list.tasks[taskID] },
       retrieveFields(req.body, ['title', 'content', 'assignedTo', 'duration'])
     );
+
     SubscriptionController.update(req, res);
     res.json(task);
   } catch (err) {

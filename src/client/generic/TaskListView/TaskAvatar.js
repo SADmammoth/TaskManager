@@ -13,16 +13,8 @@ class TaskAvatar extends React.Component {
       className,
       onDragStart,
       onReject,
+      index,
     } = this.props;
-
-    let avatarContent = (
-      <div
-        className={'task-avatar ' + (className || '')}
-        style={Object.assign({ '--height': height }, style)}
-      >
-        <p className="title">{title}</p>
-      </div>
-    );
 
     return (
       <DraggableElement
@@ -33,11 +25,13 @@ class TaskAvatar extends React.Component {
           listId,
           height,
           title,
+          originalIndex: index,
         }}
         datatype="application/json"
-        avatar={avatarContent}
         onDragStart={onDragStart}
         onReject={onReject}
+        height={height}
+        dropEffect="reassign"
       >
         {<p className="title">{title}</p>}
       </DraggableElement>

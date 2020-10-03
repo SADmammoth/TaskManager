@@ -27,9 +27,10 @@ export default class TaskAssignmentPage extends React.Component {
     Client.getTasks(this.state.listId)
       .then((res) => {
         let tasks = {};
-        res.tasks.forEach((el) => {
+        res.tasks.forEach((el, i) => {
           if (el.assignedTo) {
             tasks[new Date(el.assignedTo)] = el;
+            tasks[new Date(el.assignedTo)].taskId = i;
           }
         });
         return tasks;
@@ -47,9 +48,10 @@ export default class TaskAssignmentPage extends React.Component {
       Client.getTasks(this.state.listId)
         .then((res) => {
           let tasks = {};
-          res.tasks.forEach((el) => {
+          res.tasks.forEach((el, i) => {
             if (el.assignedTo) {
               tasks[new Date(el.assignedTo)] = el;
+              tasks[new Date(el.assignedTo)].taskId = i;
             }
           });
           return tasks;

@@ -122,11 +122,9 @@ export default class Client {
       }
     ).then(Client.checkStatus);
 
-    let responseObject = Client.parseJSON(response);
-    if (callback) callback(responseObject);
-    return new Promise((resolve, reject) => {
-      resolve(responseObject);
-    });
+    let responseObject = await Client.parseJSON(response);
+
+    return responseObject;
   }
 
   static async getAllTasks(callback: (object: object) => any) {
@@ -192,11 +190,10 @@ export default class Client {
     );
   }
 
-  static async parseJSON(response?: Response | void) {
+  static parseJSON(response?: Response | void) {
     if (!response) {
       return;
     }
-    let res = await response.json();
-    return res;
+    return response.json();
   }
 }

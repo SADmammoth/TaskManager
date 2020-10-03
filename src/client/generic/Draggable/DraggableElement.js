@@ -77,7 +77,7 @@ class DraggableElement extends React.Component {
   setData(event) {
     event.dataTransfer.setData(
       'application/json',
-      JSON.stringify(this.props.data)
+      JSON.stringify({ ...this.props.data, dropEffect: this.props.dropEffect })
     );
   }
 
@@ -224,7 +224,6 @@ class DraggableElement extends React.Component {
           });
         }}
         onMouseUp={() => {
-          console.log(9);
           if (!this.state.dragging) {
             clearTimeout(this.state.timeout);
             this.setState({ timeout: undefined });
@@ -240,7 +239,7 @@ class DraggableElement extends React.Component {
         onDragStart={this.mouseDown}
         onDragEnd={this.mouseUp}
       >
-        {dragging ? avatar : this.props.children}
+        {dragging && avatar ? avatar : this.props.children}
       </div>
     );
   }

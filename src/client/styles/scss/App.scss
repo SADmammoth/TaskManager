@@ -178,6 +178,7 @@ header {
 }
 
 .task-avatar {
+  width: 210px;
   height: calc(50px * var(--height));
   background-color: var(--light-bg);
   padding: 10px;
