@@ -1,6 +1,5 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import DraggableTask from './DraggableTask';
 import Client from '../../../helpers/Client.ts';
 import Task from './TaskCard';

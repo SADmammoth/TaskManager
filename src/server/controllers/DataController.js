@@ -84,7 +84,7 @@ exports.editTask = async function (req, res) {
       _id: root.children[listID],
       owner: userId,
     });
-
+    console.log(req.body);
     let task = await Task.updateOne(
       { _id: list.tasks[taskID] },
       retrieveFields(req.body, ['title', 'content', 'assignedTo', 'duration'])

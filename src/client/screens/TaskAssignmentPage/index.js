@@ -29,8 +29,8 @@ export default class TaskAssignmentPage extends React.Component {
         let tasks = {};
         res.tasks.forEach((el, i) => {
           if (el.assignedTo) {
-            tasks[new Date(el.assignedTo)] = el;
-            tasks[new Date(el.assignedTo)].taskId = i;
+            tasks[new Date(el.assignedTo).getTime()] = el;
+            tasks[new Date(el.assignedTo).getTime()].taskId = i;
           }
         });
         return tasks;
@@ -50,8 +50,8 @@ export default class TaskAssignmentPage extends React.Component {
           let tasks = {};
           res.tasks.forEach((el, i) => {
             if (el.assignedTo) {
-              tasks[new Date(el.assignedTo)] = el;
-              tasks[new Date(el.assignedTo)].taskId = i;
+              tasks[new Date(el.assignedTo).getTime()] = el;
+              tasks[new Date(el.assignedTo).getTime()].taskId = i;
             }
           });
           return tasks;

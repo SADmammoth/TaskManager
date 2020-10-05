@@ -1,5 +1,5 @@
 import React from 'react';
-import { DraggableElement } from '../Draggable';
+import DraggableElement from '../Draggable/DraggableElement';
 
 class TaskAvatar extends React.Component {
   render() {

@@ -148,7 +148,7 @@ header {
 }
 
 .task-card {
-  width: 210px;
+  width: 100px;
   background-color: var(--light-bg);
   padding: 10px;
   padding-left: 15px;
@@ -173,12 +173,8 @@ header {
   transition: box-shadow 300ms;
 }
 
-.task-card:not(#dragging) {
-  height: 90px;
-}
-
 .task-avatar {
-  width: 210px;
+  width: 100px;
   height: calc(50px * var(--height));
   background-color: var(--light-bg);
   padding: 10px;
