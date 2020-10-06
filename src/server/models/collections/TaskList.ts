@@ -7,23 +7,36 @@ import Tag, { ITag } from "../entities/Tag";
 // import DatabaseManager from "../../helpers/DatabaseManager";
 import SubscriptionController from "../../controllers/SubscriptionController";
 import IList from "./IList";
+import { isThisTypeNode } from "typescript";
 
 export interface ITaskList extends IList {
   tasks: ITask["_id"];
+  order: [[number]];
 }
 
 let TaskListSchema = new CustomSchema({
   title: String,
   tags: [Schema.Types.ObjectId],
   owner: [Schema.Types.ObjectId],
-  tasks: [Schema.Types.ObjectId]
+  tasks: [Schema.Types.ObjectId],
+  orders: [[Number]],
 });
 
-TaskListSchema.methods.addTask = async function(...tasks: any[]) {
+TaskListSchema.methods.addTask = async function (...tasks: any[]) {
   await this.model("TaskList").updateOne(
     { _id: this._id },
     { tasks: [...this.tasks, ...tasks] }
   );
+};
+
+TaskListSchema.methods.sort = function (orderNumber: number) {
+  const order = this.orders[orderNumber];
+  const tasks = this.tasks;
+
+  if (!order) {
+    return tasks;
+  }
+  return order.map((index: number) => tasks[index]);
 };
 
 let TaskList = mongoose.model<ITaskList>("TaskList", TaskListSchema, "lists");
