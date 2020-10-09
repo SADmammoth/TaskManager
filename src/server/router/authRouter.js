@@ -1,6 +1,5 @@
 import express from 'express';
 import UserController from '../controllers/UserController';
-import passportInit from '../passport/passportInit';
 
 var authRouter = express.Router();
 

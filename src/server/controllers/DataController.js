@@ -30,7 +30,7 @@ const DataController = {
     }
   },
 
-  createList: async function (req, res) {
+  createList: async function (req, res, next) {
     const {
       user: { _id: owner },
       body: { title },
@@ -46,11 +46,10 @@ const DataController = {
 
     SubscriptionController.update(req, res);
 
-    res.code(StatusCodes.CREATED);
-    res.send(`List ${title} created`);
+    next(req, res, `List ${title} created`, StatusCodes.CREATED);
   },
 
-  addListOrder: async function (req, res) {
+  addListOrder: async function (req, res, next) {
     const {
       user: { _id: owner },
       params: { taskListId },
@@ -72,17 +71,14 @@ const DataController = {
     });
 
     if (result.nModified > 0) {
-      SubscriptionController.update(req, res);
-
-      res.code(StatusCodes.CREATED);
-      res.send('Order added to list by id ' + taskListId);
+      next(req, res, 'Order added to list by id ' + taskListId);
     } else {
       res.code(StatusCodes.BAD_REQUEST);
       res.send('Wrong body format');
     }
   },
 
-  addTask: async function (req, res) {
+  addTask: async function (req, res, next) {
     const {
       user: { _id: owner },
       params: { taskListId },
@@ -100,9 +96,7 @@ const DataController = {
         }
 
         if (response.nModified > 0) {
-          SubscriptionController.update(req, res);
-          res.code(StatusCodes.CREATED);
-          res.send(`Task created`);
+          next(req, res, `Task created`, StatusCodes.CREATED);
         } else {
           res.code(StatusCodes.BAD_REQUEST);
           res.send('Wrong body format');
@@ -111,7 +105,7 @@ const DataController = {
     });
   },
 
-  editTask: async function (req, res) {
+  editTask: async function (req, res, next) {
     const {
       user: { _id: userId },
       params: { taskListId: taskListRequestId, taskId: taskRequestId },
@@ -142,8 +136,7 @@ const DataController = {
     );
 
     if (response.nModified > 0) {
-      SubscriptionController.update(req, res);
-      res.send(`Task by id ${taskRequestId} updated`);
+      next(req, res, `Task by id ${taskRequestId} updated`);
     } else {
       res.send(StatusCodes.BAD_REQUEST);
       res.send(`Wrong body format`);

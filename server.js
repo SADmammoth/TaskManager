@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import passport from 'passport';
+import { StatusCodes } from 'http-status-codes';
 import apiRouter from './src/server/router/apiRouter';
 import cookieParser from 'cookie-parser';
 import pagesRouter from './src/server/router/pagesRouter';
-import DataController from './src/server/controllers/DataController';
 import authRouter from './src/server/router/authRouter';
 import passportInit from './src/server/passport/passportInit';
 
@@ -30,5 +30,8 @@ app.use(cors());
 app.use('/api', authRouter);
 app.use('/api', passport.authenticate('jwt', { session: false }), apiRouter);
 app.use(pagesRouter);
+app.all('*', (req, res) => res.code(StatusCodes.NOT_FOUND));
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(`App started on port ${port}`);
+});

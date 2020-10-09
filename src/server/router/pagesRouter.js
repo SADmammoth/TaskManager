@@ -1,21 +1,17 @@
 import express from 'express';
-import path from 'path';
+import { showApp } from '../helpers/showApp';
 
 const router = express.Router();
 
-let showApp = (req, res) => {
-  res.sendFile(path.join(__dirname, '../../../dist/index.html'));
-};
+router.get('/', showApp);
 
-router.all('/', showApp);
+router.get('/add', showApp);
 
-router.all('/add', showApp);
+router.get('/login', showApp);
 
-router.all('/login', showApp);
+router.get('/404-error-page', showApp);
 
-router.all('/404-error-page', showApp);
-
-router.all('*', (req, res) => {
+router.get('*', (req, res) => {
   res.redirect('/404-error-page');
 });
 

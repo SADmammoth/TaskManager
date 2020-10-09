@@ -1,16 +1,20 @@
 import express from 'express';
 import DataController from '../controllers/DataController';
 import SubscriptionController from '../controllers/SubscriptionController';
+import { get } from '../helpers/methods/get';
+import { post } from '../helpers/methods/post';
+import { put } from '../helpers/methods/put';
 
-var router = express.Router();
+export var router = express.Router();
 
-router.post('/lists', DataController.createList);
-router.put('/lists/:taskListId/orders', DataController.addListOrder);
-router.post('/lists/:taskListId', DataController.addTask);
-router.get('/lists/all', DataController.getAllLists);
-router.get('/lists/tasks/all', DataController.getAllTasks);
-router.get('/lists/:taskListId', DataController.getList);
-router.get('/subscribe', SubscriptionController.subscribe);
-router.get('/dataUpdated', SubscriptionController.update);
-router.put('/lists/:taskListId/:taskId', DataController.editTask);
+post(router, '/lists', DataController.createList);
+put(router, '/lists/:taskListId/orders', DataController.addListOrder);
+post(router, '/lists/:taskListId', DataController.addTask);
+get(router, '/lists/all', DataController.getAllLists);
+get(router, '/lists/tasks/all', DataController.getAllTasks);
+get(router, '/lists/:taskListId', DataController.getList);
+get(router, '/subscribe', SubscriptionController.subscribe);
+get(router, '/dataUpdated', SubscriptionController.update);
+put(router, '/lists/:taskListId/:taskId', DataController.editTask);
+
 export default router;
