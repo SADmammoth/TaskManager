@@ -1,5 +1,5 @@
 import React from 'react';
-import key from '../../../helpers/getBodyKey';
+import key from '../../helpers/getBodyKey';
 import TaskAvatar from '../../../client/generic/TaskListView/TaskAvatar';
 
 export default function createAvatar(

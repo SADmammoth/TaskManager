@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Form from '@sadmammoth/react-form';
 import Button from '../../generic/Button';
-import Client from '../../../helpers/Client.ts';
+import Client from '../../helpers/Client.ts';
 
 const LoginPage = (props) => {
   let [mode, setMode] = useState('login');

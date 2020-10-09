@@ -1,48 +1,38 @@
 import passport from 'passport';
+import { StatusCodes } from 'http-status-codes';
 import User from '../models/entities/User';
 import DataController from './DataController';
-import jwt from 'jsonwebtoken';
+import isEmptyObject from '../../helpers/isEmptyObject';
 
-let user = null;
+const UserController = {
+  register: async function (login, password) {
+    let user = await User.findOne({ login });
 
-exports._register = async (login, password) => {
-  user = await User.findOne({ login: login });
-  if (!user || Object.keys(user).length === 0) {
-    user = await User.create({
-      login,
-      password,
-    });
-  }
-
-  return user._id;
-};
-
-exports.register = async (req, res) => {
-  let { login, password } = req.body;
-  let userId = await exports._register(login, password);
-  DataController._init(userId);
-
-  res.send(`User ${login} registered`);
-};
-
-exports.login = async (req, res, next) => {
-  await passport.authenticate('local', function (err, user) {
-    if (user == false) {
-      res.status(403);
-      res.send('Login failed');
-    } else {
-      const payload = {
-        userId: user._id,
-        login: user.login,
-      };
-
-      const token = jwt.sign(payload, process.env.AUTH_SECRET);
-
-      res.json({
-        userId: user._id,
-        login: user.login,
-        token: 'JWT ' + token,
+    if (isEmptyObject(user)) {
+      user = await User.create({
+        login,
+        password,
       });
     }
-  })(req, res, next);
+
+    return user._id;
+  },
+  requestRegistration: async function (req, res) {
+    const { login, password } = req.body;
+    const userId = await this.register(login, password);
+    DataController.initUser(userId);
+
+    res.send(`User ${login} registered`);
+  },
+
+  login: async function (req, res, next) {
+    let credentials = this.login(req, res, next);
+    if (credentials) {
+      res.json(credentials);
+    } else {
+      res.send(StatusCodes.UNAUTHORIZED);
+    }
+  },
 };
+
+export default UserController;

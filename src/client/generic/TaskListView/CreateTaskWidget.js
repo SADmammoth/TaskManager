@@ -1,5 +1,5 @@
-import React from "react";
-import Client from "../../../helpers/Client.ts";
+import React from 'react';
+import Client from '../../helpers/Client.ts';
 
 class CreateTaskWidget extends React.Component {
   render() {

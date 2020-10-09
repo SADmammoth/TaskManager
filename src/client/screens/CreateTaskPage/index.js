@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import Form from '@sadmammoth/react-form';
 import '@sadmammoth/react-form/dist/index.css';
 
-import Client from '../../../helpers/Client.ts';
+import Client from '../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
 export default class CreateTaskPage extends React.Component {

@@ -7,8 +7,8 @@ import CalendarView from '../../generic/CalendarView';
 import Sidebar from '../../generic/Sidebar';
 import Menu from '../../generic/Menu';
 
-import { DraggableTaskList, TaskList } from '../../generic/TaskListView';
-import Client from '../../../helpers/Client.ts';
+import { DraggableTaskList } from '../../generic/TaskListView';
+import Client from '../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
 import AddressCardIcon from '../../assets/icons/address-card-solid.svg';

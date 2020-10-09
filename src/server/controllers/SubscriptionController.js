@@ -1,19 +1,21 @@
-export default class SubscriptionController {
-  // static shouldUpdate = false;
+import { StatusCodes } from 'http-status-codes';
 
-  static promises = {};
-  static triggers = {};
+const self = {
+  promises: {},
+  triggers: {},
 
-  static createPromise(userId) {
-    SubscriptionController.promises[userId] = new Promise((resolve, reject) => {
-      SubscriptionController.triggers[userId] = () => resolve(true);
+  createPromise: function (userId) {
+    self.promises[userId] = new Promise((resolve) => {
+      self.triggers[userId] = () => resolve(true);
     });
-  }
-  static removePromise(userId) {
-    SubscriptionController.promises[userId] = undefined;
-    SubscriptionController.triggers[userId] = undefined;
-  }
-  static update(req, res) {
+  },
+
+  removePromise: function (userId) {
+    self.promises[userId] = undefined;
+    self.triggers[userId] = undefined;
+  },
+
+  update: function (req, res) {
     let userId;
     if (res) {
       userId = req.user._id;
@@ -21,36 +23,31 @@ export default class SubscriptionController {
       userId = req;
     }
 
-    if (SubscriptionController.triggers[userId])
-      SubscriptionController.triggers[userId]();
+    if (self.triggers[userId]) self.triggers[userId]();
     console.log('Data updated');
+  },
 
-    // if (res) {
-    //   res.status(200);
-    //   res.send();
-    // }
-  }
-
-  static async subscribe(req, res) {
+  subscribe: async function (req, res) {
     let {
       user: { _id: userId },
     } = req;
 
-    SubscriptionController.createPromise(userId);
-    let shouldUpdate = await SubscriptionController.promises[userId];
-    req.on('close', function (err) {
+    self.createPromise(userId);
+    let shouldUpdate = await self.promises[userId];
+
+    req.on('close', function () {
       console.log('Subscription cancelled');
-      SubscriptionController.removePromise(userId);
+      self.removePromise(userId);
     });
 
     if (shouldUpdate) {
       console.log('Subscriber notified');
-      SubscriptionController.removePromise(userId);
-      res.status(200);
-      res.json({ dataUpdated: true });
+      self.removePromise(userId);
+      res.send();
     } else {
-      res.status(500);
-      res.json({ dataUpdated: true });
+      res.status(StatusCodes.NO_CONTENT);
     }
-  }
-}
+  },
+};
+
+export default self;

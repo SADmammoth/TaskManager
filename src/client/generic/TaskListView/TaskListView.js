@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import DraggableTask from './DraggableTask';
-import Client from '../../../helpers/Client.ts';
+import Client from '../../helpers/Client.ts';
 import Task from './TaskCard';
 
 class TaskListView extends React.Component {

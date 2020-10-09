@@ -14,7 +14,7 @@ import NewTaskList from './screens/NewTaskList';
 
 import './styles/scss/App.scss';
 import LoginPage from './screens/LoginPage';
-import Preloader from '../helpers/Preloader';
+import Preloader from './helpers/Preloader';
 
 class App extends React.Component {
   render() {

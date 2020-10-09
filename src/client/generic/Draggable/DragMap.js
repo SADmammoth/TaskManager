@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import toLinearIndex from '../../../helpers/toLinearIndex';
+import toLinearIndex from '../../helpers/toLinearIndex';
 import DropArea from './DropArea';
 
 const DragMap = (props) => {
