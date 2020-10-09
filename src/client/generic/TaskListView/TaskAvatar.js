@@ -1,5 +1,7 @@
 import React from 'react';
 import DraggableElement from '../Draggable/DraggableElement';
+import Button from '../Button';
+import Client from '../../helpers/Client.ts';
 
 class TaskAvatar extends React.Component {
   render() {
@@ -14,6 +16,7 @@ class TaskAvatar extends React.Component {
       onDragStart,
       onReject,
       index,
+      onDelete,
     } = this.props;
 
     return (
@@ -33,7 +36,14 @@ class TaskAvatar extends React.Component {
         height={height}
         dropEffect="reassign"
       >
-        {<p className="title">{title}</p>}
+        <p className="title">{title}</p>{' '}
+        <Button
+          action={() => {
+            onDelete();
+            Client.deleteTask(this.props.listId, this.props.taskId);
+          }}
+          content="Delete"
+        />
       </DraggableElement>
     );
   }

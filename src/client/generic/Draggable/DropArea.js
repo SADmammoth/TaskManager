@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 
 const DropArea = (props) => {
   const droparea = useRef({});
+
   return (
     <div
       ref={droparea}
@@ -10,6 +12,7 @@ const DropArea = (props) => {
         let dragging = document.getElementById('dragging');
 
         if (
+          props.checkSnap &&
           dragging &&
           !dragging.hasAttribute('data-snap') &&
           props.checkSnap(
@@ -19,10 +22,13 @@ const DropArea = (props) => {
         ) {
           let { left, top } = droparea.current.getBoundingClientRect();
 
-          dragging.setAttribute('data-snap', `${left},${top}`);
+          dragging.setAttribute(
+            'data-snap',
+            `${left + window.scrollX},${top + window.scrollY}`
+          );
         }
       }}
-      onDragLeave={(e) => {
+      onDragLeave={() => {
         let dragging = document.getElementById('dragging');
         if (dragging) dragging.removeAttribute('data-snap');
       }}
@@ -39,6 +45,15 @@ const DropArea = (props) => {
       {props.children}
     </div>
   );
+};
+
+DropArea.propTypes = {
+  style: PropTypes.shape({ x: PropTypes.number, y: PropTypes.number }),
+  className: PropTypes.string,
+  index: PropTypes.objectOf(PropTypes.number).isRequired,
+  checkSnap: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  setData: PropTypes.func.isRequired,
 };
 
 export default DropArea;

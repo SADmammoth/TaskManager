@@ -178,6 +178,21 @@ export default class Client {
     Client.addToken(token);
   }
 
+  static setListOrder(listId: number, order: [number]) {
+    return fetch(path.join(Client.apiPath, `/lists/${listId}/orders`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...Client.headers },
+      body: JSON.stringify(order),
+    });
+  }
+
+  static deleteTask(listId: number, taskId: number) {
+    return fetch(path.join(Client.apiPath, `/lists/${listId}/${taskId}`), {
+      method: "DELETE",
+      headers: { ...Client.headers },
+    });
+  }
+
   static checkStatus(response: Response) {
     // if (response.status === 403) {
     //   document.location.href = "/login";

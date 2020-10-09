@@ -41,6 +41,8 @@ class DraggableTask extends React.Component {
         dropEffect="assign"
       >
         <TaskCard
+          listId={listId}
+          taskId={taskId}
           className={className}
           duration={duration}
           title={title}

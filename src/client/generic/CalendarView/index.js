@@ -94,6 +94,32 @@ class CalendarView extends React.Component {
     });
   };
 
+  onDelete = ({ index: { x, y }, height }) => {
+    let { body, tasks, _id } = this.state;
+
+    console.log(
+      body[x - 1].splice(
+        y,
+        1,
+        createCell(_id, 'droparea', 'calendar-cell', { x, y })
+      )
+    );
+
+    console.log(body[x - 1][y], body[x][y], height);
+    for (let i = x; i < x + height; i++) {
+      body[i][y].type = 'droparea';
+    }
+
+    let arrangeDate = moveDate(this.state.startDate, x, y, this.props.timeStep);
+
+    delete tasks[arrangeDate.getTime()];
+
+    this.setState({
+      body,
+      tasks,
+    });
+  };
+
   rejectDrag = ({ index: { x, y }, height }) => {
     let { body } = this.state;
 
@@ -112,6 +138,7 @@ class CalendarView extends React.Component {
   createAvatar = (attributes, height) => {
     const { _id } = this.state;
     return createAvatar(
+      this.onDelete,
       this.onDragStart,
       this.rejectDrag,
       _id,
@@ -192,7 +219,9 @@ class CalendarView extends React.Component {
               rows={this.props.rows}
               columns={this.props.columns + 1}
               createAvatar={this.createAvatar}
-              reassignAvatar={this.reassignAvatar}
+              reassignAvatar={(...args) =>
+                this.reassignAvatar(this.state, this.props, ...args)
+              }
               onDataUpdate={this.arrangeTask}
               map={body}
             />

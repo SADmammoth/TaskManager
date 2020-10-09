@@ -3,11 +3,12 @@ import key from '../../helpers/getBodyKey';
 import TaskAvatar from '../../../client/generic/TaskListView/TaskAvatar';
 
 export default function createAvatar(
+  onDelete,
   onDragStart,
   rejectDrag,
   mapId,
   attributes,
-  count
+  height
 ) {
   let style = attributes.style || {};
   const { index } = attributes;
@@ -16,17 +17,18 @@ export default function createAvatar(
     style = {
       ...style,
       gridColumn: index.y + 1,
-      gridRow: index.x + 1 + '/span ' + count,
+      gridRow: index.x + 1 + '/span ' + height,
     };
   }
   return (
     <TaskAvatar
       {...attributes}
       key={key(index.x, index.y, mapId)}
-      height={count}
+      height={height}
       style={style}
-      onDragStart={() => onDragStart(attributes)}
-      onReject={() => rejectDrag(attributes)}
+      onDragStart={() => onDragStart({ ...attributes, height })}
+      onReject={() => rejectDrag({ ...attributes, height })}
+      onDelete={() => onDelete({ ...attributes, height })}
     />
   );
 }

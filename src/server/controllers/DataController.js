@@ -44,9 +44,7 @@ const DataController = {
 
     getRoot(owner).then((root) => root.addChildren(list));
 
-    SubscriptionController.update(req, res);
-
-    next(req, res, `List ${title} created`, StatusCodes.CREATED);
+    next();
   },
 
   addListOrder: async function (req, res, next) {
@@ -61,7 +59,7 @@ const DataController = {
     );
 
     if (!list) {
-      res.code(StatusCodes.NOT_FOUND);
+      res.status(StatusCodes.NOT_FOUND);
       res.send(`List id ${taskListId} not found`);
       return;
     }
@@ -71,9 +69,9 @@ const DataController = {
     });
 
     if (result.nModified > 0) {
-      next(req, res, 'Order added to list by id ' + taskListId);
+      next();
     } else {
-      res.code(StatusCodes.BAD_REQUEST);
+      res.status(StatusCodes.BAD_REQUEST);
       res.send('Wrong body format');
     }
   },
@@ -90,15 +88,15 @@ const DataController = {
     ).then((task) => {
       addTaskToList(owner, taskListId, task).then((response) => {
         if (!response) {
-          res.code(StatusCodes.NOT_FOUND);
+          res.status(StatusCodes.NOT_FOUND);
           res.send(`List id ${taskListId} not found`);
           return;
         }
 
         if (response.nModified > 0) {
-          next(req, res, `Task created`, StatusCodes.CREATED);
+          next();
         } else {
-          res.code(StatusCodes.BAD_REQUEST);
+          res.status(StatusCodes.BAD_REQUEST);
           res.send('Wrong body format');
         }
       });
@@ -112,11 +110,11 @@ const DataController = {
       body,
     } = req;
 
-    let root = await getRoot(userId);
-    let listId = mapListId(root, taskListRequestId);
+    const root = await getRoot(userId);
+    const listId = mapListId(root, taskListRequestId);
 
     if (!listId) {
-      res.code(StatusCodes.NOT_FOUND);
+      res.status(StatusCodes.NOT_FOUND);
       res.send(`List id ${taskListRequestId} not found`);
       return;
     }
@@ -125,20 +123,19 @@ const DataController = {
     const taskId = mapTaskId(list, taskRequestId);
 
     if (!taskId) {
-      res.code(StatusCodes.NOT_FOUND);
+      res.status(StatusCodes.NOT_FOUND);
       res.send(`Task id ${taskListRequestId} not found`);
       return;
     }
 
-    let response = await Task.updateById(
+    let response = await Task.findByIdAndUpdate(
       taskId,
       retrieveFields(body, ['title', 'content', 'assignedTo', 'duration'])
     );
-
-    if (response.nModified > 0) {
-      next(req, res, `Task by id ${taskRequestId} updated`);
+    if (response) {
+      next();
     } else {
-      res.send(StatusCodes.BAD_REQUEST);
+      res.status(StatusCodes.BAD_REQUEST);
       res.send(`Wrong body format`);
     }
   },
@@ -152,8 +149,9 @@ const DataController = {
 
     const root = await getRoot(owner);
     const listId = mapListId(root, taskListId);
+
     if (!listId) {
-      res.code(StatusCodes.NOT_FOUND);
+      res.status(StatusCodes.NOT_FOUND);
       res.send(`List id ${taskListId} not found`);
       return;
     }
@@ -163,13 +161,13 @@ const DataController = {
     let tasks = await Promise.all(
       list.sort(parseInt(orderId)).map(async (taskId) => ({
         ...getDocument(await Task.findById(taskId)),
-        listId,
+        listId: taskListId,
       }))
     );
     tasks = filterEmpty(tasks);
 
     res.json({
-      ...list,
+      ...getDocument(list),
       tasks,
     });
   },
@@ -200,15 +198,49 @@ const DataController = {
     );
 
     const tasks = await Promise.all(
-      lists.map((list) =>
+      lists.map((list, index) =>
         list.sort(parseInt(orderId)).map(async (taskId) => ({
           ...getDocument(await Task.findById(taskId)),
-          listId: list._id,
+          listId: index,
         }))
       )
     );
 
     res.json(tasks);
+  },
+
+  deleteTask: async function (req, res, next) {
+    const {
+      user: { _id: owner },
+      params: { taskListId: taskListRequestId, taskId: taskRequestId },
+    } = req;
+
+    const root = await getRoot(owner);
+    const listId = mapListId(root, taskListRequestId);
+    if (!listId) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`List id ${taskListRequestId} not found`);
+      return;
+    }
+
+    const list = await TaskList.findById(listId);
+    const taskId = mapTaskId(list, taskRequestId);
+
+    if (!taskId) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`Task id ${taskListRequestId} not found`);
+      return;
+    }
+
+    await TaskList.findByIdAndUpdate(listId, { $pull: { tasks: taskId } });
+    let response = await Task.findByIdAndDelete(taskId);
+
+    if (response) {
+      next();
+    } else {
+      res.status(StatusCodes.BAD_REQUEST);
+      res.send(`Wrong body format`);
+    }
   },
 };
 

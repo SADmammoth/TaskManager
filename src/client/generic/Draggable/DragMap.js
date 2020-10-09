@@ -43,7 +43,8 @@ const DragMap = (props) => {
     let indBuff;
     let curr;
     for (let i = index.x; i < index.x + height; i++) {
-      indBuff = toLinearIndex({ x: i, y: index.y + 1 }, props.columns);
+      indBuff = toLinearIndex({ x: i, y: index.y }, props.columns);
+
       curr = body[indBuff];
       if (!curr || curr.type !== 'droparea') {
         return false;

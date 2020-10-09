@@ -1,3 +1,3 @@
 export const get = (router, ...args) => {
-  router.patch(...args);
+  router.get(...args);
 };

@@ -1,7 +1,6 @@
 import SubscriptionController from '../controllers/SubscriptionController';
 
-export default function notifySubscribers(req, res, message, code) {
+export default function notifySubscribers(code, req, res) {
   SubscriptionController.update(req, res);
-
-  res.code(code).send(message);
+  res.send('Request successful');
 }

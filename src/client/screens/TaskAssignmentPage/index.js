@@ -8,10 +8,10 @@ import Sidebar from '../../generic/Sidebar';
 import Menu from '../../generic/Menu';
 
 import { DraggableTaskList } from '../../generic/TaskListView';
-import Client from '../../helpers/Client.ts';
 import Button from '../../generic/Button';
 
 import AddressCardIcon from '../../assets/icons/address-card-solid.svg';
+import Client from '../../helpers/Client.ts';
 
 export default class TaskAssignmentPage extends React.Component {
   constructor(props) {

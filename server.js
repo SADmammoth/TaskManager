@@ -30,7 +30,6 @@ app.use(cors());
 app.use('/api', authRouter);
 app.use('/api', passport.authenticate('jwt', { session: false }), apiRouter);
 app.use(pagesRouter);
-app.all('*', (req, res) => res.code(StatusCodes.NOT_FOUND));
 
 app.listen(port, () => {
   console.log(`App started on port ${port}`);
