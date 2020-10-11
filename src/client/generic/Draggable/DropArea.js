@@ -1,13 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const DropArea = (props) => {
   const droparea = useRef({});
+  const [hovered, setHovered] = useState(false);
 
   return (
     <div
       ref={droparea}
       onDragOver={(e) => {
+        setHovered(true);
         e.preventDefault();
         let dragging = document.getElementById('dragging');
 
@@ -17,18 +19,31 @@ const DropArea = (props) => {
           !dragging.hasAttribute('data-snap') &&
           props.checkSnap(
             props.index,
-            parseInt(dragging.getAttribute('data-height'))
+            parseInt(dragging.getAttribute('data-height')),
+            hovered
           )
         ) {
           let { left, top } = droparea.current.getBoundingClientRect();
-
+          console.log(
+            top + window.scrollY,
+            getComputedStyle(droparea.current).paddingLeft
+          );
           dragging.setAttribute(
             'data-snap',
-            `${left + window.scrollX},${top + window.scrollY}`
+            `${
+              left +
+              window.scrollX +
+              parseInt(getComputedStyle(droparea.current).paddingLeft)
+            },${
+              top +
+              window.scrollY +
+              parseInt(getComputedStyle(droparea.current).paddingTop)
+            }`
           );
         }
       }}
       onDragLeave={() => {
+        setHovered(false);
         let dragging = document.getElementById('dragging');
         if (dragging) dragging.removeAttribute('data-snap');
       }}
@@ -39,7 +54,7 @@ const DropArea = (props) => {
           ...data,
         });
       }}
-      className={props.className}
+      className={`${props.className}${hovered ? ' hovered' : ''}`}
       style={props.style}
     >
       {props.children}

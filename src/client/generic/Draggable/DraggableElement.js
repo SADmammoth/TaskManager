@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { isThisTypeNode } from 'typescript';
 
 class DraggableElement extends React.Component {
   constructor(props) {
@@ -52,8 +51,8 @@ class DraggableElement extends React.Component {
           style: {
             ...state.style,
             cursor: 'grab',
-            left: draggedRect.left + 'px',
-            top: draggedRect.top + 'px',
+            left: draggedRect.left + window.scrollX + 'px',
+            top: draggedRect.top + window.scrollY + 'px',
           },
           lastPos: {
             x: null,
@@ -82,11 +81,8 @@ class DraggableElement extends React.Component {
   }
 
   mouseDown = (event) => {
-    event.stopPropagation();
     this.setDragImage(event);
     this.setData(event);
-
-    event.dataTransfer.effectAllowed = 'copyMove';
 
     this.setState(
       (state) => {
@@ -144,7 +140,7 @@ class DraggableElement extends React.Component {
     if (this.state.dragging) {
       if (this.state.lastPos.x === null) {
         let { width, height } = this.dragged.current.getBoundingClientRect();
-
+        console.log(width, height);
         this.setState({
           ...this.state,
           style: {
@@ -159,6 +155,7 @@ class DraggableElement extends React.Component {
         });
         return;
       }
+
       if (this.dragged.current.hasAttribute('data-snap')) {
         let { width, height } = this.dragged.current.getBoundingClientRect();
         let [left, top] = this.dragged.current

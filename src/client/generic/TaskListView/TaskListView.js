@@ -1,8 +1,9 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import DraggableTask from './DraggableTask';
-import Client from '../../helpers/Client.ts';
 import Task from './TaskCard';
+import DraggableList from '../Draggable/DraggableList';
+import Client from '../../helpers/Client.ts';
 
 class TaskListView extends React.Component {
   state = {
@@ -51,19 +52,35 @@ class TaskListView extends React.Component {
     );
   };
 
+  insertTask = ({ index, id }) => {
+    // this.setState;
+  };
+
   render() {
+    const unassignedTasks = this.state.tasks
+      .map((el, i) => {
+        return this.createTask(el, i, this.props.listId);
+      })
+      .filter((el) => !el.props.assignedTo);
     return (
       <ul
         className={'no-type-list ' + this.props.className || ''}
         style={this.props.style}
       >
-        {this.state.tasks.map((el, i) => {
-          if (!el.assignedTo) {
-            return (
-              <li key={el._id}>{this.createTask(el, i, this.props.listId)}</li>
+        <DraggableList
+          onOrderChange={({ taskId, index }) => {
+            let sourceIndex = unassignedTasks.find(
+              ({ taskId: candidateId }) => candidateId === taskId
             );
-          }
-        })}
+            const { tasks } = this.state;
+            tasks.splice(index.x - 1, 0, tasks.splice(sourceIndex, 1)[0]);
+            this.setState({
+              tasks,
+            });
+          }}
+          list={unassignedTasks}
+          insert={() => {}}
+        />
       </ul>
     );
   }

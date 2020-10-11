@@ -11,7 +11,7 @@ class Task extends React.Component {
         <MarkdownOutput
           id={this.props.taskId + 'content'}
           name={this.props.taskId + 'content'}
-          value={this.props.content}
+          value={this.props.content || ''}
         />
         <Button
           action={() => Client.deleteTask(this.props.listId, this.props.taskId)}

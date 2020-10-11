@@ -192,6 +192,18 @@ header {
   list-style-type: none;
 }
 
+.list-droparea {
+  margin: -45px 0;
+  height: 90px;
+  margin-left: -10px;
+  padding-top: 45px;
+  padding-left: 10px;
+  box-sizing: border-box;
+  &.hovered {
+    height: 175px;
+  }
+}
+
 // .calendar {
 //   empty-cells: show;
 //   td {
