@@ -5,10 +5,13 @@ import { mapListId } from './mapListId';
 export async function addTaskToList(owner, listRequestId, task) {
   const root = await getRoot(owner);
   const listId = mapListId(root, listRequestId);
-  const list = TaskList.findById(listId);
+
+  const list = await TaskList.findById(listId);
+
   if (!list) {
     return list;
   }
+  list.addTask(task);
 
-  return list.then((list) => list.addTask(task));
+  return list;
 }

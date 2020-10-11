@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import passport from 'passport';
-import { StatusCodes } from 'http-status-codes';
 import apiRouter from './src/server/router/apiRouter';
 import cookieParser from 'cookie-parser';
 import pagesRouter from './src/server/router/pagesRouter';

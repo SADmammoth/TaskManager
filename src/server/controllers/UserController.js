@@ -1,11 +1,12 @@
-import passport from 'passport';
 import { StatusCodes } from 'http-status-codes';
 import User from '../models/entities/User';
 import DataController from './DataController';
 import isEmptyObject from '../../helpers/isEmptyObject';
+import login from '../passport/login';
 
 const UserController = {
-  register: async function (login, password) {
+  requestRegistration: async function (req, res) {
+    const { login, password } = req.body;
     let user = await User.findOne({ login });
 
     if (isEmptyObject(user)) {
@@ -14,23 +15,19 @@ const UserController = {
         password,
       });
     }
-
-    return user._id;
-  },
-  requestRegistration: async function (req, res) {
-    const { login, password } = req.body;
-    const userId = await this.register(login, password);
+    const userId = user._id;
     DataController.initUser(userId);
 
     res.send(`User ${login} registered`);
   },
 
   login: async function (req, res, next) {
-    let credentials = this.login(req, res, next);
+    let credentials = login(req, res, next);
     if (credentials) {
       res.json(credentials);
     } else {
-      res.send(StatusCodes.UNAUTHORIZED);
+      res.status(StatusCodes.UNAUTHORIZED);
+      res.send('Not authorized');
     }
   },
 };

@@ -12,6 +12,7 @@ import { isThisTypeNode } from "typescript";
 export interface ITaskList extends IList {
   tasks: ITask["_id"];
   order: [[number]];
+  currentOrder: number
 }
 
 let TaskListSchema = new CustomSchema({
@@ -20,6 +21,7 @@ let TaskListSchema = new CustomSchema({
   owner: [Schema.Types.ObjectId],
   tasks: [Schema.Types.ObjectId],
   orders: [[Number]],
+  currentOrder: Number
 });
 
 TaskListSchema.methods.addTask = async function (...tasks: any[]) {

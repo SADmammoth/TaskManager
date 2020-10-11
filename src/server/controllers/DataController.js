@@ -2,7 +2,6 @@ import Folder from '../models/collections/Folder.ts';
 import TaskList from '../models/collections/TaskList.ts';
 import Task from '../models/entities/Task.ts';
 import retrieveFields from '../helpers/retrieveFields';
-import SubscriptionController from './SubscriptionController';
 import isEmptyObject from '../../helpers/isEmptyObject';
 import { StatusCodes } from 'http-status-codes';
 import { filterEmpty } from '../helpers/filterEmpty';
@@ -11,7 +10,7 @@ import { mapListId } from '../helpers/mapListId';
 import { mapTaskId } from '../helpers/mapTaskId';
 import { getDocument } from '../helpers/getDocument';
 
-function getRoot(ownerId) {
+export function getRoot(ownerId) {
   return Folder.findOne({ title: '$root', owner: ownerId });
 }
 
@@ -64,8 +63,71 @@ const DataController = {
       return;
     }
 
-    let result = await TaskList.updateOneById(list._id, {
+    let result = await TaskList.findByIdAndUpdate(list._id, {
       $push: { orders: body },
+    });
+
+    if (result.nModified > 0) {
+      next();
+      res.status(StatusCodes.BAD_REQUEST);
+      res.send('Wrong body format');
+    }
+  },
+
+  setCurrentOrder: async function (req, res, next) {
+    const {
+      user: { _id: owner },
+      params: { taskListId },
+      body: { orderId },
+    } = req;
+
+    const list = await getRoot(owner).then((root) =>
+      root.children.find((child, index) => index === parseInt(taskListId))
+    );
+
+    if (!list) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`List id ${taskListId} not found`);
+      return;
+    }
+
+    if (orderId < 0 && orderId >= list.orders.length) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`Order id ${taskListId} not found`);
+      return;
+    }
+
+    let result = await TaskList.findByIdAndUpdate(list._id, {
+      currentOrder: orderId,
+    });
+
+    if (result.nModified > 0) {
+      next();
+    } else {
+      res.status(StatusCodes.BAD_REQUEST);
+      res.send('Wrong body format');
+    }
+  },
+
+  updateCurrentOrder: async function (req, res, next) {
+    const {
+      user: { _id: owner },
+      params: { taskListId },
+      body,
+    } = req;
+
+    const list = await getRoot(owner).then((root) =>
+      root.children.find((child, index) => index === parseInt(taskListId))
+    );
+
+    if (!list) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`List id ${taskListId} not found`);
+      return;
+    }
+
+    let result = await TaskList.findByIdAndUpdate(list._id, {
+      $set: { [`orders.${list.currentOrder}`]: body },
     });
 
     if (result.nModified > 0) {
@@ -83,24 +145,17 @@ const DataController = {
       body,
     } = req;
 
-    Task.create(
+    const task = await Task.create(
       retrieveFields(body, ['title', 'content', 'assignedTo', 'duration'])
-    ).then((task) => {
-      addTaskToList(owner, taskListId, task).then((response) => {
-        if (!response) {
-          res.status(StatusCodes.NOT_FOUND);
-          res.send(`List id ${taskListId} not found`);
-          return;
-        }
+    );
+    const response = await addTaskToList(owner, taskListId, task);
+    if (!response) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`List id ${taskListId} not found`);
+      return;
+    }
 
-        if (response.nModified > 0) {
-          next();
-        } else {
-          res.status(StatusCodes.BAD_REQUEST);
-          res.send('Wrong body format');
-        }
-      });
-    });
+    next();
   },
 
   editTask: async function (req, res, next) {
