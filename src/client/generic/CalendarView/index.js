@@ -97,15 +97,6 @@ class CalendarView extends React.Component {
   onDelete = ({ index: { x, y }, height }) => {
     let { body, tasks, _id } = this.state;
 
-    console.log(
-      body[x - 1].splice(
-        y,
-        1,
-        createCell(_id, 'droparea', 'calendar-cell', { x, y })
-      )
-    );
-
-    console.log(body[x - 1][y], body[x][y], height);
     for (let i = x; i < x + height; i++) {
       body[i][y].type = 'droparea';
     }

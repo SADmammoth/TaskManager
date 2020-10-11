@@ -13,6 +13,8 @@ class DraggableTask extends React.Component {
       content,
       style,
       className,
+      onDragStart,
+      onDragReject,
     } = this.props;
 
     return (
@@ -39,6 +41,8 @@ class DraggableTask extends React.Component {
           />
         }
         dropEffect="assign"
+        onDragStart={onDragStart}
+        onReject={onDragReject}
       >
         <TaskCard
           listId={listId}

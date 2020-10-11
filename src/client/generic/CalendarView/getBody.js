@@ -65,17 +65,6 @@ export default function getBody(
             skip.push(r + i, c);
           }
         }
-        console.log(
-          createAvatar(
-            {
-              index: { x: r, y: c },
-              title,
-              listId,
-              taskId,
-            },
-            duration
-          )
-        );
 
         row.push(
           createCustomCell(

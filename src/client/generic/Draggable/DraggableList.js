@@ -7,20 +7,37 @@ import key from '../../helpers/getBodyKey';
 function DraggableList(props) {
   const [id] = useState(shortid.generate());
 
-  return props.list
-    .map((item, i) => [
-      item,
-      <DropArea
-        key={key(i, 0, id)}
-        className="list-droparea"
-        index={{ x: i, y: 0 }}
-        setData={(data) => {
-          props.onOrderChange(data);
-        }}
-        checkSnap={(index, height, hovered) => hovered}
-      />,
-    ])
-    .flat();
+  return [
+    <DropArea
+      key={key(0, 0, id)}
+      className="list-droparea"
+      index={{ x: 0, y: 0 }}
+      setData={(data) => {
+        props.onOrderChange(data);
+      }}
+      checkSnap={(index, height, hovered) => hovered}
+    />,
+    ...props.list
+      .map((item, i) => {
+        if (i === props.dragging) {
+          return item;
+        } else {
+          return [
+            item,
+            <DropArea
+              key={key(i + 1, 0, id)}
+              className="list-droparea"
+              index={{ x: i + 1, y: 0 }}
+              setData={(data) => {
+                props.onOrderChange(data);
+              }}
+              checkSnap={(index, height, hovered) => hovered}
+            />,
+          ];
+        }
+      })
+      .flat(),
+  ];
 }
 
 DraggableList.propTypes = {

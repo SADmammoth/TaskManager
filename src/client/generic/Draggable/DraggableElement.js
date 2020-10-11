@@ -120,27 +120,16 @@ class DraggableElement extends React.Component {
     }
     if (event.dataTransfer.dropEffect === 'none') {
       this.props.onReject(this.props.data);
-      this.reset();
-      return;
     }
 
-    this.setState((state) => {
-      return {
-        ...state,
-        lastPos: {
-          x: null,
-          y: null,
-        },
-        dragging: false,
-      };
-    });
+    this.reset();
   };
 
   mouseMove = (event) => {
     if (this.state.dragging) {
       if (this.state.lastPos.x === null) {
         let { width, height } = this.dragged.current.getBoundingClientRect();
-        console.log(width, height);
+
         this.setState({
           ...this.state,
           style: {

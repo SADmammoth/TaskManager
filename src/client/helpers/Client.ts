@@ -186,6 +186,14 @@ export default class Client {
     });
   }
 
+  static changeListOrder(listId: Number, order: [number]) {
+    return fetch(path.join(Client.apiPath, `/lists/${listId}/orders/current`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...Client.headers },
+      body: JSON.stringify(order),
+    });
+  }
+
   static deleteTask(listId: number, taskId: number) {
     return fetch(path.join(Client.apiPath, `/lists/${listId}/${taskId}`), {
       method: "DELETE",

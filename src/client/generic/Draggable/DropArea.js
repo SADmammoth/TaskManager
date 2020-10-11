@@ -24,10 +24,7 @@ const DropArea = (props) => {
           )
         ) {
           let { left, top } = droparea.current.getBoundingClientRect();
-          console.log(
-            top + window.scrollY,
-            getComputedStyle(droparea.current).paddingLeft
-          );
+
           dragging.setAttribute(
             'data-snap',
             `${
@@ -48,6 +45,7 @@ const DropArea = (props) => {
         if (dragging) dragging.removeAttribute('data-snap');
       }}
       onDrop={(e) => {
+        setHovered(false);
         let data = JSON.parse(e.dataTransfer.getData('application/json'));
         props.setData({
           index: props.index,

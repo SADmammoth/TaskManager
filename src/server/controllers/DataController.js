@@ -100,7 +100,6 @@ const DataController = {
     let result = await TaskList.findByIdAndUpdate(list._id, {
       currentOrder: orderId,
     });
-
     if (result.nModified > 0) {
       next();
     } else {
@@ -116,19 +115,17 @@ const DataController = {
       body,
     } = req;
 
-    const list = await getRoot(owner).then((root) =>
+    const listId = await getRoot(owner).then((root) =>
       root.children.find((child, index) => index === parseInt(taskListId))
     );
 
-    if (!list) {
+    if (!listId) {
       res.status(StatusCodes.NOT_FOUND);
       res.send(`List id ${taskListId} not found`);
       return;
     }
-
-    let result = await TaskList.findByIdAndUpdate(list._id, {
-      $set: { [`orders.${list.currentOrder}`]: body },
-    });
+    let list = await TaskList.findById(listId);
+    let result = list.alterCurrentOrder(body);
 
     if (result.nModified > 0) {
       next();
@@ -287,7 +284,7 @@ const DataController = {
       return;
     }
 
-    await TaskList.findByIdAndUpdate(listId, { $pull: { tasks: taskId } });
+    await TaskList.removeTask(taskId);
     let response = await Task.findByIdAndDelete(taskId);
 
     if (response) {
