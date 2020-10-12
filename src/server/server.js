@@ -2,11 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import passport from 'passport';
-import apiRouter from './src/server/router/apiRouter';
+import apiRouter from './router/apiRouter';
 import cookieParser from 'cookie-parser';
-import pagesRouter from './src/server/router/pagesRouter';
-import authRouter from './src/server/router/authRouter';
-import passportInit from './src/server/passport/passportInit';
+import pagesRouter from './router/pagesRouter';
+import authRouter from './router/authRouter';
+import passportInit from './passport/passportInit';
 
 const port = process.env.PORT || 8080;
 const app = express();

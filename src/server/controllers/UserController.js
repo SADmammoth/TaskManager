@@ -15,6 +15,7 @@ const UserController = {
         password,
       });
     }
+
     const userId = user._id;
     DataController.initUser(userId);
 
@@ -22,7 +23,7 @@ const UserController = {
   },
 
   login: async function (req, res, next) {
-    let credentials = login(req, res, next);
+    const credentials = login(req, res, next);
     if (credentials) {
       res.json(credentials);
     } else {

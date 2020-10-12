@@ -11,6 +11,7 @@ export async function addTaskToList(owner, listRequestId, task) {
   if (!list) {
     return list;
   }
+
   list.addTask(task);
 
   return list;

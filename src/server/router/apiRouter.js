@@ -1,13 +1,12 @@
 import express from 'express';
 import DataController from '../controllers/DataController';
 import SubscriptionController from '../controllers/SubscriptionController';
-import { delet } from '../helpers/methods/delete';
+import { deleteMethod } from '../helpers/methods/deleteMethod';
 import { get } from '../helpers/methods/get';
 import { post } from '../helpers/methods/post';
 import { put } from '../helpers/methods/put';
-import { patch } from '../helpers/methods/patch';
 
-export var router = express.Router();
+const router = express.Router();
 
 post(router, '/lists', DataController.createList);
 put(router, '/lists/:taskListId/orders', DataController.addListOrder);
@@ -28,6 +27,6 @@ put(
   '/lists/:taskListId/orders/current',
   DataController.updateCurrentOrder
 );
-delet(router, '/lists/:taskListId/:taskId', DataController.deleteTask);
+deleteMethod(router, '/lists/:taskListId/:taskId', DataController.deleteTask);
 
 export default router;

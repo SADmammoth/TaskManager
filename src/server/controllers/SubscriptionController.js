@@ -17,13 +17,17 @@ const self = {
 
   update: function (req, res) {
     let userId;
+
     if (res) {
       userId = req.user._id;
     } else {
       userId = req;
     }
 
-    if (self.triggers[userId]) self.triggers[userId]();
+    if (self.triggers[userId]) {
+      self.triggers[userId]();
+    }
+
     console.log('Data updated');
   },
 
@@ -33,7 +37,8 @@ const self = {
     } = req;
 
     self.createPromise(userId);
-    let shouldUpdate = await self.promises[userId];
+
+    const shouldUpdate = await self.promises[userId];
 
     req.on('close', function () {
       console.log('Subscription cancelled');
@@ -46,6 +51,7 @@ const self = {
       res.send();
     } else {
       res.status(StatusCodes.NO_CONTENT);
+      res.send();
     }
   },
 };

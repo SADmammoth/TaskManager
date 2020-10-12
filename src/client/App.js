@@ -12,7 +12,7 @@ import CreateTaskPage from './screens/CreateTaskPage';
 import Error404 from './screens/Error404';
 import NewTaskList from './screens/NewTaskList';
 
-import './styles/scss/App.scss';
+import './assets/styles/App.scss';
 import LoginPage from './screens/LoginPage';
 import Preloader from './helpers/Preloader';
 

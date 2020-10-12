@@ -1,6 +1,12 @@
 function retrieveFields(object, keys) {
   let result = {};
-  keys.forEach((el) => (object[el] ? (result[el] = object[el]) : false));
+
+  keys.forEach((key) => {
+    if (object[key]) {
+      result[key] = object[key];
+    }
+  });
+
   return result;
 }
 

@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/client/index.js',
   output: {
     filename: 'app.bundle.js',
     path: path.join(__dirname, 'dist'),
@@ -44,23 +44,18 @@ module.exports = {
   },
   devServer: {
     hot: true,
+    historyApiFallback: true,
     publicPath: '/',
-    contentBase: path.join(__dirname, '/dist'), // serve your static files from here
-    watchContentBase: true, // initiate a page refresh if static content changes
+    contentBase: path.join(__dirname, '/dist'),
+    watchContentBase: true,
     proxy: [
-      // allows redirect of requests to webpack-dev-server to another destination
       {
-        context: ['/api'], // can have multiple
-        target: 'http://localhost:3030', // server and port to redirect to
+        context: ['/api'],
+        target: 'http://localhost:3030',
         secure: false,
       },
     ],
-    port: 8080, // port webpack-dev-server listens to, defaults to 8080
-    overlay: {
-      // Shows a full-screen overlay in the browser when there are compiler errors or warnings
-      warnings: false, // defaults to false
-      errors: false, // defaults to false
-    },
+    port: 8080,
   },
   plugins: HtmlWebpackPluginTemplates(['index']),
   optimization: {

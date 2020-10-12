@@ -1,2 +1,2 @@
-require("dotenv").config();
-require("./server.js");
+require('dotenv').config();
+require('./src/server/server.js');
