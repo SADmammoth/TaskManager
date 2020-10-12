@@ -1,14 +1,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Form from '@sadmammoth/react-form';
-import shortid from 'shortid';
+import Form from '../../components/TaskListView/node_modules/@sadmammoth/react-form';
+import shortid from '../../components/node_modules/shortid';
 
-import CalendarView from '../../generic/CalendarView';
-import Sidebar from '../../generic/Sidebar';
-import Menu from '../../generic/Menu';
+import CalendarView from '../../components/CalendarView/CalendarView';
+import Sidebar from '../../components/Sidebar';
+import Menu from '../../components/Menu';
 
-import { DraggableTaskList } from '../../generic/TaskListView';
-import Button from '../../generic/Button';
+import { DraggableTaskList } from '../../components/TaskListView';
+import Button from '../../components/Button';
 
 import AddressCardIcon from '../../assets/icons/address-card-solid.svg';
 import Client from '../../helpers/Client.ts';
@@ -78,69 +78,78 @@ export default class TaskAssignmentPage extends React.Component {
           startDate={new Date(2020, 1, 12, 12, 0, 0, 0)}
           timeStep={1}
           tasks={this.state.tasks}
-        ></CalendarView>
+        />
 
         <Button
           content="Register user"
           onClick={() => Client.registerUser('root', 'user')}
         ></Button>
-        <Sidebar style={{ height: '70vh', width: '30vw' }}>
-          <Form
-            onSubmit={null}
-            inputs={[
-              {
-                type: 'select',
-                name: 'listId',
-                placeholder: 'Inbox',
-                valueOptions: Client.getListsNames,
-                onChange: (name, value) => {
-                  this.setState({ listId: value });
+
+        <Sidebar
+          style={{ height: '70vh', width: '30vw' }}
+          menus={
+            <Menu
+              buttons={[
+                {
+                  key: 'address-btn-1',
+                  title: 'Address',
+                  icon: <AddressCardIcon />,
+                  className: 'icon-btn',
+                  action: () => alert(0),
                 },
-              },
-            ]}
-          />
-          <Menu
-            buttons={[
-              {
-                key: 'address-btn-1',
-                title: 'Address',
-                icon: <AddressCardIcon />,
-                className: 'icon-btn',
-                action: () => alert(0),
-              },
-              {
-                key: 'address-btn-2',
-                title: 'Address',
-                icon: <AddressCardIcon />,
-                className: 'icon-btn',
-                action: () => alert(0),
-              },
-              {
-                key: 'address-btn-3',
-                title: 'Address',
-                content: 'hi',
-                className: 'icon-btn',
-                action: () => alert(0),
-              },
-              {
-                key: 'address-btn-4',
-                title: 'Address',
-                content: (
-                  <>
-                    <i className="fas fa-ad"></i>Hello
-                  </>
-                ),
-                className: 'icon-btn',
-                action: () => alert(0),
-              },
-            ]}
-            style={{ float: 'left' }}
-          />
-          <DraggableTaskList
-            listId={this.state.listId}
-            style={{ float: 'left' }}
-          />
-        </Sidebar>
+                {
+                  key: 'address-btn-2',
+                  title: 'Address',
+                  icon: <AddressCardIcon />,
+                  className: 'icon-btn',
+                  action: () => alert(0),
+                },
+                {
+                  key: 'address-btn-3',
+                  title: 'Address',
+                  content: 'hi',
+                  className: 'icon-btn',
+                  action: () => alert(0),
+                },
+                {
+                  key: 'address-btn-4',
+                  title: 'Address',
+                  content: (
+                    <>
+                      <i className="fas fa-ad"></i>Hello
+                    </>
+                  ),
+                  className: 'icon-btn',
+                  action: () => alert(0),
+                },
+              ]}
+              style={{ float: 'left' }}
+            />
+          }
+          content={
+            <>
+              <Form
+                onSubmit={null}
+                inputs={[
+                  {
+                    type: 'select',
+                    name: 'listId',
+                    placeholder: 'Inbox',
+                    valueOptions: Client.getListsNames,
+                    onChange: (name, value) => {
+                      this.setState({ listId: value });
+                    },
+                  },
+                ]}
+              />
+
+              <DraggableTaskList
+                listId={this.state.listId}
+                style={{ float: 'left' }}
+              />
+            </>
+          }
+        />
       </>
     );
   }

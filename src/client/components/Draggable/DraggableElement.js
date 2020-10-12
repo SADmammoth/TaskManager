@@ -107,7 +107,7 @@ class DraggableElement extends React.Component {
       }
     );
 
-    document.addEventListener('mouseup', (event) => {
+    document.addEventListener('mouseup', () => {
       let { pointerEvents, ...rest } = this.state.style;
       this.setState({ style: { ...rest } });
     });

@@ -4,7 +4,7 @@ import Form from '@sadmammoth/react-form';
 import '@sadmammoth/react-form/dist/index.css';
 
 import Client from '../../helpers/Client.ts';
-import Button from '../../generic/Button';
+import Button from '../../components/Button';
 
 export default class CreateTaskPage extends React.Component {
   embedValidator() {}

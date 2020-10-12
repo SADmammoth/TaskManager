@@ -1,8 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import Form from '@sadmammoth/react-form';
+import Form from '../../components/TaskListView/node_modules/@sadmammoth/react-form';
 import Client from '../../helpers/Client.ts';
-import Button from '../../generic/Button';
+import Button from '../../components/Button';
 
 export default class NewTaskList extends React.Component {
   embedValidator() {}

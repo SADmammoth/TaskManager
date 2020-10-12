@@ -5,8 +5,8 @@ import {
   Switch,
   Redirect,
   BrowserRouter as Router,
-} from 'react-router-dom';
-import Header from './generic/Header';
+} from './components/node_modules/react-router-dom';
+import Header from './components/Header';
 import TaskAssignmentPage from './screens/TaskAssignmentPage';
 import CreateTaskPage from './screens/CreateTaskPage';
 import Error404 from './screens/Error404';

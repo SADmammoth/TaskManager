@@ -6,16 +6,16 @@ class Menu extends React.Component {
   render() {
     return (
       <nav
-        className={`menu ${
-          this.props.vertical ? 'horizontal-stack' : 'vertical-stack'
-        } ${this.props.className || ''}`}
+        className={`menu${
+          this.props.vertical ? ' horizontal-stack' : ' vertical-stack'
+        }${' ' + this.props.className || ''}`}
         style={this.props.style}
       >
-        {this.props.buttons.map((el, i, arr) => (
+        {this.props.buttons.map((attributes) => (
           <Button
             key={this.props.key}
             className={'menu-item ' + this.props.className}
-            {...el}
+            {...attributes}
           />
         ))}
       </nav>
