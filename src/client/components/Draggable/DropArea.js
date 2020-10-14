@@ -22,6 +22,11 @@ const DropArea = (props) => {
     ) {
       let { left, top } = droparea.current.getBoundingClientRect();
 
+      console.log(
+        left,
+        window.scrollX,
+        parseInt(getComputedStyle(droparea.current).paddingLeft)
+      );
       dragging.setAttribute(
         'data-snap',
         `${
@@ -38,6 +43,7 @@ const DropArea = (props) => {
   };
 
   const onDragLeave = () => {
+    console.log(0);
     setHovered(false);
     let dragging = document.getElementById('dragging');
     if (dragging) dragging.removeAttribute('data-snap');

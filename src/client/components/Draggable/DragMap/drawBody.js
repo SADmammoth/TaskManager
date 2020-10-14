@@ -7,7 +7,7 @@ export default function drawBody(body, setData, checkSnap) {
       return child;
     }
 
-    let { type, key, index } = child;
+    let { type, key, index, className } = child;
 
     if (type === 'avatar') {
       return child.avatar;
@@ -16,7 +16,7 @@ export default function drawBody(body, setData, checkSnap) {
         <DropArea
           key={key}
           index={index}
-          className={`className${type === 'hidden' && ' hidden'}`}
+          className={`${className}${type === 'hidden' ? ' hidden' : ''}`}
           setData={setData}
           checkSnap={checkSnap}
         ></DropArea>

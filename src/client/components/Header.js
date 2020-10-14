@@ -1,8 +1,9 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import Nav from './Nav';
 import Clock from './Clock';
 
-export default function Header(props) {
+function Header(props) {
   return (
     <>
       <header>
@@ -31,3 +32,5 @@ export default function Header(props) {
     </>
   );
 }
+
+export default withRouter(Header);

@@ -1,5 +1,5 @@
-import React from 'react';
-import ClockUpdater from '../helpers/ClockUpdater.ts';
+import React, { useEffect, useState } from 'react';
+import clockUpdater from '../helpers/clockUpdater.js';
 
 const months = [
   'Jan',
@@ -16,47 +16,41 @@ const months = [
   'Dec',
 ];
 
-export default class Clock extends React.Component {
-  minutesUpdater = new ClockUpdater();
-  state = {
+export default function Clock() {
+  const [minutesUpdater] = useState(clockUpdater());
+  const [date, setDate] = useState({
     minutes: 0,
     hours: 0,
     day: 0,
     month: 0,
-  };
+  });
 
-  componentDidMount() {
-    this.minutesUpdater.start(this.updateTime);
-  }
-  componentWillUnmount() {
-    this.minutesUpdater.stop();
-  }
-
-  render() {
-    return (
-      <>
-        <div className="clock">
-          <span key={'mth' + this.state.month}>{months[this.state.month]}</span>
-          <span key={'d' + this.state.day}>, {this.state.day}</span>
-          <br />
-          <span key={'h' + this.state.hours}>
-            {this.state.hours.toString().padStart(2, '0')}
-          </span>
-          <span className="blinking">:</span>
-          <span key={'m' + this.state.minutes}>
-            {this.state.minutes.toString().padStart(2, '0')}
-          </span>
-        </div>
-      </>
-    );
-  }
-
-  updateTime = (date) => {
-    this.setState({
+  const updateTime = (date) => {
+    setDate({
       month: date.getMonth() + 1,
       day: date.getDate(),
       hours: date.getHours(),
       minutes: date.getMinutes(),
     });
   };
+
+  useEffect(() => {
+    minutesUpdater.start(updateTime);
+    return () => {
+      minutesUpdater.stop();
+    };
+  }, [minutesUpdater]);
+
+  return (
+    <>
+      <div className="clock">
+        <span>{months[date.month]}</span>
+        <span>, {date.day}</span>
+        <br />
+        <span>{date.hours.toString().padStart(2, '0')}</span>
+        <span className="blinking">:</span>
+        <span>{date.minutes.toString().padStart(2, '0')}</span>
+      </div>
+    </>
+  );
 }

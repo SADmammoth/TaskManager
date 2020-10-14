@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import DraggableTask from './DraggableTask';
 import Task from './TaskCard';
-import DraggableList from '../Draggable/DraggableList';
+import DraggableList from '../Draggable/DraggableList/DraggableList';
 import Client from '../../helpers/Client.ts';
 import { createFalse } from 'typescript';
 
@@ -58,6 +58,7 @@ class TaskListView extends React.Component {
     }
     return this.props.draggable ? (
       <DraggableTask
+        key={taskId + listId}
         taskId={taskId}
         listId={listId}
         {...task}

@@ -1,30 +1,19 @@
 import React from 'react';
-import Menu from '../Menu';
+
 function Sidebar(props) {
-  const isMenu = ()=>child.type === Menu ? child : null
-  render() {
-    return (
-      <>
-        <aside
-          className={`sidebar horizontal-stack${
-            ' ' + this.props.className || ''
-          }`}
-          style={this.props.style}
-        >
-          <div className="menus vertical-stack">
-            {React.Children.map(this.props.children, (child) =>
-              
-            )}
-          </div>
-          <div className="sidebar-content vertical-stack fullheight-auto">
-            {React.Children.map(this.props.children, (child) =>
-              child.type !== Menu ? child : null
-            )}
-          </div>
-        </aside>
-      </>
-    );
-  }
+  return (
+    <>
+      <aside
+        className={`sidebar horizontal-stack${' ' + props.className || ''}`}
+        style={props.style}
+      >
+        <div className="menus vertical-stack">{props.menus}</div>
+        <div className="sidebar-content vertical-stack fullheight-auto">
+          {props.content}
+        </div>
+      </aside>
+    </>
+  );
 }
 
 export default Sidebar;

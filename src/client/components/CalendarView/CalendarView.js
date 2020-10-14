@@ -1,182 +1,143 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { DragMap } from '../Draggable';
 import Client from '../../helpers/Client.ts';
-import compareObjects from '../../../helpers/compareObjects';
 import createCell from '../../helpers/createCell';
 import getBody from './getBody';
 import moveDate from './moveDate';
-import createAvatar from './createAvatar';
 import calendarStyle from './calendarStyle';
 
-class CalendarView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      _id: null,
-      startDate: new Date(),
-      tasks: null,
-      draggingTask: null,
-      body: [],
-    };
-  }
+function CalendarView(props) {
+  const [id] = useState(shortid.generate());
+  const [startDate, setStartDate] = useState(new Date());
+  const [tasks, setTasks] = useState(null);
+  const [draggingTask, setDraggingTask] = useState(null);
+  const [body, setBody] = useState([]);
 
-  componentDidMount() {
-    this.setState({ _id: shortid.generate() });
-  }
+  const { style, className, rows, columns } = props;
 
-  static getDerivedStateFromProps(props, state) {
-    return {
-      ...state,
-      tasks: props.tasks || null,
-      startDate: new Date(props.startDate),
-    };
-  }
+  const renderHeader = useCallback(() => {
+    let array = [<div key={`${id}-header-0`}></div>];
+    let currentDate = new Date(startDate);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!compareObjects(this.state.tasks, prevState.tasks)) {
-      this.setState({
-        body: getBody(this.props, this.state, this.createAvatar),
-      });
-    }
-  }
-
-  renderHeader = () => {
-    let array = [<div key={`${this.state._id}-header-0`}></div>];
-    let startDate = new Date(this.state.startDate);
-
-    for (let i = 1; i < this.props.columns + 1; i++) {
+    for (let i = 1; i < columns + 1; i++) {
       array.push(
-        <div key={`${this.state._id}-header-${i}`}>
-          {startDate.toLocaleDateString('ru-RU')}
+        <div key={`${id}-header-${i}`}>
+          {currentDate.toLocaleDateString('ru-RU')}
         </div>
       );
-      startDate.setDate(startDate.getDate() + 1);
+      currentDate.setDate(startDate.getDate() + 1);
     }
 
     return array;
-  };
+  }, [startDate]);
 
-  arrangeTask = (data) => {
+  const arrangeTask = (data) => {
     let { index, listId, taskId } = data;
 
-    let arrangeDate = moveDate(
-      this.state.startDate,
-      index.x,
-      index.y,
-      this.props.timeStep
-    );
+    let arrangeDate = moveDate(startDate, index.x, index.y, props.timeStep);
 
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
 
-  onDragStart = ({ index: { x, y }, height }) => {
-    let { body, tasks, _id } = this.state;
-
-    body[x - 1].splice(
+  const onDragStart = ({ index: { x, y }, height }) => {
+    const newBody = { ...body };
+    newBody[x - 1].splice(
       y + 1,
       0,
-      createCell(_id + 'temp', 'droparea', 'calendar-cell', { x, y })
+      createCell(id + 'temp', 'droparea', 'calendar-cell', { x, y })
     );
 
     for (let i = x + 1; i < x + height; i++) {
-      body[i - 1][y].type = 'droparea';
+      newBody[i - 1][y].type = 'droparea';
     }
 
-    let arrangeDate = moveDate(this.state.startDate, x, y, this.props.timeStep);
+    let arrangeDate = moveDate(startDate, x, y, props.timeStep);
 
     const { taskId } = tasks[arrangeDate.getTime()];
 
-    this.setState({
-      body,
-      draggingTask: taskId,
-    });
+    setBody(newBody);
+    setDraggingTask(taskId);
   };
 
-  onDelete = ({ index: { x, y }, height }) => {
-    let { body, tasks, _id } = this.state;
+  const onDelete = ({ index: { x, y }, height }) => {
+    const newBody = { ...body };
+    const newTasks = { ...body };
 
     for (let i = x; i < x + height; i++) {
-      body[i][y].type = 'droparea';
+      newBody[i][y].type = 'droparea';
     }
 
-    let arrangeDate = moveDate(this.state.startDate, x, y, this.props.timeStep);
+    let arrangeDate = moveDate(startDate, x, y, props.timeStep);
 
-    delete tasks[arrangeDate.getTime()];
+    delete newTasks[arrangeDate.getTime()];
 
-    this.setState({
-      body,
-      tasks,
-    });
+    setBody(newBody);
+    setTasks(newTasks);
   };
 
-  rejectDrag = ({ index: { x, y }, height }) => {
-    let { body } = this.state;
+  const rejectDrag = ({ index: { x, y }, height }) => {
+    const newBody = { ...body };
 
-    body[x - 1].splice(y + 1, 1);
+    newBody[x - 1].splice(y + 1, 1);
 
     for (let xDiff = x + 1; xDiff < x + height; xDiff++) {
-      body[xDiff - 1][y].type = 'hidden';
+      newBody[xDiff - 1][y].type = 'hidden';
     }
 
-    this.setState({
-      body,
-      draggingTask: null,
-    });
+    setBody(newBody);
+    setDraggingTask(null);
   };
 
-  createAvatar = (attributes, height) => {
-    const { _id } = this.state;
-    return createAvatar(
-      this.onDelete,
-      this.onDragStart,
-      this.rejectDrag,
-      _id,
-      attributes,
-      height
-    );
-  };
+  const createAvatar = useCallback(
+    (attributes, height) => {
+      return createAvatar(
+        onDelete,
+        onDragStart,
+        rejectDrag,
+        id,
+        attributes,
+        height
+      );
+    },
+    [onDelete, onDragStart, rejectDrag]
+  );
 
-  reassignAvatar = (
-    { tasks, body, _id },
-    { startDate, timeStep },
-    originalIndex,
-    destinationIndex,
-    height
-  ) => {
+  const reassignAvatar = (originalIndex, destinationIndex, height) => {
     let arrangeDate = moveDate(
       startDate,
       originalIndex.x,
       originalIndex.y,
-      timeStep
+      props.timeStep
     );
     let dest = destinationIndex;
 
     let { title, content, listId, taskId } = tasks[arrangeDate.getTime()];
     let newAvatar = createCell(
-      _id,
+      id,
       'avatar',
       'calendar-cell',
       { x: dest.x, y: dest.y },
       this.createAvatar({ title, content, index: dest, listId, taskId }, height)
     );
 
-    body[originalIndex.x - 1].splice(originalIndex.y + 1, 1);
+    const newBody = { ...body };
+    newBody[originalIndex.x - 1].splice(originalIndex.y + 1, 1);
 
     for (let xDiff = 0; xDiff < height; xDiff++) {
-      body[originalIndex.x - 1 + xDiff][originalIndex.y] = createCell(
-        _id,
+      newBody[originalIndex.x - 1 + xDiff][originalIndex.y] = createCell(
+        id,
         'droparea',
         'calendar-cell',
         { x: originalIndex.x + xDiff, y: originalIndex.y }
       );
 
       if (!xDiff) {
-        body[dest.x - 1][dest.y] = newAvatar;
+        newBody[dest.x - 1][dest.y] = newAvatar;
       } else {
-        body[dest.x - 1 + xDiff][dest.y] = createCell(
-          _id,
+        newBody[dest.x - 1 + xDiff][dest.y] = createCell(
+          id,
           'hidden',
           'calendar-cell',
           {
@@ -187,40 +148,46 @@ class CalendarView extends React.Component {
       }
     }
 
-    this.setState({ body, draggingTask: null });
+    setBody(newBody);
+    setDraggingTask(null);
   };
 
-  render() {
-    const { body } = this.state;
-    const { style, className, rows, columns } = this.props;
-    return (
-      <div
-        className={'calendar ' + (className || '')}
-        style={{
-          ...style,
-          ...calendarStyle(rows, columns),
-        }}
-      >
-        {!this.state.tasks ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            {this.renderHeader()}
-            <DragMap
-              rows={this.props.rows}
-              columns={this.props.columns + 1}
-              createAvatar={this.createAvatar}
-              reassignAvatar={(...args) =>
-                this.reassignAvatar(this.state, this.props, ...args)
-              }
-              onDataUpdate={this.arrangeTask}
-              map={body}
-            />
-          </>
-        )}
-      </div>
-    );
-  }
+  useEffect(() => {
+    setStartDate(props.startDate);
+  }, [props.startDate]);
+
+  useEffect(() => {
+    if (props.tasks) {
+      setTasks(props.tasks);
+      setBody(getBody(props, id, props.tasks, draggingTask, createAvatar));
+    }
+  }, [JSON.stringify(props.tasks)]);
+
+  return (
+    <div
+      className={'calendar ' + (className || '')}
+      style={{
+        ...style,
+        ...calendarStyle(rows, columns),
+      }}
+    >
+      {!tasks ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          {startDate && renderHeader()}
+          <DragMap
+            rows={rows}
+            columns={columns + 1}
+            createAvatar={createAvatar}
+            reassignAvatar={reassignAvatar}
+            onDataUpdate={arrangeTask}
+            map={body}
+          />
+        </>
+      )}
+    </div>
+  );
 }
 
 CalendarView.propTypes = {

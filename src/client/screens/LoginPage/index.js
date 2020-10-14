@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Form from '@sadmammoth/react-form';
-import Button from '../../generic/Button';
+import Button from '../../components/Button';
 import Client from '../../helpers/Client.ts';
 
 const LoginPage = (props) => {
@@ -15,7 +15,7 @@ const LoginPage = (props) => {
       </Helmet>
       <Form
         onSubmit={({ login, password }) => {
-          mode === 'login'
+          return mode === 'login'
             ? Client.loginUser(login, password)
             : Client.registerUser(login, password);
         }}

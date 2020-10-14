@@ -1,25 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import onDrop from './onDrop';
 import drawBody from './drawBody';
+import checkSnap from './checkSnap';
 
 const DragMap = (props) => {
-  let [body, setBody] = useState([]);
+  const [body, setBody] = useState([]);
+  const { columns, map } = props;
 
   useEffect(() => {
-    setBody(props.map.flat());
-  }, [JSON.stringify(props.map)]);
+    setBody(map.flat());
+  }, [JSON.stringify(map)]);
 
   const setData = useCallback((data) => onDrop(data, body, setBody, props), [
     JSON.stringify(body),
     setBody,
   ]);
 
-  const checkSnap = useCallback(
-    (index, height) => checkSnap(index, height, body),
-    [JSON.stringify(body)]
+  const checkSnapping = useCallback(
+    (index, height, hovered) =>
+      checkSnap(index, height, body, columns, hovered),
+    [JSON.stringify(body), columns]
   );
 
-  return <>{drawBody(body, setData, checkSnap)}</>;
+  return <>{drawBody(body, setData, checkSnapping)}</>;
 };
 
 export default DragMap;

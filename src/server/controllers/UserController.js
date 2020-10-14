@@ -22,14 +22,15 @@ const UserController = {
     res.send(`User ${login} registered`);
   },
 
-  login: async function (req, res, next) {
-    const credentials = login(req, res, next);
-    if (credentials) {
-      res.json(credentials);
-    } else {
-      res.status(StatusCodes.UNAUTHORIZED);
-      res.send('Not authorized');
-    }
+  login: function (req, res, next) {
+    login(req, res, next);
+    // console.log(credentials);
+    // if (credentials) {
+    //   res.json(credentials);
+    // } else {
+    //   res.status(StatusCodes.UNAUTHORIZED);
+    //   res.send('Not authorized');
+    // }
   },
 };
 

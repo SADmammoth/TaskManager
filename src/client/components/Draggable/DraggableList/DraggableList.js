@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import DropArea from '../DropArea';
-import key from '../../../helpers/getBodyKey';
-import ListDropArea from './ListDroparea';
+import ListDropArea from './ListDropArea';
 
 function DraggableList({ list, onOrderChange, dragging }) {
   const [id] = useState(shortid.generate());
 
   return [
-    <ListDropArea key={id} id={id} index={0} onOrderChange={onOrderChange} />,
+    <ListDropArea
+      key={id + 0}
+      id={id + 0}
+      index={0}
+      onOrderChange={onOrderChange}
+    />,
     ...list
       .map((item, i) => {
         if (i === dragging) {
@@ -18,8 +21,8 @@ function DraggableList({ list, onOrderChange, dragging }) {
           return [
             item,
             <ListDropArea
-              key={id}
-              id={id}
+              key={id + (i + 1)}
+              id={id + (i + 1)}
               index={i + 1}
               onOrderChange={onOrderChange}
             />,

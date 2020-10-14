@@ -22,7 +22,9 @@ const skip = {
 
 export default function getBody(
   { startDate, rows, columns, timeStep },
-  { mapId, tasks, draggingTask },
+  mapId,
+  tasks,
+  draggingTask,
   createAvatar
 ) {
   let array = [];

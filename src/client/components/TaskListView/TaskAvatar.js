@@ -1,5 +1,5 @@
 import React from 'react';
-import DraggableElement from '../Draggable/DraggableElement';
+import DraggableElement from '../Draggable/DraggableElement/DraggableElement';
 import Button from '../Button';
 import Client from '../../helpers/Client.ts';
 
@@ -10,7 +10,6 @@ class TaskAvatar extends React.Component {
       listId,
       height,
       title,
-      content,
       style,
       className,
       onDragStart,
@@ -22,7 +21,7 @@ class TaskAvatar extends React.Component {
     return (
       <DraggableElement
         className={'task-avatar ' + (className || '')}
-        style={Object.assign({ '--height': height }, style)}
+        style={{ ...style, '--height': height }}
         data={{
           taskId,
           listId,
