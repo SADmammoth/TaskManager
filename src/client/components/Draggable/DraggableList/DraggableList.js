@@ -36,8 +36,8 @@ function DraggableList({ list, onOrderChange, dragging }) {
 DraggableList.propTypes = {
   list: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.node, PropTypes.func]))
     .isRequired,
-  insert: PropTypes.func.isRequired,
   onOrderChange: PropTypes.func.isRequired,
+  dragging: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default DraggableList;

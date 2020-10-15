@@ -5,20 +5,18 @@ const DropArea = (props) => {
   const droparea = useRef({});
   const [hovered, setHovered] = useState(false);
 
+  const { checkSnap, index, setData, className, style, children } = props;
+
   const onDragOver = (e) => {
     setHovered(true);
     e.preventDefault();
     let dragging = document.getElementById('dragging');
 
     if (
-      props.checkSnap &&
+      checkSnap &&
       dragging &&
       !dragging.hasAttribute('data-snap') &&
-      props.checkSnap(
-        props.index,
-        parseInt(dragging.getAttribute('data-height')),
-        hovered
-      )
+      checkSnap(index, parseInt(dragging.getAttribute('data-height')), hovered)
     ) {
       let { left, top } = droparea.current.getBoundingClientRect();
 
@@ -52,8 +50,8 @@ const DropArea = (props) => {
   const onDrop = (e) => {
     setHovered(false);
     let data = JSON.parse(e.dataTransfer.getData('application/json'));
-    props.setData({
-      index: props.index,
+    setData({
+      index,
       ...data,
     });
   };
@@ -61,24 +59,27 @@ const DropArea = (props) => {
   return (
     <div
       ref={droparea}
-      className={`${props.className}${hovered ? ' hovered' : ''}`}
+      className={`${className}${hovered ? ' hovered' : ''}`}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      style={props.style}
+      style={style}
     >
-      {props.children}
+      {children}
     </div>
   );
 };
 
 DropArea.propTypes = {
-  style: PropTypes.shape({ x: PropTypes.number, y: PropTypes.number }),
   className: PropTypes.string,
-  index: PropTypes.objectOf(PropTypes.number).isRequired,
+  index: PropTypes.shape({ x: PropTypes.number, y: PropTypes.number })
+    .isRequired,
+  setData: PropTypes.func.isRequired,
   checkSnap: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  setData: PropTypes.func.isRequired,
+  style: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
 };
 
 export default DropArea;

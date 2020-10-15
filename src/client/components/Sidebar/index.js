@@ -1,19 +1,31 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function Sidebar(props) {
+function Sidebar({ className, style, menus, content }) {
   return (
     <>
       <aside
-        className={`sidebar horizontal-stack${' ' + props.className || ''}`}
-        style={props.style}
+        className={`sidebar horizontal-stack${' ' + className || ''}`}
+        style={style}
       >
-        <div className="menus vertical-stack">{props.menus}</div>
+        {menus || <div className="menus vertical-stack">{menus}</div>}
         <div className="sidebar-content vertical-stack fullheight-auto">
-          {props.content}
+          {content}
         </div>
       </aside>
     </>
   );
 }
+
+Sidebar.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
+  menus: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.node, PropTypes.func])
+  ),
+  content: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+};
 
 export default Sidebar;

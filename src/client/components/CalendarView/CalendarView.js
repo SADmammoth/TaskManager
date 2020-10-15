@@ -15,7 +15,15 @@ function CalendarView(props) {
   const [draggingTask, setDraggingTask] = useState(null);
   const [body, setBody] = useState([]);
 
-  const { style, className, rows, columns } = props;
+  const {
+    style,
+    className,
+    rows,
+    columns,
+    timeStep,
+    startDate: propsStartDate,
+    tasks: propsTasks,
+  } = props;
 
   const renderHeader = useCallback(() => {
     let array = [<div key={`${id}-header-0`}></div>];
@@ -36,7 +44,7 @@ function CalendarView(props) {
   const arrangeTask = (data) => {
     let { index, listId, taskId } = data;
 
-    let arrangeDate = moveDate(startDate, index.x, index.y, props.timeStep);
+    let arrangeDate = moveDate(startDate, index.x, index.y, timeStep);
 
     Client.changeTask({ assignedTo: arrangeDate }, listId, taskId);
   };
@@ -53,7 +61,7 @@ function CalendarView(props) {
       newBody[i - 1][y].type = 'droparea';
     }
 
-    let arrangeDate = moveDate(startDate, x, y, props.timeStep);
+    let arrangeDate = moveDate(startDate, x, y, timeStep);
 
     const { taskId } = tasks[arrangeDate.getTime()];
 
@@ -69,7 +77,7 @@ function CalendarView(props) {
       newBody[i][y].type = 'droparea';
     }
 
-    let arrangeDate = moveDate(startDate, x, y, props.timeStep);
+    let arrangeDate = moveDate(startDate, x, y, timeStep);
 
     delete newTasks[arrangeDate.getTime()];
 
@@ -109,7 +117,7 @@ function CalendarView(props) {
       startDate,
       originalIndex.x,
       originalIndex.y,
-      props.timeStep
+      timeStep
     );
     let dest = destinationIndex;
 
@@ -153,15 +161,15 @@ function CalendarView(props) {
   };
 
   useEffect(() => {
-    setStartDate(props.startDate);
-  }, [props.startDate]);
+    setStartDate(propsStartDate);
+  }, [propsStartDate]);
 
   useEffect(() => {
-    if (props.tasks) {
-      setTasks(props.tasks);
-      setBody(getBody(props, id, props.tasks, draggingTask, createAvatar));
+    if (propsTasks) {
+      setTasks(propsTasks);
+      setBody(getBody(props, id, propsTasks, draggingTask, createAvatar));
     }
-  }, [JSON.stringify(props.tasks)]);
+  }, [JSON.stringify(propsTasks)]);
 
   return (
     <div
@@ -196,6 +204,14 @@ CalendarView.propTypes = {
   tasks: PropTypes.objectOf(PropTypes.object),
   startDate: PropTypes.instanceOf(Date).isRequired,
   timeStep: PropTypes.number.isRequired,
+  style: PropTypes.objectOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
+};
+
+CalendarView.defaultProps = {
+  tasks: null,
+  style: {},
 };
 
 export default CalendarView;

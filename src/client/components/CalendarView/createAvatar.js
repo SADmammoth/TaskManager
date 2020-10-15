@@ -1,6 +1,6 @@
 import React from 'react';
 import key from '../../helpers/getBodyKey';
-import TaskAvatar from '../TaskListView/TaskAvatar';
+import TaskAvatar from '../DraggableTaskList/TaskAvatar';
 
 export default function createAvatar(
   onDelete,

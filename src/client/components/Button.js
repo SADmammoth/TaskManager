@@ -1,31 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class Button extends React.Component {
-  render() {
-    return (
-      <button
-        className={
-          this.props.icon ? 'icon-btn ' : 'btn ' + (this.props.className || '')
-        }
-        onClick={this.props.action}
-        title={this.props.title}
-        style={this.props.style}
-        type={this.props.type}
-      >
-        {this.props.icon}
-        {this.props.content}
-      </button>
-    );
-  }
-}
+const Button = ({ icon, content, className, title, style, type, action }) => {
+  return (
+    <button
+      className={icon ? 'icon-btn ' : 'btn ' + (className || '')}
+      onClick={action}
+      title={title}
+      style={style}
+      type={type}
+    >
+      {icon}
+      {content}
+    </button>
+  );
+};
 
 Button.propTypes = {
   title: PropTypes.string,
   action: PropTypes.func,
-  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node, PropTypes.func]),
-  content: PropTypes.any,
+  icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  content: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   className: PropTypes.string,
+  type: PropTypes.string,
+};
+
+Button.defaultProps = {
+  type: 'button',
+  action: () => {},
 };
 
 export default Button;

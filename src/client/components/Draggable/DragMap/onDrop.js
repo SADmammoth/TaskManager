@@ -4,7 +4,10 @@ export default function onDrop(
   data,
   body,
   setBody,
-  { columns, reassignAvatar, onDataUpdate, createAvatar }
+  columns,
+  reassignAvatar,
+  onDataUpdate,
+  createAvatar
 ) {
   let { height, index, originalIndex } = data;
   let array = [...body];

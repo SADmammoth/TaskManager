@@ -2,7 +2,6 @@ import React from 'react';
 import createCell from '../../helpers/createCell';
 import key from '../../helpers/getBodyKey';
 import moveDate from './moveDate';
-import createAvatar from './createAvatar';
 
 const skip = {
   array: [],

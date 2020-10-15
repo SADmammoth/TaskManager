@@ -1,9 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Nav from './Nav';
 import Clock from './Clock';
 
-function Header(props) {
+function Header({ location }) {
   return (
     <>
       <header>
@@ -23,14 +24,16 @@ function Header(props) {
             ></Nav>
           </ul>
         </nav>
-        {props.location && props.location.pathname !== '/404-error-page' ? (
-          <Clock />
-        ) : (
-          ''
-        )}
+        {location && location.pathname !== '/404-error-page' ? <Clock /> : ''}
       </header>
     </>
   );
 }
+
+Header.propTypes = {
+  location: PropTypes.shape({
+    location: PropTypes.string,
+  }).isRequired,
+};
 
 export default withRouter(Header);

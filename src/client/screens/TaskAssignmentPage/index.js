@@ -5,7 +5,7 @@ import Form from '@sadmammoth/react-form';
 import CalendarView from '../../components/CalendarView/CalendarView';
 import Sidebar from '../../components/Sidebar';
 
-import { DraggableTaskList } from '../../components/TaskListView';
+import { DraggableTaskList } from '../../components/DraggableTaskList';
 
 import Client from '../../helpers/Client.ts';
 
