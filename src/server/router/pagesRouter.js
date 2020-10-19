@@ -1,5 +1,5 @@
-import express from 'express';
-import { showApp } from '../helpers/showApp';
+const express = require('express');
+const showApp = require('../helpers/showApp').showApp;
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.get('*', (req, res) => {
   res.redirect('/404-error-page');
 });
 
-export default router;
+module.exports = router;

@@ -1,7 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
-import notifySubscribers from '../notifySubscribers';
+const StatusCodes = require('http-status-codes').StatusCodes;
+const notifySubscribers = require('../notifySubscribers');
 
-export const deleteMethod = (router, ...args) => {
+exports.deleteMethod = (router, ...args) => {
   router.delete(...args, (req, res) =>
     notifySubscribers(StatusCodes.OK, req, res)
   );

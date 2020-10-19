@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const dotenv = require('dotenv');
+const DefinePlugin = require('webpack').DefinePlugin;
 
 module.exports = {
   entry: './src/client/index.js',
@@ -9,7 +11,7 @@ module.exports = {
     chunkFilename: '[name].bundle.js',
     publicPath: './',
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -56,8 +58,14 @@ module.exports = {
       },
     ],
     port: 8080,
+    writeToDisk: true,
   },
-  plugins: HtmlWebpackPluginTemplates(['index']),
+  plugins: [
+    ...HtmlWebpackPluginTemplates(['index']),
+    new DefinePlugin({
+      'process.env': JSON.stringify(dotenv.config().parsed),
+    }),
+  ],
   optimization: {
     splitChunks: {
       chunks: 'all',

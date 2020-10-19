@@ -1,5 +1,6 @@
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import User from '../models/entities/User';
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const User = require('../models/entities/User');
 
 var params = {};
 params.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -15,4 +16,4 @@ const jwtStrategy = new JwtStrategy(params, (payload, done) => {
     });
 });
 
-export default jwtStrategy;
+module.exports = jwtStrategy;

@@ -1,3 +1,3 @@
-export const get = (router, ...args) => {
+exports.get = (router, ...args) => {
   router.get(...args);
 };

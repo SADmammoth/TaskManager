@@ -1,3 +1,3 @@
-export function mapListId(root, listRequestId) {
+module.exports = function mapListId(root, listRequestId) {
   return root.children[parseInt(listRequestId)];
-}
+};

@@ -1,3 +1,3 @@
-export function filterEmpty(array) {
+module.exports = function filterEmpty(array) {
   return array.filter((el) => !!el);
-}
+};

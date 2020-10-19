@@ -1,4 +1,4 @@
-import { StatusCodes } from 'http-status-codes';
+const StatusCodes = require('http-status-codes').StatusCodes;
 
 const self = {
   promises: {},
@@ -56,4 +56,4 @@ const self = {
   },
 };
 
-export default self;
+module.exports = self;

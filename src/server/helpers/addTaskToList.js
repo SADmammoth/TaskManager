@@ -1,8 +1,8 @@
-import TaskList from '../models/collections/TaskList.ts';
-import { getRoot } from '../controllers/DataController';
-import { mapListId } from './mapListId';
+const TaskList = require('../models/collections/TaskList.js');
+const getRoot = require('../controllers/DataController').getRoot;
+const mapListId = require('./mapListId').mapListId;
 
-export async function addTaskToList(owner, listRequestId, task) {
+module.exports = async function addTaskToList(owner, listRequestId, task) {
   const root = await getRoot(owner);
   const listId = mapListId(root, listRequestId);
 
@@ -15,4 +15,4 @@ export async function addTaskToList(owner, listRequestId, task) {
   list.addTask(task);
 
   return list;
-}
+};

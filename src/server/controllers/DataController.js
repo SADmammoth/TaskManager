@@ -1,16 +1,16 @@
-import Folder from '../models/collections/Folder.ts';
-import TaskList from '../models/collections/TaskList.ts';
-import Task from '../models/entities/Task.ts';
-import retrieveFields from '../helpers/retrieveFields';
-import isEmptyObject from '../../helpers/isEmptyObject';
-import { StatusCodes } from 'http-status-codes';
-import { filterEmpty } from '../helpers/filterEmpty';
-import { addTaskToList } from '../helpers/addTaskToList';
-import { mapListId } from '../helpers/mapListId';
-import { mapTaskId } from '../helpers/mapTaskId';
-import { getDocument } from '../helpers/getDocument';
+const Folder = require('../models/collections/Folder');
+const TaskList = require('../models/collections/TaskList');
+const Task = require('../models/entities/Task');
+const retrieveFields = require('../helpers/retrieveFields');
+const isEmptyObject = require('../../helpers/isEmptyObject');
+const StatusCodes = require('http-status-codes').StatusCodes;
+const filterEmpty = require('../helpers/filterEmpty');
+const addTaskToList = require('../helpers/addTaskToList');
+const mapListId = require('../helpers/mapListId');
+const mapTaskId = require('../helpers/mapTaskId');
+const getDocument = require('../helpers/getDocument');
 
-export function getRoot(ownerId) {
+function getRoot(ownerId) {
   return Folder.findOne({ title: '$root', owner: ownerId });
 }
 
@@ -192,6 +192,43 @@ const DataController = {
     }
   },
 
+  replaceTask: async function (req, res, next) {
+    const {
+      user: { _id: userId },
+      params: { taskListId: taskListRequestId, taskId: taskRequestId },
+      body,
+    } = req;
+
+    const root = await getRoot(userId);
+    const listId = mapListId(root, taskListRequestId);
+
+    if (!listId) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`List id ${taskListRequestId} not found`);
+      return;
+    }
+
+    const list = await TaskList.findById(listId);
+    const taskId = mapTaskId(list, taskRequestId);
+
+    if (!taskId) {
+      res.status(StatusCodes.NOT_FOUND);
+      res.send(`Task id ${taskListRequestId} not found`);
+      return;
+    }
+
+    let response = await Task.findByIdAndUpdate(
+      taskId,
+      retrieveFields(body, ['title', 'content', 'assignedTo', 'duration'], true)
+    );
+    if (response) {
+      next();
+    } else {
+      res.status(StatusCodes.BAD_REQUEST);
+      res.send(`Wrong body format`);
+    }
+  },
+
   getList: async function (req, res) {
     const {
       user: { _id: owner },
@@ -284,7 +321,7 @@ const DataController = {
       return;
     }
 
-    await TaskList.removeTask(taskId);
+    await list.removeTask(taskRequestId);
     let response = await Task.findByIdAndDelete(taskId);
 
     if (response) {
@@ -296,4 +333,4 @@ const DataController = {
   },
 };
 
-export default DataController;
+module.exports = DataController;

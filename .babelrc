@@ -10,17 +10,7 @@
         }
       }
     ],
-    "@babel/preset-react",
-    [
-      "@babel/preset-typescript",
-      {
-        "targets": {
-          "chrome": "73",
-
-          "esmodules": true
-        }
-      }
-    ]
+    "@babel/preset-react"
   ],
   "plugins": ["transform-class-properties"]
 }

@@ -1,3 +1,3 @@
-export function mapTaskId(list, taskRequestId) {
+module.exports = function mapTaskId(list, taskRequestId) {
   return list.tasks[parseInt(taskRequestId)];
-}
+};

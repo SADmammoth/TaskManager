@@ -1,7 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
-import notifySubscribers from '../notifySubscribers';
+const StatusCodes = require('http-status-codes').StatusCodes;
+const notifySubscribers = require('../notifySubscribers');
 
-export const put = (router, ...args) => {
+exports.put = (router, ...args) => {
   router.put(...args, (req, res) =>
     notifySubscribers(StatusCodes.OK, req, res)
   );

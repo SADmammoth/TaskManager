@@ -1,6 +1,6 @@
-import SubscriptionController from '../controllers/SubscriptionController';
+const SubscriptionController = require('../controllers/SubscriptionController');
 
-export default function notifySubscribers(code, req, res) {
+module.exports = function notifySubscribers(code, req, res) {
   SubscriptionController.update(req, res);
   res.send('Request successful');
-}
+};

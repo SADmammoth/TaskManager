@@ -1,8 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
-import User from '../models/entities/User';
-import DataController from './DataController';
-import isEmptyObject from '../../helpers/isEmptyObject';
-import login from '../passport/login';
+const User = require('../models/entities/User');
+const DataController = require('./DataController');
+const isEmptyObject = require('../../helpers/isEmptyObject');
+const login = require('../passport/login');
 
 const UserController = {
   requestRegistration: async function (req, res) {
@@ -22,16 +21,7 @@ const UserController = {
     res.send(`User ${login} registered`);
   },
 
-  login: function (req, res, next) {
-    login(req, res, next);
-    // console.log(credentials);
-    // if (credentials) {
-    //   res.json(credentials);
-    // } else {
-    //   res.status(StatusCodes.UNAUTHORIZED);
-    //   res.send('Not authorized');
-    // }
-  },
+  login,
 };
 
-export default UserController;
+module.exports = UserController;

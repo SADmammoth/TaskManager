@@ -1,5 +1,5 @@
-import path from 'path';
+const path = require('path');
 
-export const showApp = (req, res) => {
+exports.showApp = (req, res) => {
   res.sendFile(path.join(__dirname, '../../../dist/index.html'));
 };

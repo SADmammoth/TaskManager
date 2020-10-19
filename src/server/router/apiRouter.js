@@ -1,10 +1,11 @@
-import express from 'express';
-import DataController from '../controllers/DataController';
-import SubscriptionController from '../controllers/SubscriptionController';
-import { deleteMethod } from '../helpers/methods/deleteMethod';
-import { get } from '../helpers/methods/get';
-import { post } from '../helpers/methods/post';
-import { put } from '../helpers/methods/put';
+const express = require('express');
+const DataController = require('../controllers/DataController');
+const SubscriptionController = require('../controllers/SubscriptionController');
+const deleteMethod = require('../helpers/methods/deleteMethod').deleteMethod;
+const get = require('../helpers/methods/get').get;
+const patch = require('../helpers/methods/patch').patch;
+const post = require('../helpers/methods/post').post;
+const put = require('../helpers/methods/put').put;
 
 const router = express.Router();
 
@@ -16,7 +17,8 @@ get(router, '/lists/tasks/all', DataController.getAllTasks);
 get(router, '/lists/:taskListId', DataController.getList);
 get(router, '/subscribe', SubscriptionController.subscribe);
 get(router, '/dataUpdated', SubscriptionController.update);
-put(router, '/lists/:taskListId/:taskId', DataController.editTask);
+patch(router, '/lists/:taskListId/:taskId', DataController.editTask);
+put(router, '/lists/:taskListId/:taskId', DataController.replaceTask);
 post(
   router,
   '/lists/:taskListId/orders/current',
@@ -29,4 +31,4 @@ put(
 );
 deleteMethod(router, '/lists/:taskListId/:taskId', DataController.deleteTask);
 
-export default router;
+module.exports = router;

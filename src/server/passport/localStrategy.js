@@ -1,5 +1,5 @@
-import { Strategy as LocalStrategy } from 'passport-local';
-import User from '../models/entities/User';
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('../models/entities/User');
 
 const localStrategy = new LocalStrategy(
   {
@@ -24,4 +24,4 @@ const localStrategy = new LocalStrategy(
   }
 );
 
-export default localStrategy;
+module.exports = localStrategy;

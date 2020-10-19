@@ -1,7 +1,7 @@
-import passport from 'passport';
-import jwt from 'jsonwebtoken';
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-export default function login(req, res, next) {
+module.exports = function login(req, res, next) {
   return passport.authenticate('local', function (err, user) {
     if (user == false) {
       res.redirect('/login');
@@ -20,4 +20,4 @@ export default function login(req, res, next) {
       });
     }
   })(req, res, next);
-}
+};
