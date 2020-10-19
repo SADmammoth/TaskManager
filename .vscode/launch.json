@@ -1,0 +1,42 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Server/Client",
+      "configurations": ["Server", "Client"]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Client",
+      "type": "chrome",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "webRoot": "${workspaceFolder}/dist",
+      "sourceMaps": true,
+      "preLaunchTask": "npm: webpack-watch",
+      "url": "http://localhost:8080",
+      "sourceMapPathOverrides": {
+        "webpack:///*": "*", // Example: "webpack:///project/app.ts" -> "/project/app.ts"
+        "webpack:///./src/*": "${workspaceFolder}/src/*" // Example: "webpack:///src/app.js" -> "/Users/me/project/src/app.js"
+      },
+      "presentation": { "hidden": true }
+    },
+    {
+      "name": "Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "nodemon",
+      "program": "${workspaceFolder}/index.js",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "hidden": true
+      }
+    }
+  ]
+}

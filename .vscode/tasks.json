@@ -1,0 +1,36 @@
+{
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "webpack-watch",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": "."
+          }
+        }
+      ],
+      "label": "npm: webpack-watch",
+      "detail": "webpack-dev-server --open --mode development"
+    },
+    {
+      "type": "npm",
+      "script": "webpack",
+      "problemMatcher": [],
+      "label": "npm: webpack",
+      "detail": "webpack --mode=production"
+    }
+  ]
+}
