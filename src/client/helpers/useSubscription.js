@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import Client from './Client.ts';
+import Client from './Client';
 
 export default function useSubscription(currentLocation, onUpdate) {
   const [location, setLocation] = useState(currentLocation);
   const subscribe = (currentLocation) => {
     setLocation(currentLocation);
-    Client.SubscribeOnDataUpdate(currentLocation, onUpdate);
+    Client.subscribeOnDataUpdate(currentLocation, onUpdate);
   };
 
   const unsubscribe = () => {
-    Client.Unsubscribe(location);
+    Client.unsubscribe(location);
   };
 
   return [subscribe, unsubscribe];

@@ -2,7 +2,7 @@ import concatPath from './concatPath';
 
 const Client = {
   userToken: 2233,
-  apiPath: process.env.API_PATH,
+  apiPath: import.meta.env.SNOWPACK_PUBLIC_API_PATH,
   subscribed: false,
   subscribers: {},
   subLoop: 0,

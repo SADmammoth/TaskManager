@@ -1,12 +1,12 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import shortid from 'shortid';
-import { DragMap } from '../Draggable';
-import Client from '../../helpers/Client.ts';
-import createCell from '../../helpers/createCell';
-import getBody from './getBody';
-import moveDate from './moveDate';
-import calendarStyle from './calendarStyle';
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import shortid from "shortid";
+import { DragMap } from "../Draggable";
+import Client from "../../helpers/Client";
+import createCell from "../../helpers/createCell";
+import getBody from "./getBody";
+import moveDate from "./helpers/moveDate";
+import calendarStyle from "./helpers/calendarStyle";
 
 function CalendarView(props) {
   const [id] = useState(shortid.generate());
@@ -32,7 +32,7 @@ function CalendarView(props) {
     for (let i = 1; i < columns + 1; i++) {
       array.push(
         <div key={`${id}-header-${i}`}>
-          {currentDate.toLocaleDateString('ru-RU')}
+          {currentDate.toLocaleDateString("ru-RU")}
         </div>
       );
       currentDate.setDate(startDate.getDate() + 1);
@@ -54,11 +54,11 @@ function CalendarView(props) {
     newBody[x - 1].splice(
       y + 1,
       0,
-      createCell(id + 'temp', 'droparea', 'calendar-cell', { x, y })
+      createCell(id + "temp", "droparea", "calendar-cell", { x, y })
     );
 
     for (let i = x + 1; i < x + height; i++) {
-      newBody[i - 1][y].type = 'droparea';
+      newBody[i - 1][y].type = "droparea";
     }
 
     let arrangeDate = moveDate(startDate, x, y, timeStep);
@@ -74,7 +74,7 @@ function CalendarView(props) {
     const newTasks = { ...body };
 
     for (let i = x; i < x + height; i++) {
-      newBody[i][y].type = 'droparea';
+      newBody[i][y].type = "droparea";
     }
 
     let arrangeDate = moveDate(startDate, x, y, timeStep);
@@ -91,7 +91,7 @@ function CalendarView(props) {
     newBody[x - 1].splice(y + 1, 1);
 
     for (let xDiff = x + 1; xDiff < x + height; xDiff++) {
-      newBody[xDiff - 1][y].type = 'hidden';
+      newBody[xDiff - 1][y].type = "hidden";
     }
 
     setBody(newBody);
@@ -124,8 +124,8 @@ function CalendarView(props) {
     let { title, content, listId, taskId } = tasks[arrangeDate.getTime()];
     let newAvatar = createCell(
       id,
-      'avatar',
-      'calendar-cell',
+      "avatar",
+      "calendar-cell",
       { x: dest.x, y: dest.y },
       this.createAvatar({ title, content, index: dest, listId, taskId }, height)
     );
@@ -136,8 +136,8 @@ function CalendarView(props) {
     for (let xDiff = 0; xDiff < height; xDiff++) {
       newBody[originalIndex.x - 1 + xDiff][originalIndex.y] = createCell(
         id,
-        'droparea',
-        'calendar-cell',
+        "droparea",
+        "calendar-cell",
         { x: originalIndex.x + xDiff, y: originalIndex.y }
       );
 
@@ -146,8 +146,8 @@ function CalendarView(props) {
       } else {
         newBody[dest.x - 1 + xDiff][dest.y] = createCell(
           id,
-          'hidden',
-          'calendar-cell',
+          "hidden",
+          "calendar-cell",
           {
             x: dest.x + xDiff,
             y: dest.y,
@@ -173,7 +173,7 @@ function CalendarView(props) {
 
   return (
     <div
-      className={'calendar ' + (className || '')}
+      className={"calendar " + (className || "")}
       style={{
         ...style,
         ...calendarStyle(rows, columns),

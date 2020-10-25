@@ -1,4 +1,4 @@
-import toLinearIndex from '../../../helpers/toLinearIndex';
+import toLinearIndex from '../../../../helpers/toLinearIndex';
 
 export default function checkSnap(
   index,

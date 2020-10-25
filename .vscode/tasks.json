@@ -2,8 +2,9 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "webpack-watch",
-      "group": "build",
+      "script": "dev",
+      "label": "npm: dev",
+      "detail": "snowpack dev",
       "isBackground": true,
       "problemMatcher": [
         {
@@ -21,16 +22,7 @@
             "endsPattern": "."
           }
         }
-      ],
-      "label": "npm: webpack-watch",
-      "detail": "webpack-dev-server --open --mode development"
-    },
-    {
-      "type": "npm",
-      "script": "webpack",
-      "problemMatcher": [],
-      "label": "npm: webpack",
-      "detail": "webpack --mode=production"
+      ]
     }
   ]
 }

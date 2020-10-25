@@ -14,15 +14,11 @@
       "name": "Client",
       "type": "chrome",
       "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "webRoot": "${workspaceFolder}/dist",
+      "cwd": "http://localhost:8080",
+      "webRoot": "http://localhost:8080/_dist_",
       "sourceMaps": true,
-      "preLaunchTask": "npm: webpack-watch",
+      "preLaunchTask": "npm: dev",
       "url": "http://localhost:8080",
-      "sourceMapPathOverrides": {
-        "webpack:///*": "*", // Example: "webpack:///project/app.ts" -> "/project/app.ts"
-        "webpack:///./src/*": "${workspaceFolder}/src/*" // Example: "webpack:///src/app.js" -> "/Users/me/project/src/app.js"
-      },
       "presentation": { "hidden": true }
     },
     {

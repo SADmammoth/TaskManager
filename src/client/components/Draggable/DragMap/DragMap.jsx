@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import onDrop from './onDrop';
-import drawBody from './drawBody';
-import checkSnap from './checkSnap';
-import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from "react";
+import onDrop from "./helpers/onDrop";
+import drawBody from "./drawBody";
+import checkSnap from "./helpers/checkSnap";
+import PropTypes from "prop-types";
 
 const DragMap = (props) => {
   const [body, setBody] = useState([]);

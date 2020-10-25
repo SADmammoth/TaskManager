@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import DraggableTask from './DraggableTask';
-import DraggableList from '../Draggable/DraggableList/DraggableList';
-import Client from '../../helpers/Client.ts';
-import useSubscription from '../../helpers/useSubscription';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import DraggableTask from "./DraggableTask";
+import DraggableList from "../Draggable/DraggableList/DraggableList";
+import Client from "../../helpers/Client.ts";
+import useSubscription from "../../helpers/useSubscription";
 
 function DraggableTaskList(props) {
   const [tasks, setTasks] = useState([]);
@@ -11,6 +11,19 @@ function DraggableTaskList(props) {
   const [dragging, setDragging] = useState(null);
 
   const { style, listId, className } = props;
+
+  const requestTaskList = async () => {
+    let tasks = await Client.getTasks(listId);
+
+    if (tasks.tasks) {
+      setTasks(
+        tasks.tasks
+          .map((el, i) => ({ ...el, taskId: i }))
+          .filter((el) => !el.assignedTo)
+      );
+      setTaskIds(tasks.tasks.map((task, index) => index));
+    }
+  };
 
   const [subscribe, unsubscribe] = useSubscription(
     document.location.pathname,
@@ -27,19 +40,6 @@ function DraggableTaskList(props) {
       unsubscribe();
     };
   });
-
-  const requestTaskList = async () => {
-    let tasks = await Client.getTasks(listId);
-
-    if (tasks.tasks) {
-      setTasks(
-        tasks.tasks
-          .map((el, i) => ({ ...el, taskId: i }))
-          .filter((el) => !el.assignedTo)
-      );
-      setTaskIds(tasks.tasks.map((task, index) => index));
-    }
-  };
 
   const createTask = (task, taskId, listId, unassignedIndex) => {
     if (!task) {
@@ -62,7 +62,7 @@ function DraggableTaskList(props) {
   };
 
   return (
-    <ul className={'no-type-list ' + className || ''} style={style}>
+    <ul className={"no-type-list " + className || ""} style={style}>
       <DraggableList
         onOrderChange={({ taskId, index }) => {
           const stateTasks = { ...tasks };

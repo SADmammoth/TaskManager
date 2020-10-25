@@ -1,15 +1,15 @@
-import React from 'react';
-import createCell from '../../helpers/createCell';
-import key from '../../helpers/getBodyKey';
-import moveDate from './moveDate';
+import React from "react";
+import createCell from "../../helpers/createCell";
+import key from "../../helpers/getBodyKey";
+import moveDate from "./helpers/moveDate";
 
 const skip = {
   array: [],
   push: (r, c) => {
-    skip.array.push(r.toString() + ',' + c.toString());
+    skip.array.push(r.toString() + "," + c.toString());
   },
   indexOf: (r, c) => {
-    return skip.array.indexOf(r.toString() + ',' + c.toString());
+    return skip.array.indexOf(r.toString() + "," + c.toString());
   },
   get: (i) => {
     return skip.array[i];
@@ -32,7 +32,7 @@ export default function getBody(
   let task;
 
   function createCustomCell(type, index, avatar) {
-    return createCell(mapId, type, 'calendar-cell', index, avatar);
+    return createCell(mapId, type, "calendar-cell", index, avatar);
   }
 
   for (let r = 1; r < rows + 1; r++) {
@@ -48,7 +48,7 @@ export default function getBody(
       let index = skip.indexOf(r, c);
 
       if (index >= 0) {
-        row.push(createCustomCell('hidden', { x: r, y: c }));
+        row.push(createCustomCell("hidden", { x: r, y: c }));
         skip.removeAt(index);
         continue;
       }
@@ -61,7 +61,7 @@ export default function getBody(
 
         for (let i = 0; i < task.duration; i++) {
           if (draggingTask === taskId && i > 0) {
-            row.push(createCustomCell('droparea', { x: r + i, y: c }));
+            row.push(createCustomCell("droparea", { x: r + i, y: c }));
           } else {
             skip.push(r + i, c);
           }
@@ -69,7 +69,7 @@ export default function getBody(
 
         row.push(
           createCustomCell(
-            'avatar',
+            "avatar",
             { x: r, y: c },
             createAvatar(
               {
@@ -83,7 +83,7 @@ export default function getBody(
           )
         );
       } else {
-        row.push(createCustomCell('droparea', { x: r, y: c }));
+        row.push(createCustomCell("droparea", { x: r, y: c }));
       }
     }
 
