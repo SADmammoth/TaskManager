@@ -2,6 +2,9 @@
   "name": "taskmanager",
   "version": "0.1.0",
   "private": true,
+  "config": {
+    "branch": "master"
+  },
   "dependencies": {
     "@sadmammoth/react-form": "^1.3.2",
     "cookie-parser": "^1.4.5",
@@ -45,7 +48,8 @@
     "server-watch": "nodemon index.js",
     "dev": "snowpack dev --no-hmr",
     "lint": "eslint src/",
-    "mongod": "\"C:/Program Files/MongoDB/Server/4.2/bin/mongod.exe\""
+    "mongod": "\"C:/Program Files/MongoDB/Server/4.2/bin/mongod.exe\"",
+    "deploy": "git push heroku %npm_package_config_branch%:master"
   },
   "eslintConfig": {
     "extends": "react-app"

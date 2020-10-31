@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const path = require('path');
 const apiRouter = require('./router/apiRouter');
 const cookieParser = require('cookie-parser');
 const pagesRouter = require('./router/pagesRouter');
@@ -21,7 +22,7 @@ mongoose.set('useCreateIndex', true);
 app.use(cookieParser());
 app.use(passport.initialize());
 
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static(path.resolve(process.env.BUILD_FOLDER)));
 app.use(express.json());
 passportInit();
 
