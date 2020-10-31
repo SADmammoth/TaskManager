@@ -15,14 +15,7 @@ module.exports = {
   plugins: [
     '@snowpack/plugin-react-refresh',
     '@snowpack/plugin-dotenv',
-    [
-      '@snowpack/plugin-sass',
-      {
-        compilerOptions: {
-          loadPath: './node_modules/normalize-scss/sass',
-        },
-      },
-    ],
+    ['@snowpack/plugin-sass', {}],
     [
       '@snowpack/plugin-webpack',
       {
