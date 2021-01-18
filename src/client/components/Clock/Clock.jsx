@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {useTheme, useStyles} from 'react-jss';
 import clockUpdater from '../helpers/clockUpdater.js';
 
 const months = [
