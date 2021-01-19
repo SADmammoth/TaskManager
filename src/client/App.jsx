@@ -5,16 +5,20 @@ import {
   Redirect,
   BrowserRouter as Router,
 } from "react-router-dom";
+import jssPluginGlobal from "jss-plugin-global";
 import Header from "./components/Header";
 import TaskAssignmentPage from "./screens/TaskAssignmentPage";
 import CreateTaskPage from "./screens/CreateTaskPage";
 import Error404 from "./screens/Error404";
 import NewTaskList from "./screens/NewTaskList";
 import theme from "./theme";
+import { ThemeProvider } from "react-jss";
 
-import "./assets/styles/App.scss";
 import LoginPage from "./screens/LoginPage";
 import Preloader from "./helpers/Preloader";
+
+import { jss } from "react-jss";
+import styles from "./jss/global.styles";
 
 function App(props) {
   return (
@@ -37,5 +41,8 @@ function App(props) {
     </Preloader>
   );
 }
+
+jss.use(jssPluginGlobal());
+jss.createStyleSheet(styles).attach();
 
 export default App;

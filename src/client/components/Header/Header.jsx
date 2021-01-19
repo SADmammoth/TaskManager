@@ -1,9 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import Nav from "../Nav";
-import Clock from "../Clock";
-import textVariants from "../Text/textVariants";
+import Nav from "../../atomics/Nav";
+import Clock from "../../atomics/Clock";
+import textVariants from "../../atomics/TextBlock/textVariants";
+import { useTheme, createUseStyles } from "react-jss";
+import styles from "./Header.styles";
+import TextBlock from "../../atomics/TextBlock/TextBlock";
 
 const useStyles = createUseStyles(styles);
 
@@ -13,13 +16,13 @@ function Header({ location }) {
 
   return (
     <>
-      <header>
+      <header className={classes.root}>
         <div className={classes.logo}>
           <img src="" alt="" title="" />
         </div>
-        <Text variant={textVariants.p} className={classes.siteName}>
+        <TextBlock variant={textVariants.p} className={classes.siteName}>
           TaskManager
-        </Text>
+        </TextBlock>
         <Nav
           items={{
             Main: "/",

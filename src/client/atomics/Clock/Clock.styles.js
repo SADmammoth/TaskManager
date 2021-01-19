@@ -1,5 +1,5 @@
 import blinking from '../../jss/blinking.styles';
 
-const styles = { blinking };
+const styles = { ...blinking };
 
 export default styles;

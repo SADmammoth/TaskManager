@@ -1,7 +1,7 @@
-import React from 'react';
-import DraggableElement from '../Draggable/DraggableElement/DraggableElement';
-import Button from '../Button';
-import Client from '../../helpers/Client.ts';
+import React from "react";
+import DraggableElement from "../Draggable/DraggableElement/DraggableElement";
+import Button from "../../atomics/Button";
+import Client from "../../helpers/Client.ts";
 
 class TaskAvatar extends React.Component {
   render() {
@@ -20,8 +20,8 @@ class TaskAvatar extends React.Component {
 
     return (
       <DraggableElement
-        className={'task-avatar ' + (className || '')}
-        style={{ ...style, '--height': height }}
+        className={"task-avatar " + (className || "")}
+        style={{ ...style, "--height": height }}
         data={{
           taskId,
           listId,
@@ -35,7 +35,7 @@ class TaskAvatar extends React.Component {
         height={height}
         dropEffect="reassign"
       >
-        <p className="title">{title}</p>{' '}
+        <p className="title">{title}</p>{" "}
         <Button
           action={() => {
             onDelete();

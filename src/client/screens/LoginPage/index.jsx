@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import Form from '@sadmammoth/react-form';
-import Button from '../../components/Button';
-import Client from '../../helpers/Client.ts';
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import Form from "@sadmammoth/react-form";
+import Button from "../../atomics/Button";
+import Client from "../../helpers/Client.ts";
+import textVariants from "../../atomics/TextBlock/textVariants";
+import TextBlock from "../../atomics/TextBlock/TextBlock";
 
 const LoginPage = (props) => {
-  let [mode, setMode] = useState('login');
+  let [mode, setMode] = useState("login");
 
   return (
     <>
@@ -15,38 +17,38 @@ const LoginPage = (props) => {
       </Helmet>
       <Form
         onSubmit={({ login, password }) => {
-          return mode === 'login'
+          return mode === "login"
             ? Client.loginUser(login, password)
             : Client.registerUser(login, password);
         }}
         inputs={[
           {
-            type: 'text',
-            name: 'login',
-            description: 'Login',
+            type: "text",
+            name: "login",
+            description: "Login",
             required: true,
-            label: 'Login',
+            label: "Login",
           },
           {
-            type: 'password',
-            name: 'password',
-            description: 'Password',
+            type: "password",
+            name: "password",
+            description: "Password",
             required: true,
-            label: 'Password',
+            label: "Password",
           },
         ]}
         style={{
-          width: '20vw',
-          margin: '0 auto',
+          width: "20vw",
+          margin: "0 auto",
         }}
         submitButton={
-          <Button content={mode === 'register' ? 'Register' : 'Login'} />
+          <Button content={mode === "register" ? "Register" : "Login"} />
         }
       />
       <Button
-        content={mode === 'register' ? 'Login' : 'Register'}
+        content={mode === "register" ? "Login" : "Register"}
         action={() =>
-          mode === 'login' ? setMode('register') : setMode('login')
+          mode === "login" ? setMode("register") : setMode("login")
         }
       />
     </>

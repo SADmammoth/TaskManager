@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import Form from '@sadmammoth/react-form';
+import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
+import Form from "@sadmammoth/react-form";
 
-import CalendarView from '../../components/CalendarView/CalendarView';
-import Sidebar from '../../components/Sidebar';
+import CalendarView from "../../components/CalendarView/CalendarView";
+import Sidebar from "../../components/Sidebar";
 
-import { DraggableTaskList } from '../../components/DraggableTaskList';
+import { DraggableTaskList } from "../../components/DraggableTaskList";
 
-import Client from '../../helpers/Client.ts';
+import Client from "../../helpers/Client.ts";
+import textVariants from "../../atomics/TextBlock/textVariants";
+import TextBlock from "../../atomics/TextBlock/TextBlock";
 
 export default function TaskAssignmentPage(props) {
   const [tasks, setTasks] = useState(null);
@@ -36,7 +38,7 @@ export default function TaskAssignmentPage(props) {
         <meta charSet="utf-8" />
         <title>Home</title>
       </Helmet>
-      <h1 className="h1">Home</h1>
+      <TextBlock variant={textVariants.h1}>Home</TextBlock>
       <CalendarView
         rows={9}
         columns={9}
@@ -46,16 +48,16 @@ export default function TaskAssignmentPage(props) {
       />
 
       <Sidebar
-        style={{ height: '70vh', width: '30vw' }}
+        style={{ height: "70vh", width: "30vw" }}
         content={
           <>
             <Form
               onSubmit={null}
               inputs={[
                 {
-                  type: 'select',
-                  name: 'listId',
-                  placeholder: 'Inbox',
+                  type: "select",
+                  name: "listId",
+                  placeholder: "Inbox",
                   valueOptions: Client.getListsNames,
                   onChange: (name, value) => {
                     setListId(value);
@@ -64,7 +66,7 @@ export default function TaskAssignmentPage(props) {
               ]}
             />
 
-            <DraggableTaskList listId={listId} style={{ float: 'left' }} />
+            <DraggableTaskList listId={listId} style={{ float: "left" }} />
           </>
         }
       />

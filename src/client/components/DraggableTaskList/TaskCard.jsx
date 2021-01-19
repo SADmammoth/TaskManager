@@ -1,6 +1,6 @@
 import React from 'react';
 import { MarkdownOutput } from '@sadmammoth/react-form';
-import Button from '../Button';
+import Button from '../../atomics/Button';
 import Client from '../../helpers/Client.ts';
 
 const Task = ({ title, taskId, listId, content }) => {

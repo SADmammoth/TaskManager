@@ -1,6 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useTheme, createUseStyles } from "react-jss";
 import PropTypes from "prop-types";
+import styles from "../../components/Header/Header.styles";
+import Stack from "../Stack";
+import Link from "../Link";
 
 const useStyles = createUseStyles(styles);
 
@@ -10,13 +13,13 @@ function Nav({ items }) {
 
   return (
     <nav className={classes.root}>
-      <ul>
+      <Stack>
         {Object.entries(items).map(([name, path]) => (
-          <li className={classes.navItem} key={path}>
-            <Link to={path}>{name}</Link>
-          </li>
+          <Link key={path} className={classes.navItem} to={path}>
+            {name}
+          </Link>
         ))}
-      </ul>
+      </Stack>
     </nav>
   );
 }

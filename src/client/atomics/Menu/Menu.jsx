@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Button from "../Button";
+import { useTheme, createUseStyles } from "react-jss";
+import styles from "./Menu.styles";
 
 const useStyles = createUseStyles(styles);
 

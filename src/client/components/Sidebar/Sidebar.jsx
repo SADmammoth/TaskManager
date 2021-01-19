@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Stack from "../Stack";
+import Stack from "../../atomics/Stack";
+
+import { useTheme, createUseStyles } from "react-jss";
+import styles from "./Sidebar.styles";
 
 const useStyles = createUseStyles(styles);
 

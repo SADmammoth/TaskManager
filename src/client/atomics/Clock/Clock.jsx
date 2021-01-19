@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme, createUseStyles } from "react-jss";
-import clockUpdater from "../helpers/clockUpdater.js";
+import clockUpdater from "../../helpers/clockUpdater.js";
 import styles from "./Clock.styles.js";
 import months from "../../helpers/months";
 
