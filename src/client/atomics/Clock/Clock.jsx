@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {useTheme, useStyles} from 'react-jss';
-import clockUpdater from '../helpers/clockUpdater.js';
+import React, { useEffect, useState } from "react";
+import { useTheme, createUseStyles } from "react-jss";
+import clockUpdater from "../helpers/clockUpdater.js";
+import styles from "./Clock.styles.js";
+import months from "../../helpers/months";
 
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const useStyles = createUseStyles(styles);
 
 export default function Clock() {
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
   const [minutesUpdater] = useState(clockUpdater());
   const [date, setDate] = useState({
     minutes: 0,
@@ -44,13 +36,13 @@ export default function Clock() {
 
   return (
     <>
-      <div className="clock">
+      <div className={classes.root}>
         <span>{months[date.month]}</span>
         <span>, {date.day}</span>
         <br />
-        <span>{date.hours.toString().padStart(2, '0')}</span>
-        <span className="blinking">:</span>
-        <span>{date.minutes.toString().padStart(2, '0')}</span>
+        <span>{date.hours.toString().padStart(2, "0")}</span>
+        <span className={classes.blinking}>:</span>
+        <span>{date.minutes.toString().padStart(2, "0")}</span>
       </div>
     </>
   );

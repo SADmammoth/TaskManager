@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useRef, useState } from "react";
+import PropTypes from "prop-types";
 
 const DropArea = (props) => {
   const droparea = useRef({});
@@ -10,23 +10,18 @@ const DropArea = (props) => {
   const onDragOver = (e) => {
     setHovered(true);
     e.preventDefault();
-    let dragging = document.getElementById('dragging');
+    let dragging = document.getElementById("dragging");
 
     if (
       checkSnap &&
       dragging &&
-      !dragging.hasAttribute('data-snap') &&
-      checkSnap(index, parseInt(dragging.getAttribute('data-height')), hovered)
+      !dragging.hasAttribute("data-snap") &&
+      checkSnap(index, parseInt(dragging.getAttribute("data-height")), hovered)
     ) {
       let { left, top } = droparea.current.getBoundingClientRect();
 
-      console.log(
-        left,
-        window.scrollX,
-        parseInt(getComputedStyle(droparea.current).paddingLeft)
-      );
       dragging.setAttribute(
-        'data-snap',
+        "data-snap",
         `${
           left +
           window.scrollX +
@@ -43,13 +38,13 @@ const DropArea = (props) => {
   const onDragLeave = () => {
     console.log(0);
     setHovered(false);
-    let dragging = document.getElementById('dragging');
-    if (dragging) dragging.removeAttribute('data-snap');
+    let dragging = document.getElementById("dragging");
+    if (dragging) dragging.removeAttribute("data-snap");
   };
 
   const onDrop = (e) => {
     setHovered(false);
-    let data = JSON.parse(e.dataTransfer.getData('application/json'));
+    let data = JSON.parse(e.dataTransfer.getData("application/json"));
     setData({
       index,
       ...data,
@@ -59,7 +54,7 @@ const DropArea = (props) => {
   return (
     <div
       ref={droparea}
-      className={`${className}${hovered ? ' hovered' : ''}`}
+      className={`${className}${hovered ? " hovered" : ""}`}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
