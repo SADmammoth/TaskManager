@@ -38,7 +38,7 @@
     "eslint-loader": "^2.2.1",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-react": "^7.18.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "remove-files-webpack-plugin": "^1.4.4",
     "snowpack": "^2.15.1"
   },
